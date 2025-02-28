@@ -12,12 +12,15 @@ const GolfScoreInput = () => {
     ),
   });
 
+  //testing here
   const apiEndpoint = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
