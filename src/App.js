@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 const GolfScoreInput = () => {
   const [formData, setFormData] = useState({
-    ScoreID: "17",
+    ScoreID: uuidv4(),
     Date: "2/25/2025",
     ...Object.fromEntries(
       Array.from({ length: 18 }, (_, i) => [
@@ -46,11 +47,11 @@ const GolfScoreInput = () => {
     <div style={{ maxWidth: "600px", margin: "auto" }}>
       <h2>Enter Golf Scores</h2>
       <form onSubmit={handleSubmit}>
-        <label>
+        {/* <label>
           Score ID:
           <input type="text" name="ScoreID" value={formData.ScoreID} onChange={handleChange} required />
         </label>
-        <br />
+        <br /> */}
         <label>
           Date:
           <input type="date" name="Date" value={formData.Date} onChange={handleChange} required />
