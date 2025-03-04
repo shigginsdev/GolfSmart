@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { Authenticator } from '@aws-amplify/ui-react';
+import { Amplify } from 'aws-amplify';
+import awsExports from './aws-exports';
+import '@aws-amplify/ui-react/styles.css';
+
+Amplify.configure(awsExports);
 
 const GolfScoreInput = () => {
   const [formData, setFormData] = useState({
-    ScoreID: uuidv4(),
+    ScoreID: uuidv4(),    
     Date: "2/25/2025",
     ...Object.fromEntries(
       Array.from({ length: 18 }, (_, i) => [
@@ -44,14 +50,17 @@ const GolfScoreInput = () => {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "auto" }}>
-      <h2>Enter Golf Scores</h2>
+    <Authenticator>
+      {({ signOut, user }) => (
+        <main style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+          <h1>Welcome, {user?.username}!</h1>
+          <p>You are now logged in to Golf Smart.</p>
+
+          {/* You can now add your actual form or app components here */}
+          <div style={{ maxWidth: "600px", margin: "auto" }}>
+      <h2>Enter Golf Scores</h2>             
+
       <form onSubmit={handleSubmit}>
-        {/* <label>
-          Score ID:
-          <input type="text" name="ScoreID" value={formData.ScoreID} onChange={handleChange} required />
-        </label>
-        <br /> */}
         <label>
           Date:
           <input type="date" name="Date" value={formData.Date} onChange={handleChange} required />
@@ -87,6 +96,12 @@ const GolfScoreInput = () => {
         <button type="submit">Submit</button>
       </form>
     </div>
+          <button onClick={signOut}>Sign out</button>
+        </main>
+      )}
+    </Authenticator>
+      
+   
   );
 };
 
