@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-golfsmart-dev-89bf7-authRole",
+      "UnauthRoleArn": "arn:aws:iam::047719631198:role/amplify-golfsmart-dev-89bf7-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::047719631198:role/amplify-golfsmart-dev-89bf7-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-golfsmart-dev-89bf7-deployment",
+      "UnauthRoleName": "amplify-golfsmart-dev-89bf7-unauthRole",
+      "StackName": "amplify-golfsmart-dev-89bf7",
+      "StackId": "arn:aws:cloudformation:us-east-2:047719631198:stack/amplify-golfsmart-dev-89bf7/7a9b3470-f94b-11ef-a364-06f40dc76127",
+      "AmplifyAppId": "d2dnzia3915c3v"
+    },
+    "categories": {
+      "auth": {
+        "golfsmarta4ffcd75": {}
+      }
+    }
+  }
+}
