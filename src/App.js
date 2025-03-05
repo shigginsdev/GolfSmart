@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
+import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
+import { createAuth } from '@aws-amplify/auth';
 import awsExports from './aws-exports';
 import '@aws-amplify/ui-react/styles.css';
 
 Amplify.configure({
-  Auth: createAuth(awsExports.Auth)
+  ...awsExports,
+  Auth: createAuth(awsExports.Auth),
 });
 
 const GolfScoreInput = () => {
   const [formData, setFormData] = useState({
-    scoreId: uuidv4(),  // Renamed to scoreId
+    scoreId: uuidv4(),
     Date: "2/25/2025",
     ...Object.fromEntries(
       Array.from({ length: 18 }, (_, i) => [
@@ -28,8 +30,9 @@ const GolfScoreInput = () => {
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-        const user = await Auth.currentAuthenticatedUser();
-        setUserId(user.attributes.sub);  // Cognito userId
+        const session = await Amplify.Auth.fetchAuthSession();
+        const sub = session.tokens?.idToken?.payload?.sub;
+        setUserId(sub);
       } catch (error) {
         console.error("Error fetching user ID:", error);
       }
