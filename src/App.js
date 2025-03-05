@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
-import { Auth } from '@aws-amplify/auth';
+import { createAuth } from '@aws-amplify/auth';
 import awsExports from './aws-exports';
 import '@aws-amplify/ui-react/styles.css';
 
-Amplify.configure(awsExports);
+Amplify.configure({
+  Auth: createAuth(awsExports),
+});
 
 const GolfScoreInput = () => {
   const [formData, setFormData] = useState({
