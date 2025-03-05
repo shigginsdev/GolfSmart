@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { Authenticator } from '@aws-amplify/ui-react';
-import { Amplify } from 'aws-amplify';
-import { createAuth } from '@aws-amplify/auth';
+import { Amplify, Auth } from 'aws-amplify';
 import awsExports from './aws-exports';
 import '@aws-amplify/ui-react/styles.css';
 
-Amplify.configure({
-  ...awsExports,
-  Auth: createAuth(awsExports.Auth),
-});
+Amplify.configure(awsExports);
 
 const GolfScoreInput = () => {
   const [formData, setFormData] = useState({
@@ -30,8 +26,8 @@ const GolfScoreInput = () => {
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-        const session = await Amplify.Auth.fetchAuthSession();
-        const sub = session.tokens?.idToken?.payload?.sub;
+        const user = await Auth.currentAuthenticatedUser();
+        const sub = user.attributes.sub;
         setUserId(sub);
       } catch (error) {
         console.error("Error fetching user ID:", error);
@@ -53,10 +49,9 @@ const GolfScoreInput = () => {
       return;
     }
 
-    // Attach userId to the score data
     const payload = {
-      userId,              // Partition key in sg_user_scores
-      scoreId: formData.scoreId,  // Sort key
+      userId,              
+      scoreId: formData.scoreId,
       Date: formData.Date,
       ...formData,
     };
