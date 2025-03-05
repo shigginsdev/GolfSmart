@@ -16,8 +16,6 @@ ALLOWED_ORIGINS = [
 # Initialize DynamoDB resource (AWS Lambda automatically uses IAM role permissions)
 dynamodb = boto3.resource('dynamodb')
 
-# Connect to the 'Recipes' table
-score_table = dynamodb.Table('scores')
 
 #DynamoDB uses decimal.Decimal to handle floating-point numbers. This function converts Decimal to float for JSON serialization.
 def convert_decimal(obj):
@@ -33,16 +31,16 @@ def convert_decimal(obj):
 
 
 def add_score(event):
-    """Handles POST request and a new score"""
+    """Handles POST request and adds a new score"""
     try:
-        score_table = dynamodb.Table('scores')
+        score_table = dynamodb.Table('sg_user_scores')
 
         # Test the connection
         score_table.scan(Limit=1)
-        logger.info("Successfully connected to local DynamoDB Scores table")
+        logger.info("Successfully connected to DynamoDB sg_user_scores table")
 
     except Exception as e:
-        logger.error(f"Failed to connect to local DynamoDB: {str(e)}")
+        logger.error(f"Failed to connect to DynamoDB: {str(e)}")
 
     try:
         # Parse and validate request body
@@ -56,10 +54,12 @@ def add_score(event):
             }
 
         logger.debug(f"Processed input: {user_score}")
+
         score_table.put_item(Item={
-            'ScoreID': str(user_score['ScoreID']),  
+            'userId': str(user_score['userId']),    # ✅ Partition Key
+            'scoreId': str(user_score['scoreId']),  # ✅ Sort Key
             'Date': str(user_score['Date']),
-            'Hole1Par': int(user_score['Hole1Par']),  
+            'Hole1Par': int(user_score['Hole1Par']),
             'Hole1Score': int(user_score['Hole1Score']),
             'Hole2Par': int(user_score['Hole2Par']),
             'Hole2Score': int(user_score['Hole2Score']),
@@ -96,18 +96,17 @@ def add_score(event):
             'Hole18Par': int(user_score['Hole18Par']),
             'Hole18Score': int(user_score['Hole18Score']),
         })
-         
 
         # Return formatted response
         return {
             "statusCode": 200,
             "headers": {
                 "Access-Control-Allow-Origin": "https://master.d2dnzia3915c3v.amplifyapp.com",
-                "Access-Control-Allow-headers": "Content-Type",
+                "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "OPTIONS,POST",
             },
             "body": json.dumps({
-                "status": "success",               
+                "status": "success",
             })
         }
 
@@ -117,7 +116,7 @@ def add_score(event):
             "statusCode": 500,
             "headers": {
                 "Access-Control-Allow-Origin": "https://master.d2dnzia3915c3v.amplifyapp.com",
-                "Access-Control-Allow-headers": "Content-Type",
+                "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "OPTIONS,POST",
             },
             "body": json.dumps({"status": "error", "message": "Database error occurred"})
@@ -128,17 +127,11 @@ def add_score(event):
             "statusCode": 500,
             "headers": {
                 "Access-Control-Allow-Origin": "https://master.d2dnzia3915c3v.amplifyapp.com",
-                "Access-Control-Allow-headers": "Content-Type",
+                "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "OPTIONS,POST",
             },
             "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})
         }
-
-def validate_input(ingredients_data):
-    """Validate the ingredients input data"""
-    if not isinstance(ingredients_data, dict):
-        return False, "Request body must be a JSON object"              
-    return True, None
 
 def lambda_handler(event, context):
     """Main AWS Lambda handler"""
