@@ -28,7 +28,8 @@ const GolfScoreInput = () => {
   return (
     <Authenticator>
       {({ signOut, user }) => {
-        const userId = user?.attributes?.sub;
+        //const userId = user?.attributes?.sub;
+        const userId = user?.userId;
 
         console.log("🔍 User:", user);
         console.log("🔍 User ID (sub):", userId);
