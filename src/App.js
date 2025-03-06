@@ -14,7 +14,6 @@ const GolfScoreInput = () => {
     Date: "2/25/2025",
     ...Object.fromEntries(
       Array.from({ length: 18 }, (_, i) => [
-        `Hole${i + 1}Par`, "",
         `Hole${i + 1}Score`, ""
       ])
     ),
@@ -95,16 +94,6 @@ const GolfScoreInput = () => {
               {[...Array(18)].map((_, i) => (
                 <div key={i}>
                   <h4>Hole {i + 1}</h4>
-                  <label>
-                    Par:
-                    <input
-                      type="number"
-                      name={`Hole${i + 1}Par`}
-                      value={formData[`Hole${i + 1}Par`]}
-                      onChange={handleChange}
-                      required
-                    />
-                  </label>
                   <label>
                     Score:
                     <input

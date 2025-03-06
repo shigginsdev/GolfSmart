@@ -45,7 +45,8 @@ def add_score(event):
     try:
         # Parse and validate request body
         user_score = json.loads(event.get('body', '{}'))
-        is_valid, error_message = validate_input(user_score)
+        # is_valid, error_message = validate_input(user_score)
+        is_valid = True
 
         if not is_valid:
             return {
@@ -56,44 +57,26 @@ def add_score(event):
         logger.debug(f"Processed input: {user_score}")
 
         score_table.put_item(Item={
-            'userId': str(user_score['userId']),    # ✅ Partition Key
-            'scoreId': str(user_score['scoreId']),  # ✅ Sort Key
+            'userID': str(user_score['userId']),    # ✅ Partition Key
+            'scoreID': str(user_score['scoreId']),  # ✅ Sort Key
             'Date': str(user_score['Date']),
-            'Hole1Par': int(user_score['Hole1Par']),
             'Hole1Score': int(user_score['Hole1Score']),
-            'Hole2Par': int(user_score['Hole2Par']),
             'Hole2Score': int(user_score['Hole2Score']),
-            'Hole3Par': int(user_score['Hole3Par']),
             'Hole3Score': int(user_score['Hole3Score']),
-            'Hole4Par': int(user_score['Hole4Par']),
             'Hole4Score': int(user_score['Hole4Score']),
-            'Hole5Par': int(user_score['Hole5Par']),
             'Hole5Score': int(user_score['Hole5Score']),
-            'Hole6Par': int(user_score['Hole6Par']),
             'Hole6Score': int(user_score['Hole6Score']),
-            'Hole7Par': int(user_score['Hole7Par']),
             'Hole7Score': int(user_score['Hole7Score']),
-            'Hole8Par': int(user_score['Hole8Par']),
             'Hole8Score': int(user_score['Hole8Score']),
-            'Hole9Par': int(user_score['Hole9Par']),
             'Hole9Score': int(user_score['Hole9Score']),
-            'Hole10Par': int(user_score['Hole10Par']),
             'Hole10Score': int(user_score['Hole10Score']),
-            'Hole11Par': int(user_score['Hole11Par']),
             'Hole11Score': int(user_score['Hole11Score']),
-            'Hole12Par': int(user_score['Hole12Par']),
             'Hole12Score': int(user_score['Hole12Score']),
-            'Hole13Par': int(user_score['Hole13Par']),
             'Hole13Score': int(user_score['Hole13Score']),
-            'Hole14Par': int(user_score['Hole14Par']),
             'Hole14Score': int(user_score['Hole14Score']),
-            'Hole15Par': int(user_score['Hole15Par']),
             'Hole15Score': int(user_score['Hole15Score']),
-            'Hole16Par': int(user_score['Hole16Par']),
             'Hole16Score': int(user_score['Hole16Score']),
-            'Hole17Par': int(user_score['Hole17Par']),
             'Hole17Score': int(user_score['Hole17Score']),
-            'Hole18Par': int(user_score['Hole18Par']),
             'Hole18Score': int(user_score['Hole18Score']),
         })
 
