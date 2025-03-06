@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
+import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import awsExports from './aws-exports';
 import '@aws-amplify/ui-react/styles.css';
@@ -8,14 +8,6 @@ import '@aws-amplify/ui-react/styles.css';
 Amplify.configure(awsExports);
 
 const GolfScoreInput = () => {
-  const { user, authStatus } = useAuthenticator((context) => [context.user, context.authStatus]);
-
-  console.log("Auth Status:", authStatus);
-  console.log("User:", user);
-
-  const userId = user?.attributes?.sub;
-  console.log("🔍 User ID (sub):", userId);
-
   const [formData, setFormData] = useState({
     scoreId: uuidv4(),
     Date: "2/25/2025",
@@ -33,85 +25,88 @@ const GolfScoreInput = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!userId) {
-      console.error("User not authenticated. Cannot submit.");
-      alert("User not authenticated.");
-      return;
-    }
-
-    const payload = {
-      userId,
-      scoreId: formData.scoreId,
-      Date: formData.Date,
-      ...formData,
-    };
-
-    console.log("Submitting payload:", payload);
-
-    try {
-      const response = await fetch(apiEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-      console.log("API Response:", result);
-      alert("Data submitted successfully!");
-    } catch (error) {
-      console.error("Error submitting data:", error);
-      alert("Failed to submit data.");
-    }
-  };
-
-  if (authStatus !== 'authenticated') {
-    return <div>Loading authentication...</div>;
-  }
-
   return (
     <Authenticator>
-      {({ signOut }) => (
-        <main style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-          <h1>Welcome, {user?.username}!</h1>
-          <p>You are now logged in to Golf Smart.</p>
+      {({ signOut, user }) => {
+        const userId = user?.attributes?.sub;
 
-          <div style={{ maxWidth: "600px", margin: "auto" }}>
-            <h2>Enter Golf Scores</h2>
+        console.log("🔍 User:", user);
+        console.log("🔍 User ID (sub):", userId);
 
-            <form onSubmit={handleSubmit}>
-              <label>
-                Date:
-                <input type="date" name="Date" value={formData.Date} onChange={handleChange} required />
-              </label>
-              <br />
+        const handleSubmit = async (e) => {
+          e.preventDefault();
 
-              {[...Array(18)].map((_, i) => (
-                <div key={i}>
-                  <h4>Hole {i + 1}</h4>
-                  <label>
-                    Score:
-                    <input
-                      type="number"
-                      name={`Hole${i + 1}Score`}
-                      value={formData[`Hole${i + 1}Score`]}
-                      onChange={handleChange}
-                      required
-                    />
-                  </label>
-                </div>
-              ))}
+          if (!userId) {
+            console.error("❌ User not authenticated. Cannot submit.");
+            alert("User not authenticated.");
+            return;
+          }
 
-              <button type="submit">Submit</button>
-            </form>
-          </div>
-          <button onClick={signOut}>Sign out</button>
-        </main>
-      )}
+          const payload = {
+            userId,
+            scoreId: formData.scoreId,
+            Date: formData.Date,
+            ...formData,
+          };
+
+          console.log("📤 Submitting payload:", payload);
+
+          try {
+            const response = await fetch(apiEndpoint, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+            console.log("✅ API Response:", result);
+            alert("Data submitted successfully!");
+          } catch (error) {
+            console.error("❌ Error submitting data:", error);
+            alert("Failed to submit data.");
+          }
+        };
+
+        return (
+          <main style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+            <h1>Welcome, {user?.username}!</h1>
+            <p>You are now logged in to Golf Smart.</p>
+
+            <div style={{ maxWidth: "600px", margin: "auto" }}>
+              <h2>Enter Golf Scores</h2>
+
+              <form onSubmit={handleSubmit}>
+                <label>
+                  Date:
+                  <input type="date" name="Date" value={formData.Date} onChange={handleChange} required />
+                </label>
+                <br />
+
+                {[...Array(18)].map((_, i) => (
+                  <div key={i}>
+                    <h4>Hole {i + 1}</h4>
+                    <label>
+                      Score:
+                      <input
+                        type="number"
+                        name={`Hole${i + 1}Score`}
+                        value={formData[`Hole${i + 1}Score`]}
+                        onChange={handleChange}
+                        required
+                      />
+                    </label>
+                  </div>
+                ))}
+
+                <button type="submit">Submit</button>
+              </form>
+            </div>
+            <button onClick={signOut}>Sign out</button>
+          </main>
+        );
+      }}
     </Authenticator>
   );
 };
