@@ -3,12 +3,23 @@ import { v4 as uuidv4 } from 'uuid';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import awsExports from './aws-exports';
 import '@aws-amplify/ui-react/styles.css';
 
 Amplify.configure(awsExports);
 
 const GolfScoreInput = () => {
+
+  const { user, authStatus } = useAuthenticator((context) => [context.user, context.authStatus]);
+
+  if (authStatus !== 'authenticated') {
+    return <div>Loading authentication...</div>;
+  }
+
+  const userId = user?.attributes?.sub;
+  console.log("User ID:", userId);
+
   const [formData, setFormData] = useState({
     scoreId: uuidv4(),
     Date: "2/25/2025",
@@ -90,6 +101,7 @@ const GolfScoreInput = () => {
                 <input type="date" name="Date" value={formData.Date} onChange={handleChange} required />
               </label>
               <br />
+              
 
               {[...Array(18)].map((_, i) => (
                 <div key={i}>
