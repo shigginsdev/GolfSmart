@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+//import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
-import { fetchAuthSession } from '@aws-amplify/auth';
+//import { fetchAuthSession } from '@aws-amplify/auth';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import awsExports from './aws-exports';
 import '@aws-amplify/ui-react/styles.css';
@@ -30,22 +31,22 @@ const GolfScoreInput = () => {
     ),
   });
 
-  const [userId, setUserId] = useState("");
+  //const [userId, setUserId] = useState("");
 
   const apiEndpoint = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
 
-  useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const session = await fetchAuthSession();
-        const sub = session.tokens?.idToken?.payload?.sub;
-        setUserId(sub);
-      } catch (error) {
-        console.error("Error fetching user ID:", error);
-      }
-    };    
-    fetchUserId();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserId = async () => {
+  //     try {
+  //       const session = await fetchAuthSession();
+  //       const sub = session.tokens?.idToken?.payload?.sub;
+  //       setUserId(sub);
+  //     } catch (error) {
+  //       console.error("Error fetching user ID:", error);
+  //     }
+  //   };    
+  //   fetchUserId();
+  // }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
