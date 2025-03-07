@@ -1,1 +1,10 @@
-testing
+    font-family: ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    Add breadcrumb navigation to the top
+    background: dfe9f5
+    text color 55595e
+    link colors 2b2c2f
+    side nav background ffffff
+
+
+    headers text-2xl font-semibold leading-none tracking-tight
+

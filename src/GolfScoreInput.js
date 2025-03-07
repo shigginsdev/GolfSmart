@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import "./GolfScoreInput.css";
 
 const GolfScoreInput = ({ user }) => {
   const [formData, setFormData] = useState({
@@ -57,11 +58,11 @@ const GolfScoreInput = ({ user }) => {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "auto" }}>
+    <div className="score-input-container">
       <h2>Enter Golf Scores</h2>
 
-      <form onSubmit={handleSubmit}>
-        <label>
+      <form onSubmit={handleSubmit} className="scores-form">
+        <label className="date-label">
           Date:
           <input
             type="date"
@@ -71,13 +72,11 @@ const GolfScoreInput = ({ user }) => {
             required
           />
         </label>
-        <br />
 
-        {[...Array(18)].map((_, i) => (
-          <div key={i}>
-            <h4>Hole {i + 1}</h4>
-            <label>
-              Score:
+        <div className="holes-row">
+          {[...Array(9)].map((_, i) => (
+            <div key={i} className="hole">
+              <label>Hole {i + 1}</label>
               <input
                 type="number"
                 name={`Hole${i + 1}Score`}
@@ -85,11 +84,26 @@ const GolfScoreInput = ({ user }) => {
                 onChange={handleChange}
                 required
               />
-            </label>
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
 
-        <button type="submit">Submit</button>
+        <div className="holes-row">
+          {[...Array(9)].map((_, i) => (
+            <div key={i + 9} className="hole">
+              <label>Hole {i + 10}</label>
+              <input
+                type="number"
+                name={`Hole${i + 10}Score`}
+                value={formData[`Hole${i + 10}Score`]}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          ))}
+        </div>
+
+        <button type="submit" className="submit-button">Submit</button>
       </form>
     </div>
   );

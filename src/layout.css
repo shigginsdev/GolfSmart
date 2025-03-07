@@ -1,78 +1,119 @@
 /* General reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  .layout {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  .header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #003366;
-    color: white;
-  }
-  
-  .logo {
-    width: 120px;
-    text-align: center;
-    font-weight: bold;
-  }
-  
-  .banner {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 20px;
-  }
-  
-  .header-buttons button {
-    margin-left: 10px;
-    padding: 5px 12px;
-    border: none;
-    background-color: #007acc;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .main {
-    display: flex;
-    flex: 1;
-  }
-  
-  .sidebar {
-    width: 200px;
-    background-color: #4a148c;
-    color: white;
-    padding: 20px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-  }
-  
-  .sidebar li {
-    margin-bottom: 15px;
-    cursor: pointer;
-  }
-  
-  .content {
-    flex: 1;
-    padding: 40px;
-    background-color: #388e3c;
-    color: white;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  background-color: #dfe9f5;
+  color: #55595e;
+}
+
+a {
+  color: #2b2c2f;
+  text-decoration: none;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #003366;
+  color: white;
+  letter-spacing: -.025em;
+  line-height: 1;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.h2 {
+  letter-spacing: -.025em;
+  line-height: 1;
+  font-weight: 600;
+  font-size: 1.5rem;
+
+}
+
+.logo {
+  width: 120px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.banner {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.header-buttons button {
+  margin-left: 10px;
+  padding: 5px 12px;
+  border: none;
+  background-color: #007acc;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.breadcrumb {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+}
+
+.breadcrumb a {
+  margin-right: 5px;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #ffffff;
+  color: #55595e;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sidebar img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+  background-color: #dfe9f5;
+  color: #55595e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
