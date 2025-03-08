@@ -1,0 +1,76 @@
+/* General container */
+.settings-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form grid */
+  .settings-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  /* Form labels and inputs */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Full-width field for odd-numbered items */
+  .full-width {
+    grid-column: span 2;
+  }
+  
+  /* Labels */
+  .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #55595e;
+  }
+  
+  /* Inputs and dropdowns */
+  .form-group input,
+  .form-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Submit button */
+  .form-actions {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .form-actions button {
+    padding: 10px 20px;
+    border: none;
+    background: #2b2c2f;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .form-actions button:hover {
+    background: #55595e;
+  }
+  
+    /* Responsive */
+    @media (max-width: 768px) {
+        .holes-row {
+          flex-wrap: wrap;
+        }
+      
+        .hole {
+          min-width: 80px;
+        }
+      }

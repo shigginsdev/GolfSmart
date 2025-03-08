@@ -3,13 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import "./GolfScoreInput.css";
 
 const GolfScoreInput = ({ user }) => {
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     scoreId: uuidv4(),
     Date: "2/25/2025",
     ...Object.fromEntries(
       Array.from({ length: 18 }, (_, i) => [`Hole${i + 1}Score`, ""])
     ),
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
 
   const apiEndpoint =
     "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
@@ -55,6 +57,11 @@ const GolfScoreInput = ({ user }) => {
       console.error("❌ Error submitting data:", error);
       alert("Failed to submit data.");
     }
+  };
+
+  // ✅ New function to clear the form
+  const handleClearForm = () => {
+    setFormData(initialFormState);
   };
 
   return (
@@ -103,7 +110,12 @@ const GolfScoreInput = ({ user }) => {
           ))}
         </div>
 
-        <button type="submit" className="submit-button">Submit</button>
+        <div className="button-group">
+          <button type="submit" className="submit-button">Submit</button>
+          <button type="button" className="clear-button" onClick={handleClearForm}>
+            Clear Form
+          </button>
+        </div>
       </form>
     </div>
   );

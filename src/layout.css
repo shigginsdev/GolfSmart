@@ -12,7 +12,7 @@ body {
 }
 
 a {
-  color: #2b2c2f;
+  color: #2e2c2f;
   text-decoration: none;
 }
 
@@ -26,7 +26,7 @@ a {
   display: flex;
   align-items: center;
   padding: 10px;
-  background-color: #003366;
+  background-color: #3c3a3b;
   color: white;
   letter-spacing: -.025em;
   line-height: 1;
@@ -39,11 +39,11 @@ a {
   line-height: 1;
   font-weight: 600;
   font-size: 1.5rem;
+  color: #3c3a3b;
 
 }
 
 .logo {
-  width: 120px;
   text-align: center;
   font-weight: bold;
 }
@@ -60,10 +60,11 @@ a {
   margin-left: 10px;
   padding: 5px 12px;
   border: none;
-  background-color: #007acc;
-  color: white;
+  background-color: #ffffff;
+  color: #55595e;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .breadcrumb {
@@ -111,9 +112,14 @@ a {
   flex: 1;
   padding: 40px;
   background-color: #dfe9f5;
-  color: #55595e;
+  color: #2e2c2f;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 12px;
+}
+
+.logo-img {
+  width: 100px;
+  height: auto;
 }
