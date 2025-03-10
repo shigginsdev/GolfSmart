@@ -16,62 +16,6 @@ ALLOWED_ORIGINS = [
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
 
-# Helper function to convert Decimal to float
-def convert_decimal(obj):
-    """Recursively convert decimal.Decimal to float in a dictionary or list."""
-    if isinstance(obj, Decimal):
-        return float(obj)
-    elif isinstance(obj, dict):
-        return {k: convert_decimal(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [convert_decimal(i) for i in obj]
-    else:
-        return obj
-
-
-def add_score(event):
-    """Handles POST request to add a golf score"""
-    try:
-        score_table = dynamodb.Table('sg_user_scores')
-        score_table.scan(Limit=1)  # Test the connection
-        logger.info("Connected to sg_user_scores table")
-
-        user_score = json.loads(event.get('body', '{}'))
-        logger.debug(f"Processed input: {user_score}")
-
-        score_table.put_item(Item={
-            'userID': str(user_score['userId']),
-            'scoreID': str(user_score['scoreId']),
-            'Date': str(user_score['Date']),
-            **{f'Hole{i+1}Score': int(user_score[f'Hole{i+1}Score']) for i in range(18)}
-        })
-
-        return {
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Methods": "OPTIONS,POST",
-            },
-            "body": json.dumps({"status": "success"})
-        }
-
-    except ClientError as e:
-        logger.error(f"DynamoDB error: {str(e)}")
-        return {
-            "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            "body": json.dumps({"status": "error", "message": "Database error occurred"})
-        }
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        return {
-            "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})
-        }
-
-
 def save_user_profile(event):
     """Handles POST request to save user profile settings"""
     try:
@@ -148,10 +92,7 @@ def lambda_handler(event, context):
             'body': json.dumps('Smart Golf GET method')
         }
     elif http_method == 'POST':
-        if path.endswith("/saveUser"):
-            return save_user_profile(event)
-        else:
-            return add_score(event)
+        return save_user_profile(event)        
     else:
         return {
             "statusCode": 405,

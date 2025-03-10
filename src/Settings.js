@@ -1,27 +1,54 @@
-import React, { useState } from 'react';
-import './Settings.css'; // Import the CSS file for styling
+import React, { useState, useEffect } from 'react';
+import './Settings.css';
 
-const Settings = () => {
+const Settings = ({ user }) => {
+  const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/"; // Update with your actual API
+
+  // Initialize form with user's email pre-filled
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    email: '',
+    email: user?.attributes?.email || '',
     homeCourse: '',
     scoringType: 'Normal Scoring',
     teeBox: 'Championship Back',
     leaguePreference: '',
   });
 
+  useEffect(() => {
+    // Ensure email field is set after user authentication
+    setFormData((prev) => ({ ...prev, email: user?.attributes?.email || '' }));
+  }, [user]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Updated profile:', formData);
-    alert('Profile updated successfully!');
-    // Future: Send this data to your backend to update the sg_users DynamoDB table
+
+    const payload = {
+      userId: user?.attributes?.sub, // Use Cognito user ID as primary key
+      ...formData,
+    };
+
+    try {
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+      console.log("✅ Profile Update Response:", result);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("❌ Error updating profile:", error);
+      alert("Failed to update profile.");
+    }
   };
 
   return (
@@ -40,7 +67,7 @@ const Settings = () => {
 
         <div className="form-group">
           <label>Email Address:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} disabled />
         </div>
 
         <div className="form-group">

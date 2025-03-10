@@ -16,19 +16,6 @@ ALLOWED_ORIGINS = [
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
 
-# Helper function to convert Decimal to float
-def convert_decimal(obj):
-    """Recursively convert decimal.Decimal to float in a dictionary or list."""
-    if isinstance(obj, Decimal):
-        return float(obj)
-    elif isinstance(obj, dict):
-        return {k: convert_decimal(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [convert_decimal(i) for i in obj]
-    else:
-        return obj
-
-
 def add_score(event):
     """Handles POST request to add a golf score"""
     try:
@@ -72,51 +59,6 @@ def add_score(event):
         }
 
 
-def save_user_profile(event):
-    """Handles POST request to save user profile settings"""
-    try:
-        users_table = dynamodb.Table('sg_users')
-        users_table.scan(Limit=1)  # Test the connection
-        logger.info("Connected to sg_users table")
-
-        user_profile = json.loads(event.get('body', '{}'))
-        logger.debug(f"Processed user profile: {user_profile}")
-
-        users_table.put_item(Item={
-            'userID': str(user_profile['userID']),  # Primary Key
-            'firstName': str(user_profile['firstName']),
-            'lastName': str(user_profile['lastName']),
-            'email': str(user_profile['email']),
-            'homeCourse': str(user_profile.get('homeCourse', '')),
-            'scoringType': str(user_profile.get('scoringType', 'Normal Scoring')),
-            'teeBox': str(user_profile.get('teeBox', 'Championship Back'))            
-        })
-
-        return {
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Methods": "OPTIONS,POST",
-            },
-            "body": json.dumps({"status": "success"})
-        }
-
-    except ClientError as e:
-        logger.error(f"DynamoDB error: {str(e)}")
-        return {
-            "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            "body": json.dumps({"status": "error", "message": "Database error occurred"})
-        }
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        return {
-            "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})
-        }
-
 
 def lambda_handler(event, context):
     """Main AWS Lambda handler"""
@@ -148,10 +90,7 @@ def lambda_handler(event, context):
             'body': json.dumps('Smart Golf GET method')
         }
     elif http_method == 'POST':
-        if path.endswith("/saveUser"):
-            return save_user_profile(event)
-        else:
-            return add_score(event)
+        return add_score(event)
     else:
         return {
             "statusCode": 405,

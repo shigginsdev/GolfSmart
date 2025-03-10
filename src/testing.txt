@@ -1,7 +1,19 @@
 For mobile, remove the text from the left-hand nav. Leave only the icons
-Login screen colors don't match
+Login screen colors don"t match
 Need a logo
 Need a banner image
 button colors are wrong
 pricing login button fonts are wrong
 No breadcrumb on scores page
+
+
+
+{
+  "userID": "12345",
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "johndoe@example.com",
+  "homeCourse": "Augusta National",
+  "scoringType": "Normal Scoring",
+  "teeBox": "Amateur Back"
+}
