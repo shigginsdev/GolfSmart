@@ -29,9 +29,14 @@ const Settings = ({ user }) => {
     e.preventDefault();
 
     const payload = {
-      userID: user?.attributes?.sub, // Use Cognito user ID as primary key
-      ...formData,
-    };
+      userID: user?.userId,  // Make sure this exists
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      homeCourse: formData.homeCourse,
+      scoringType: formData.scoringType,
+      teeBox: formData.teeBox,
+  };
 
     try {
       const response = await fetch(apiEndpoint, {
