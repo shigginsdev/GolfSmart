@@ -29,7 +29,7 @@ const Settings = ({ user }) => {
     e.preventDefault();
 
     const payload = {
-      userId: user?.attributes?.sub, // Use Cognito user ID as primary key
+      userID: user?.attributes?.sub, // Use Cognito user ID as primary key
       ...formData,
     };
 
