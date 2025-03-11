@@ -47,13 +47,14 @@ const Settings = ({ user }) => {
           setFormData({
             firstName: userData.data.firstName || '',
             lastName: userData.data.lastName || '',
-            //email: userData.data.email || user?.attributes?.email || '',
-            email: userData.data.username || user?.attributes?.username || '',
+            email: userData.data.email || user?.attributes?.email || '',            
             homeCourse: userData.data.homeCourse || '',
             scoringType: userData.data.scoringType || 'Normal Scoring',
             teeBox: userData.data.teeBox || 'Championship Back',
           });
         }
+        console.log("users email", userData.data.email);
+        console.log("cognito email", user?.attributes?.email);
 
       } catch (error) {
         console.error("❌ Error fetching profile:", error);
