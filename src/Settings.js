@@ -1,54 +1,68 @@
-import React, { useState, useEffect } from "react";
-import "./Settings.css";
+import React, { useState, useEffect } from 'react';
+import { fetchAuthSession } from '@aws-amplify/auth';
+import './Settings.css';
 
 const Settings = ({ user }) => {
   const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
 
   // Initialize form with user's email pre-filled
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: user?.attributes?.email || "",
-    homeCourse: "",
-    scoringType: "Normal Scoring",
-    teeBox: "Championship Back",
-    leaguePreference: "",
+    firstName: '',
+    lastName: '',
+    email: user?.attributes?.email || '',
+    homeCourse: '',
+    scoringType: 'Normal Scoring',
+    teeBox: 'Championship Back',
+    leaguePreference: '',
   });
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    if (!user?.userId) return;
-
-    // Fetch user profile from API
     const fetchUserProfile = async () => {
       try {
+        // 🔹 Ensure Cognito session is available
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString(); // Ensure token is a string
+
+        if (!token) {
+          console.error("No valid token found.");
+          return;
+        }
+
+        console.log("🔍 Bearer Token:", token);
+
         const response = await fetch(apiEndpoint, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${user.signInUserSession.idToken.jwtToken}`,
+            Authorization: `Bearer ${token}`, // Attach ID token
           },
         });
 
-        const result = await response.json();
-        console.log("📥 Fetched User Profile:", result);
-
-        if (result.status === "success" && result.data) {
-          setFormData((prev) => ({
-            ...prev,
-            ...result.data, // Merge API data into form state
-          }));
+        if (!response.ok) {
+          throw new Error("Failed to fetch user profile");
         }
+
+        const userData = await response.json();
+        console.log("✅ User Profile Data:", userData);
+
+        // Set the form data with user's saved profile
+        setFormData({
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || '',
+          email: userData.email || user?.attributes?.email || '',
+          homeCourse: userData.homeCourse || '',
+          scoringType: userData.scoringType || 'Normal Scoring',
+          teeBox: userData.teeBox || 'Championship Back',
+          leaguePreference: userData.leaguePreference || '',
+        });
+
       } catch (error) {
         console.error("❌ Error fetching profile:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchUserProfile();
-  }, [user]);
+  }, [user]); // Dependency ensures it runs when `user` is available
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,10 +100,6 @@ const Settings = ({ user }) => {
     }
   };
 
-  if (loading) {
-    return <p>Loading profile...</p>;
-  }
-
   return (
     <div className="settings-container">
       <h2>Profile Settings</h2>
@@ -106,7 +116,7 @@ const Settings = ({ user }) => {
 
         <div className="form-group">
           <label>Email Address:</label>
-          <input type="email" name="email" value={formData.email} disabled />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} disabled />
         </div>
 
         <div className="form-group">
