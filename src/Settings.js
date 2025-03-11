@@ -40,11 +40,7 @@ const Settings = ({ user }) => {
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
         }  
-
-        if (jsonResponse.status !== "success" || !jsonResponse.data) {
-          throw new Error("❌ Invalid API response structure");
-        }
-
+        
         const userData = await response.json();
         console.log("✅ User Profile Data:", userData);
 
