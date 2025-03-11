@@ -16,6 +16,39 @@ ALLOWED_ORIGINS = [
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
 
+def get_user_profile(event):
+    """Handles GET request to fetch user profile"""
+    try:
+        # Extract userID from the authenticated user context
+        user_id = event.get("requestContext", {}).get("authorizer", {}).get("claims", {}).get("sub")
+
+        if not user_id:
+            return {"statusCode": 400, "body": json.dumps({"status": "error", "message": "User not authenticated"})}
+
+        response = users_table.get_item(Key={'userID': user_id})
+        user_data = response.get('Item')
+
+        if not user_data:
+            return {"statusCode": 404, "body": json.dumps({"status": "error", "message": "User not found"})}
+
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "OPTIONS,GET,POST",
+            },
+            "body": json.dumps({"status": "success", "data": user_data})
+        }
+
+    except ClientError as e:
+        logger.error(f"DynamoDB error: {str(e)}")
+        return {"statusCode": 500, "body": json.dumps({"status": "error", "message": "Database error"})}
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        return {"statusCode": 500, "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})}
+
+
 def save_user_profile(event):
     """Handles POST request to save user profile settings"""
     try:
@@ -86,11 +119,7 @@ def lambda_handler(event, context):
     path = event.get('path', '')
 
     if http_method == 'GET':
-        return {
-            'statusCode': 200,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            'body': json.dumps('Smart Golf GET method')
-        }
+        return get_user_profile(event)
     elif http_method == 'POST':
         return save_user_profile(event)        
     else:

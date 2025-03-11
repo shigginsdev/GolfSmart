@@ -1,23 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import './Settings.css';
+import React, { useState, useEffect } from "react";
+import "./Settings.css";
 
 const Settings = ({ user }) => {
-  const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/"; // Update with your actual API
+  const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
 
   // Initialize form with user's email pre-filled
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: user?.attributes?.email || '',
-    homeCourse: '',
-    scoringType: 'Normal Scoring',
-    teeBox: 'Championship Back',
-    leaguePreference: '',
+    firstName: "",
+    lastName: "",
+    email: user?.attributes?.email || "",
+    homeCourse: "",
+    scoringType: "Normal Scoring",
+    teeBox: "Championship Back",
+    leaguePreference: "",
   });
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    // Ensure email field is set after user authentication
-    setFormData((prev) => ({ ...prev, email: user?.attributes?.email || '' }));
+    if (!user?.userId) return;
+
+    // Fetch user profile from API
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch(apiEndpoint, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.signInUserSession.idToken.jwtToken}`,
+          },
+        });
+
+        const result = await response.json();
+        console.log("📥 Fetched User Profile:", result);
+
+        if (result.status === "success" && result.data) {
+          setFormData((prev) => ({
+            ...prev,
+            ...result.data, // Merge API data into form state
+          }));
+        }
+      } catch (error) {
+        console.error("❌ Error fetching profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
   }, [user]);
 
   const handleChange = (e) => {
@@ -29,14 +59,14 @@ const Settings = ({ user }) => {
     e.preventDefault();
 
     const payload = {
-      userID: user?.userId,  // Make sure this exists
+      userID: user?.userId,
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
       homeCourse: formData.homeCourse,
       scoringType: formData.scoringType,
       teeBox: formData.teeBox,
-  };
+    };
 
     try {
       const response = await fetch(apiEndpoint, {
@@ -56,6 +86,10 @@ const Settings = ({ user }) => {
     }
   };
 
+  if (loading) {
+    return <p>Loading profile...</p>;
+  }
+
   return (
     <div className="settings-container">
       <h2>Profile Settings</h2>
@@ -72,7 +106,7 @@ const Settings = ({ user }) => {
 
         <div className="form-group">
           <label>Email Address:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} disabled />
+          <input type="email" name="email" value={formData.email} disabled />
         </div>
 
         <div className="form-group">
