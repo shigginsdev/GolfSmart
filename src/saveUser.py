@@ -9,6 +9,7 @@ logger.setLevel(logging.DEBUG)
 
 # CORS Allowed Origins
 ALLOWED_ORIGINS = [
+    "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com",
     "https://master.d2dnzia3915c3v.amplifyapp.com",
     "http://localhost:3000"
 ]
@@ -17,28 +18,37 @@ ALLOWED_ORIGINS = [
 dynamodb = boto3.resource('dynamodb')
 
 def get_user_profile(event):
-    """Handles GET request to fetch user profile"""
+    """Fetches the user profile securely using Cognito authentication."""
     try:
-        # Extract userID from the authenticated user context
+        # 🔹 Extract user ID from Cognito claims
         user_id = event.get("requestContext", {}).get("authorizer", {}).get("claims", {}).get("sub")
 
         if not user_id:
-            return {"statusCode": 400, "body": json.dumps({"status": "error", "message": "User not authenticated"})}
+            return {
+                "statusCode": 401,
+                "body": json.dumps({"status": "error", "message": "User not authenticated"})
+            }
 
-        response = users_table.get_item(Key={'userID': user_id})
-        user_data = response.get('Item')
+        logger.info(f"Fetching user profile for userID: {user_id}")
+
+        # 🔹 Fetch user profile from DynamoDB
+        response = users_table.get_item(Key={"userID": user_id})
+        user_data = response.get("Item")
 
         if not user_data:
-            return {"statusCode": 404, "body": json.dumps({"status": "error", "message": "User not found"})}
+            return {
+                "statusCode": 404,
+                "body": json.dumps({"status": "error", "message": "User not found"})
+            }
 
         return {
             "statusCode": 200,
             "headers": {
                 "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Methods": "OPTIONS,GET,POST",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
             },
-            "body": json.dumps({"status": "success", "data": user_data})
+            "body": json.dumps({"status": "success", "data": user_data}),
         }
 
     except ClientError as e:

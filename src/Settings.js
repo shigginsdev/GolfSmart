@@ -5,7 +5,6 @@ import './Settings.css';
 const Settings = ({ user }) => {
   const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
 
-  // Initialize form with user's email pre-filled
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -30,6 +29,7 @@ const Settings = ({ user }) => {
 
         console.log("🔍 Bearer Token:", token);
 
+        // Fetch user profile from the backend
         const response = await fetch(apiEndpoint, {
           method: "GET",
           headers: {
@@ -45,16 +45,17 @@ const Settings = ({ user }) => {
         const userData = await response.json();
         console.log("✅ User Profile Data:", userData);
 
-        // Set the form data with user's saved profile
-        setFormData({
-          firstName: userData.firstName || '',
-          lastName: userData.lastName || '',
-          email: userData.email || user?.attributes?.email || '',
-          homeCourse: userData.homeCourse || '',
-          scoringType: userData.scoringType || 'Normal Scoring',
-          teeBox: userData.teeBox || 'Championship Back',
-          leaguePreference: userData.leaguePreference || '',
-        });
+        if (userData.status === "success") {
+          setFormData({
+            firstName: userData.data.firstName || '',
+            lastName: userData.data.lastName || '',
+            email: userData.data.email || user?.attributes?.email || '',
+            homeCourse: userData.data.homeCourse || '',
+            scoringType: userData.data.scoringType || 'Normal Scoring',
+            teeBox: userData.data.teeBox || 'Championship Back',
+            leaguePreference: userData.data.leaguePreference || '',
+          });
+        }
 
       } catch (error) {
         console.error("❌ Error fetching profile:", error);
@@ -62,7 +63,7 @@ const Settings = ({ user }) => {
     };
 
     fetchUserProfile();
-  }, [user]); // Dependency ensures it runs when `user` is available
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,21 +73,32 @@ const Settings = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      userID: user?.userId,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      homeCourse: formData.homeCourse,
-      scoringType: formData.scoringType,
-      teeBox: formData.teeBox,
-    };
-
     try {
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+
+      if (!token) {
+        console.error("❌ No valid token found. Cannot save profile.");
+        alert("User not authenticated.");
+        return;
+      }
+
+      const payload = {
+        userID: user?.userId,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        homeCourse: formData.homeCourse,
+        scoringType: formData.scoringType,
+        teeBox: formData.teeBox,
+        leaguePreference: formData.leaguePreference,
+      };
+
       const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Attach authentication token
         },
         body: JSON.stringify(payload),
       });
@@ -94,6 +106,7 @@ const Settings = ({ user }) => {
       const result = await response.json();
       console.log("✅ Profile Update Response:", result);
       alert("Profile updated successfully!");
+
     } catch (error) {
       console.error("❌ Error updating profile:", error);
       alert("Failed to update profile.");
