@@ -12,7 +12,6 @@ const Settings = ({ user }) => {
     homeCourse: '',
     scoringType: 'Normal Scoring',
     teeBox: 'Championship Back',
-    leaguePreference: '',
   });
 
   useEffect(() => {
@@ -52,7 +51,6 @@ const Settings = ({ user }) => {
             homeCourse: userData.data.homeCourse || '',
             scoringType: userData.data.scoringType || 'Normal Scoring',
             teeBox: userData.data.teeBox || 'Championship Back',
-            leaguePreference: userData.data.leaguePreference || '',
           });
         }
 
@@ -90,7 +88,6 @@ const Settings = ({ user }) => {
         homeCourse: formData.homeCourse,
         scoringType: formData.scoringType,
         teeBox: formData.teeBox,
-        leaguePreference: formData.leaguePreference,
       };
 
       const response = await fetch(apiEndpoint, {
@@ -154,12 +151,6 @@ const Settings = ({ user }) => {
             <option value="Junior">Junior</option>
           </select>
         </div>
-
-        <div className="form-group full-width">
-          <label>League Preference:</label>
-          <input type="text" name="leaguePreference" value={formData.leaguePreference} onChange={handleChange} />
-        </div>
-
         <div className="form-actions">
           <button type="submit">Save Profile</button>
         </div>
