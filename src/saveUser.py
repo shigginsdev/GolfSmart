@@ -16,6 +16,9 @@ ALLOWED_ORIGINS = [
 
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
+users_table = dynamodb.Table('sg_users')
+users_table.scan(Limit=1)  # Test the connection
+logger.info("Connected to sg_users table")
 
 def get_user_profile(event):
     """Fetches the user profile securely using Cognito authentication."""
@@ -62,10 +65,7 @@ def get_user_profile(event):
 def save_user_profile(event):
     """Handles POST request to save user profile settings"""
     try:
-        users_table = dynamodb.Table('sg_users')
-        users_table.scan(Limit=1)  # Test the connection
-        logger.info("Connected to sg_users table")
-
+        
         user_profile = json.loads(event.get('body', '{}'))
         logger.debug(f"Processed user profile: {user_profile}")
 

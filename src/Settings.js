@@ -29,6 +29,8 @@ const Settings = ({ user }) => {
 
         console.log("🔍 Bearer Token:", token);
 
+        console.log("📡 Fetching user profile from:", apiEndpoint);
+
         // Fetch user profile from the backend
         const response = await fetch(apiEndpoint, {
           method: "GET",
@@ -38,10 +40,20 @@ const Settings = ({ user }) => {
           },
         });
 
+        console.log("🟢 Fetch response received:", response);
+
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
         }
 
+        const jsonResponse = await response.json();
+
+        console.log("✅ User Profile Data:", jsonResponse);
+
+        if (jsonResponse.status !== "success" || !jsonResponse.data) {
+          throw new Error("❌ Invalid API response structure");
+        }
+        
         const userData = await response.json();
         console.log("✅ User Profile Data:", userData);
 
