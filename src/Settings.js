@@ -47,7 +47,8 @@ const Settings = ({ user }) => {
           setFormData({
             firstName: userData.data.firstName || '',
             lastName: userData.data.lastName || '',
-            email: userData.data.email || user?.attributes?.email || '',            
+            //email: userData.data.email || user?.attributes?.email || '',            
+            email: userData.data?.email || user?.attributes?.email || '',
             homeCourse: userData.data.homeCourse || '',
             scoringType: userData.data.scoringType || 'Normal Scoring',
             teeBox: userData.data.teeBox || 'Championship Back',
