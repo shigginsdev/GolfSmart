@@ -15,7 +15,7 @@ ALLOWED_ORIGINS = [
 
 def get_secret():
 
-    secret_name = "openAI_API"
+    secret_name = "openAI_API2"
     region_name = "us-east-2"
 
     # Create a Secrets Manager client
