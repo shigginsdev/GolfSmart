@@ -20,7 +20,11 @@ const GolfScoreInput = ({ user }) => {
   const scanScorecardApiEndpoint =
     "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV"; // ✅ New API
 
-  const userId = user?.userId;
+  const userId = user?.userId;  
+  const firstName = user?.attributes?.given_name || "";
+
+  console.log("👤 User ID:", userId);
+  console.log("👤 First Name:", firstName);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -166,15 +170,7 @@ const GolfScoreInput = ({ user }) => {
         >
           {loading ? "Scanning..." : "Scan in my scorecard"}
         </button>
-      </div>
-
-      {/* ✅ Display Scan Result */}
-      {/* {scanResult && (
-        <div className="scan-result">
-          <h3>Scan Result:</h3>
-          <pre>{JSON.stringify(scanResult, null, 2)}</pre>
-        </div>
-      )} */}
+      </div>  
 
       <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
