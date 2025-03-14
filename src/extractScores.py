@@ -1,8 +1,11 @@
 import logging
 import json
+import openai
+import sys
 import boto3
 from botocore.exceptions import ClientError
-from openai import OpenAI
+
+sys.path.append('/opt/python/lib/python3.13/site-packages')  
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -13,7 +16,7 @@ ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
 
-def get_secret():
+def get_secret(event):
 
     secret_name = "openAI_API2"
     region_name = "us-east-2"
@@ -37,12 +40,26 @@ def get_secret():
             "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
             "body": json.dumps({"message": "Error returning secrets"})
         }
+    
+    secret_dict = json.loads(get_secret_value_response['SecretString'])
+    api_key = secret_dict.get("openAI_API2")  # Make sure this key matches what’s stored in AWS Secrets Manager
 
-    secret = get_secret_value_response['SecretString']
+    if api_key == "":
+        logger.error("No API key found in Secrets Manager")
+        return {
+            "statusCode": 500,
+            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "body": json.dumps({"message": "Invalid API key retrieved"})
+        }
+
+    logger.info(f"Using OpenAI API Key: {api_key[:5]}********")  # ✅ Logs only part of the key for security
+    
 
     try:
-        oai_client = OpenAI(secret)
-        response = oai_client.chat.completions.create(
+        openai.api_key = api_key
+
+        #oai_client = OpenAI(api_key)
+        response = openai.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{
                 "role": "user",
@@ -71,7 +88,7 @@ def get_secret():
         }   
     
 def lambda_handler(event, context):    
-
+   
     # Ensure 'headers' exists in the event before accessing it
     headers = event.get('headers') or {}  # Ensure it's always a dictionary
 

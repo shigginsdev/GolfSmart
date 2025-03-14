@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./GolfScoreInput.css";
-import OpenAI from "openai";
 
-const openai = new OpenAI();
 
 const GolfScoreInput = ({ user }) => {
   const initialFormState = {
