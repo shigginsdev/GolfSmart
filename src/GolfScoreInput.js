@@ -72,14 +72,14 @@ const GolfScoreInput = ({ user }) => {
   // ✅ New function to handle the top submit button
   const handleTopSubmit = async () => {
     console.log("🔼 Scan in my scorecard clicked!");
-
+  
     if (!userId) {
       alert("User not authenticated.");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
@@ -88,23 +88,47 @@ const GolfScoreInput = ({ user }) => {
         },
         body: JSON.stringify({ userId }), // ✅ Sending only userId for now
       });
-
+  
       const result = await response.json();
-      console.log("✅ Scan API Response:", result);
-
-      // ✅ Store result in state to display on the page
+      console.log("✅ Scan API Raw Response:", result);
+  
+      // ✅ Store full result in state for debugging
       setScanResult(result.message || "No scores detected.");
-
-      // ✅ If JSON contains scores, prepopulate form fields
-      if (result.scores) {
+  
+      // ✅ Extract JSON from response if it contains extra text
+      const jsonMatch = result.message.match(/```json\n([\s\S]+?)\n```/);
+      const jsonString = jsonMatch ? jsonMatch[1] : result.message;
+  
+      console.log("📜 Extracted JSON String:", jsonString);
+  
+      // ✅ Convert string to JSON
+      let parsedScores;
+      try {
+        parsedScores = JSON.parse(jsonString);
+        console.log("✅ Parsed Scores:", parsedScores);
+      } catch (error) {
+        console.error("❌ Error parsing JSON:", error);
+        setScanResult("❌ Failed to extract scores from API response.");
+        return;
+      }
+  
+      // ✅ Ensure we got a valid object
+      if (parsedScores && typeof parsedScores === "object") {
         const updatedScores = { ...formData };
-
-        for (let i = 1; i <= 18; i++) {
-          const holeKey = `Hole${i}Score`;
-          updatedScores[holeKey] = result.scores[holeKey] || ""; // Use detected score or leave empty
-        }
-
+  
+        Object.entries(parsedScores).forEach(([key, value]) => {
+          const holeKey = `Hole${key.replace("hole_", "")}Score`;
+          if (updatedScores.hasOwnProperty(holeKey)) {
+            updatedScores[holeKey] = value.toString(); // Convert to string for input fields
+          }
+        });
+  
+        console.log("📋 Updated Form Data:", updatedScores);
+  
         setFormData(updatedScores);
+      } else {
+        console.error("❌ Unexpected API response format");
+        setScanResult("❌ Invalid API response format.");
       }
     } catch (error) {
       console.error("❌ Error scanning scorecard:", error);
@@ -113,6 +137,7 @@ const GolfScoreInput = ({ user }) => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="score-input-container">
