@@ -169,12 +169,12 @@ const GolfScoreInput = ({ user }) => {
       </div>
 
       {/* ✅ Display Scan Result */}
-      {scanResult && (
+      {/* {scanResult && (
         <div className="scan-result">
           <h3>Scan Result:</h3>
           <pre>{JSON.stringify(scanResult, null, 2)}</pre>
         </div>
-      )}
+      )} */}
 
       <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
