@@ -86,7 +86,7 @@ const GolfScoreInput = ({ user }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId }), // ✅ Sending only userId for now
+        body: JSON.stringify({ userId }),
       });
   
       const result = await response.json();
@@ -95,29 +95,37 @@ const GolfScoreInput = ({ user }) => {
       // ✅ Store full result in state for debugging
       setScanResult(result.message || "No scores detected.");
   
-      // ✅ Extract JSON from response if it contains extra text
+      // ✅ Extract JSON from response (remove extra text)
+      let jsonString;
       const jsonMatch = result.message.match(/```json\n([\s\S]+?)\n```/);
-      const jsonString = jsonMatch ? jsonMatch[1] : result.message;
+      
+      if (jsonMatch) {
+        jsonString = jsonMatch[1]; // Extract JSON part
+      } else {
+        console.error("❌ JSON not found in API response.");
+        setScanResult("❌ Failed to extract JSON.");
+        return;
+      }
   
       console.log("📜 Extracted JSON String:", jsonString);
   
-      // ✅ Convert string to JSON
+      // ✅ Convert extracted string to JSON
       let parsedScores;
       try {
         parsedScores = JSON.parse(jsonString);
         console.log("✅ Parsed Scores:", parsedScores);
       } catch (error) {
         console.error("❌ Error parsing JSON:", error);
-        setScanResult("❌ Failed to extract scores from API response.");
+        setScanResult("❌ Failed to parse JSON.");
         return;
       }
   
-      // ✅ Ensure we got a valid object
+      // ✅ Ensure extracted data is in correct format
       if (parsedScores && typeof parsedScores === "object") {
         const updatedScores = { ...formData };
   
         Object.entries(parsedScores).forEach(([key, value]) => {
-          const holeKey = `Hole${key.replace("hole_", "")}Score`;
+          const holeKey = `Hole${key}Score`;
           if (updatedScores.hasOwnProperty(holeKey)) {
             updatedScores[holeKey] = value.toString(); // Convert to string for input fields
           }
@@ -125,9 +133,10 @@ const GolfScoreInput = ({ user }) => {
   
         console.log("📋 Updated Form Data:", updatedScores);
   
+        // ✅ Update form with extracted scores
         setFormData(updatedScores);
       } else {
-        console.error("❌ Unexpected API response format");
+        console.error("❌ Invalid API response format");
         setScanResult("❌ Invalid API response format.");
       }
     } catch (error) {
@@ -137,6 +146,8 @@ const GolfScoreInput = ({ user }) => {
       setLoading(false);
     }
   };
+  
+
   
 
   return (
