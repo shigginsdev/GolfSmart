@@ -90,7 +90,7 @@ const GolfScoreInput = ({ user }) => {
       });
   
       const result = await response.json();
-      console.log("✅ Scan API Raw Response:", result);
+      console.log("Returned scanned response:", result);
   
       // ✅ Store full result in state for debugging
       setScanResult(result.message || "No scores detected.");
