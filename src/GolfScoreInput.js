@@ -97,10 +97,14 @@ const GolfScoreInput = ({ user }) => {
 
       // ✅ If JSON contains scores, prepopulate form fields
       if (result.scores) {
-        setFormData((prevData) => ({
-          ...prevData,
-          ...result.scores,
-        }));
+        const updatedScores = { ...formData };
+
+        for (let i = 1; i <= 18; i++) {
+          const holeKey = `Hole${i}Score`;
+          updatedScores[holeKey] = result.scores[holeKey] || ""; // Use detected score or leave empty
+        }
+
+        setFormData(updatedScores);
       }
     } catch (error) {
       console.error("❌ Error scanning scorecard:", error);
