@@ -98,6 +98,8 @@ const GolfScoreInput = ({ user }) => {
       // ✅ Extract JSON from response (remove extra text)
       let jsonString;
       const jsonMatch = result.message.match(/```json\n([\s\S]+?)\n```/);
+
+      console.log("🔍 JSON Match:", jsonMatch);
       
       if (jsonMatch) {
         jsonString = jsonMatch[1]; // Extract JSON part
