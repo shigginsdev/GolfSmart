@@ -19,6 +19,7 @@
 .env.production.local
 **/[Oo]ld*
 **zip*
+lambda_layer/
 
 npm-debug.log*
 yarn-debug.log*

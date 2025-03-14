@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./GolfScoreInput.css";
 
-
 const GolfScoreInput = ({ user }) => {
   const initialFormState = {
     scoreId: uuidv4(),
@@ -13,9 +12,13 @@ const GolfScoreInput = ({ user }) => {
   };
 
   const [formData, setFormData] = useState(initialFormState);
+  const [scanResult, setScanResult] = useState(null); // ✅ Holds API response for display
+  const [loading, setLoading] = useState(false); // ✅ Tracks API request status
 
-  const apiEndpoint =
+  const saveScoreApiEndpoint =
     "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
+  const scanScorecardApiEndpoint =
+    "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV"; // ✅ New API
 
   const userId = user?.userId;
 
@@ -43,7 +46,7 @@ const GolfScoreInput = ({ user }) => {
     console.log("📤 Submitting payload:", payload);
 
     try {
-      const response = await fetch(apiEndpoint, {
+      const response = await fetch(saveScoreApiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,13 +66,48 @@ const GolfScoreInput = ({ user }) => {
   // ✅ New function to clear the form
   const handleClearForm = () => {
     setFormData(initialFormState);
+    setScanResult(null); // Clear scanned results
   };
 
   // ✅ New function to handle the top submit button
-  const handleTopSubmit = () => {
-    console.log("🔼 Top Submit Button Clicked! Add logic here.");
-    // Add your custom submit logic here
- 
+  const handleTopSubmit = async () => {
+    console.log("🔼 Scan in my scorecard clicked!");
+
+    if (!userId) {
+      alert("User not authenticated.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(scanScorecardApiEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }), // ✅ Sending only userId for now
+      });
+
+      const result = await response.json();
+      console.log("✅ Scan API Response:", result);
+
+      // ✅ Store result in state to display on the page
+      setScanResult(result.message || "No scores detected.");
+
+      // ✅ If JSON contains scores, prepopulate form fields
+      if (result.scores) {
+        setFormData((prevData) => ({
+          ...prevData,
+          ...result.scores,
+        }));
+      }
+    } catch (error) {
+      console.error("❌ Error scanning scorecard:", error);
+      setScanResult("❌ Failed to scan scorecard.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -78,10 +116,23 @@ const GolfScoreInput = ({ user }) => {
 
       {/* ✅ New Submit Button at the Top */}
       <div className="top-button-group">
-        <button type="button" className="submit-button top-submit" onClick={handleTopSubmit}>
-          Submit Scores
+        <button
+          type="button"
+          className="submit-button top-submit"
+          onClick={handleTopSubmit}
+          disabled={loading} // Disable button while loading
+        >
+          {loading ? "Scanning..." : "Scan in my scorecard"}
         </button>
       </div>
+
+      {/* ✅ Display Scan Result */}
+      {scanResult && (
+        <div className="scan-result">
+          <h3>Scan Result:</h3>
+          <pre>{JSON.stringify(scanResult, null, 2)}</pre>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
