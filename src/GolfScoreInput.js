@@ -37,8 +37,7 @@ const GolfScoreInput = ({ user }) => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId }),
+          },          
         });
         const data = await response.json();
         setCredentials(data);
