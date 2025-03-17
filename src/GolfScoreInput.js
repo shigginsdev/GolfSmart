@@ -32,7 +32,14 @@ const GolfScoreInput = ({ user }) => {
   useEffect(() => {
     const fetchCredentials = async () => {
       try {
-        const response = await fetch(fetchS3UploadCredentialsApiEndpoint);
+        //const response = await fetch(fetchS3UploadCredentialsApiEndpoint);
+        const response = await fetch(fetchS3UploadCredentialsApiEndpoint, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId }),
+        });
         const data = await response.json();
         setCredentials(data);
       } catch (error) {
