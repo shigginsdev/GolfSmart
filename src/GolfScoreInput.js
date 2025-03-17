@@ -30,8 +30,8 @@ const GolfScoreInput = ({ user }) => {
   const userId = user?.userId;
 
    // ✅ Function to fetch S3 upload credentials
-   const fetchS3UploadCredentials = async () => {
-    const token = await getCognitoToken(); // ✅ Get Cognito token
+  const fetchS3UploadCredentials = async () => {
+  const token = session.tokens?.idToken?.toString(); // ✅ Get Cognito token
 
     if (!token) {
       console.error("❌ No Cognito token found. User may not be authenticated.");
