@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import React, { useState, useEffect } from 'react';
+import { fetchAuthSession } from '@aws-amplify/auth';
 import "./GolfScoreInput.css";
 
 const GolfScoreInput = ({ user }) => {
@@ -28,24 +30,39 @@ const GolfScoreInput = ({ user }) => {
   const REGION = "us-east-2";
   const userId = user?.userId;
 
-  // ✅ Fetch AWS Credentials on Load
-  useEffect(() => {
-    const fetchCredentials = async () => {
-      try {
-        //const response = await fetch(fetchS3UploadCredentialsApiEndpoint);
-        const response = await fetch(fetchS3UploadCredentialsApiEndpoint, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },          
-        });
-        const data = await response.json();
-        setCredentials(data);
-      } catch (error) {
-        console.error("❌ Error fetching credentials:", error);
+   // ✅ Function to fetch S3 upload credentials
+   const fetchS3UploadCredentials = async () => {
+    const token = await getCognitoToken(); // ✅ Get Cognito token
+
+    if (!token) {
+      console.error("❌ No Cognito token found. User may not be authenticated.");
+      return;
+    }
+
+    try {
+      const response = await fetch(fetchS3UploadCredentialsApiEndpoint, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // ✅ Attach Cognito token
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
-    fetchCredentials();
+
+      const data = await response.json();
+      setCredentials(data); // ✅ Store retrieved credentials
+      console.log("✅ S3 Credentials Fetched:", data);
+    } catch (error) {
+      console.error("❌ Error fetching credentials:", error);
+    }
+  };
+
+  // ✅ Fetch credentials when the component loads
+  useEffect(() => {
+    fetchS3UploadCredentials(); // ✅ Call function here directly
   }, []);
 
   // ✅ Handle Input Changes
