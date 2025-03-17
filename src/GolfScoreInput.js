@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./GolfScoreInput.css";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const GolfScoreInput = ({ user }) => {
   const initialFormState = {
@@ -11,26 +12,34 @@ const GolfScoreInput = ({ user }) => {
     ),
   };
 
+  const UploadToS3 = () => {
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [imageUrl, setImageUrl] = useState("");
+    const [credentials, setCredentials] = useState(null);
+  
+
   const [formData, setFormData] = useState(initialFormState);
   const [scanResult, setScanResult] = useState(null); // ✅ Holds API response for display
   const [loading, setLoading] = useState(false); // ✅ Tracks API request status
 
   const saveScoreApiEndpoint =
-    "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
+    "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/"; //Save the scorecard form to DynamoDB
   const scanScorecardApiEndpoint =
-    "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV"; // ✅ New API
+    "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV"; //If the user uploads a scorecard, send it to OpenAI to pull the scores and prepopulate the form
+  const API_GET_CREDENTIALS = "https://fs1qgmv86f.execute-api.us-east-2.amazonaws.com/DEV"; //Endpoint for the S3 bucket API
+
+  const S3_BUCKET = "golf-scorecards-bucket";
+  const REGION = "us-east-2";
 
   const userId = user?.userId;  
-  const firstName = user?.attributes?.given_name || "";
-
-  console.log("👤 User ID:", userId);
-  console.log("👤 First Name:", firstName);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Submit the scorecard form to DynamoDB
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -73,7 +82,7 @@ const GolfScoreInput = ({ user }) => {
     setScanResult(null); // Clear scanned results
   };
 
-  // ✅ New function to handle the top submit button
+  // Upload the scorecard jpeg and send to openAI to pull the scores and prepopulate the form
   const handleTopSubmit = async () => {
     console.log("🔼 Scan in my scorecard clicked!");
   
@@ -83,7 +92,66 @@ const GolfScoreInput = ({ user }) => {
     }
   
     setLoading(true);
+
+    //Upload the scorecard image to S3
+    useEffect(() => {
+      const fetchCredentials = async () => {
+        try {
+          const response = await fetch(API_GET_CREDENTIALS);
+          const data = await response.json();
+          setCredentials(data);
+        } catch (error) {
+          console.error("❌ Error fetching credentials:", error);
+        }
+      };
+      fetchCredentials();
+    }, []);
   
+    const handleFileChange = (event) => {
+      setSelectedFile(event.target.files[0]);
+    };
+  
+    const handleUpload = async () => {
+      if (!selectedFile || !credentials) {
+        alert("❌ No file selected or credentials missing.");
+        return;
+      }
+  
+      setUploading(true);
+  
+      const fileName = `scorecards/${Date.now()}-${selectedFile.name}`;
+  
+      const s3Client = new S3Client({
+        region: REGION,
+        credentials: {
+          accessKeyId: credentials.ACCESS_KEY,
+          secretAccessKey: credentials.SECRET_KEY,
+        },
+      });
+  
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: fileName,
+        Body: selectedFile,
+        ContentType: selectedFile.type,
+      };
+  
+      try {
+        await s3Client.send(new PutObjectCommand(params));
+        const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
+        setImageUrl(uploadedImageUrl);
+        alert("✅ Upload Successful!");
+      } catch (error) {
+        console.error("❌ Error uploading file:", error);
+        alert("Upload failed!");
+      } finally {
+        setUploading(false);
+      }
+    };
+    
+    //Get the link to the scorecard image in S3
+  
+    //Call the openAI integration to scan the scorecard image
     try {
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
@@ -161,7 +229,21 @@ const GolfScoreInput = ({ user }) => {
       <h2>Enter Golf Scores</h2>
 
       {/* ✅ New Submit Button at the Top */}
-      <div className="top-button-group">
+      <div>
+      <h2>Upload Scorecard</h2>
+      <input type="file" onChange={handleFileChange} accept="image/*" />
+      <button onClick={handleUpload} disabled={uploading || !credentials}>
+        {uploading ? "Uploading..." : "Upload to S3"}
+      </button>
+      {imageUrl && (
+        <div>
+          <h3>Uploaded Image:</h3>
+          <img src={imageUrl} alt="Uploaded Scorecard" style={{ maxWidth: "300px" }} />
+        </div>
+      )}
+    </div>
+
+      {/* <div className="top-button-group">
         <button
           type="button"
           className="submit-button top-submit"
@@ -170,7 +252,7 @@ const GolfScoreInput = ({ user }) => {
         >
           {loading ? "Scanning..." : "Scan in my scorecard"}
         </button>
-      </div>  
+      </div>*/}  
 
       <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">

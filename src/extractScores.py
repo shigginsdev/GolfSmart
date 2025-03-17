@@ -68,7 +68,7 @@ def get_secret(event):
             messages=[{
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Provide a list of all scores, holes 1 - 18, for Connor from the attached scorecard. Provide the output as json key value pairs with the hold number and their score for that hole. If you are unsure on a particular hole, respond with Unk."},
+                    {"type": "text", "text": "Provide a list of all scores, holes 1 - 18, for Connor from the attached scorecard. Provide the output as json key value pairs with the hole number and their score for that hole. If you are unsure on a particular hole, respond with Unk."},
                     {
                         "type": "image_url",
                         "image_url": {
