@@ -248,10 +248,31 @@ const GolfScoreInput = ({ user }) => {
         </label>
 
         <div className="holes-row">
-          {[...Array(18)].map((_, i) => (
+          {[...Array(9)].map((_, i) => (
             <div key={i} className="hole">
               <label>Hole {i + 1}</label>
-              <input type="number" name={`Hole${i + 1}Score`} value={formData[`Hole${i + 1}Score`]} onChange={handleChange} required />
+              <input
+                type="number"
+                name={`Hole${i + 1}Score`}
+                value={formData[`Hole${i + 1}Score`]}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="holes-row">
+          {[...Array(9)].map((_, i) => (
+            <div key={i + 9} className="hole">
+              <label>Hole {i + 10}</label>
+              <input
+                type="number"
+                name={`Hole${i + 10}Score`}
+                value={formData[`Hole${i + 10}Score`]}
+                onChange={handleChange}
+                required
+              />
             </div>
           ))}
         </div>
