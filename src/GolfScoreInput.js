@@ -95,7 +95,7 @@ const GolfScoreInput = ({ user }) => {
         },
       });      
 
-      const { fromCredentials } = require("@aws-sdk/credential-provider-node");
+      /* const { fromCredentials } = require("@aws-sdk/credential-provider-node");
 
       // Convert credentials into AWS format
       const awsCredentials = fromCredentials({
@@ -110,7 +110,7 @@ const GolfScoreInput = ({ user }) => {
       })
       .catch((err) => {
         console.error("❌ AWS Failed to Resolve Credentials:", err);
-      });
+      }); */
 
 
       const fileStream = await selectedFile.arrayBuffer();
