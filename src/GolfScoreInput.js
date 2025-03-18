@@ -95,13 +95,13 @@ const GolfScoreInput = ({ user }) => {
         },
       });      
 
-      const { fromCredentials } = require("@aws-sdk/credential-provider-node");
+      /* const { fromCredentials } = require("@aws-sdk/credential-provider-node");
 
       // Convert credentials into AWS format
       const awsCredentials = fromCredentials({
         accessKeyId: credentials["ACCESS-KEY"],
         secretAccessKey: credentials["SECRET-KEY"],
-      });
+      }); */
 
       /* // Debug Log - Ensuring AWS resolves credentials properly
       awsCredentials()
