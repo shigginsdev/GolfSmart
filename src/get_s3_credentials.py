@@ -40,8 +40,7 @@ def get_s3_creds(event):
         
         return {
             "statusCode": 200,
-            #"headers": {"Access-Control-Allow-Origin": "*", "Content-Type": "application/json"},            
-            "headers": {"Access-Control-Allow-Origin": "*"},
+            "headers": {"Access-Control-Allow-Origin": "*", "Content-Type": "application/json"},                        
             "body": json.dumps(secret_dict),
         }
     
@@ -77,12 +76,7 @@ def lambda_handler(event, context):
     path = event.get('path', '')
 
     if http_method == 'GET':
-        get_s3_creds(event)
-        return {
-            'statusCode': 200,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            'body': json.dumps('Smart Golf GET method')
-        }
+        return get_s3_creds(event)        
     elif http_method == 'POST':
         return {
             "statusCode": 405,

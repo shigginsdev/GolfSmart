@@ -54,7 +54,7 @@ const GolfScoreInput = ({ user }) => {
 
       const data = await response.json();
       setCredentials(data); // ✅ Store retrieved credentials
-      console.log("✅ S3 Credentials Fetched:", data);
+      // console.log("✅ S3 Credentials Fetched:", data);
     } catch (error) {
       console.error("❌ Error fetching credentials:", error);
     }
@@ -93,10 +93,10 @@ const GolfScoreInput = ({ user }) => {
           accessKeyId: credentials.ACCESS_KEY,
           secretAccessKey: credentials.SECRET_KEY,
         },
-      });
+      });      
 
-      console.log("🛠️ S3 Credentials:", credentials);
-
+      console.log("🛠️ Debug: S3 Credentials Object", credentials);
+      
       const fileStream = await selectedFile.arrayBuffer();
 
       const params = {
