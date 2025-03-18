@@ -95,7 +95,7 @@ const GolfScoreInput = ({ user }) => {
         },
       });      
 
-      /* const { fromCredentials } = require("@aws-sdk/credential-provider-node");
+      const { fromCredentials } = require("@aws-sdk/credential-provider-node");
 
       // Convert credentials into AWS format
       const awsCredentials = fromCredentials({
@@ -103,15 +103,15 @@ const GolfScoreInput = ({ user }) => {
         secretAccessKey: credentials["SECRET-KEY"],
       });
 
-      // Debug Log - Ensuring AWS resolves credentials properly
+      /* // Debug Log - Ensuring AWS resolves credentials properly
       awsCredentials()
       .then((resolvedCreds) => {
         console.log("✅ AWS Resolved Credentials:", resolvedCreds);
       })
       .catch((err) => {
         console.error("❌ AWS Failed to Resolve Credentials:", err);
-      }); */
-
+      });
+ */
 
       const fileStream = await selectedFile.arrayBuffer();
 
