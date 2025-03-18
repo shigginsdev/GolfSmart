@@ -95,10 +95,12 @@ const GolfScoreInput = ({ user }) => {
         },
       });
 
+      const fileStream = await selectedFile.arrayBuffer();
+
       const params = {
         Bucket: S3_BUCKET,
         Key: fileName,
-        Body: selectedFile,
+        Body: new Uint8Array(fileStream),
         ContentType: selectedFile.type,
       };
 
