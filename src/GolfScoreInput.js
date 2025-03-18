@@ -95,10 +95,21 @@ const GolfScoreInput = ({ user }) => {
         },
       });      
 
-      console.log("🛠️ Debug: Raw Credentials Object", credentials);
-      console.log("🛠️ Debug: S3 Credentials", {
+      const { fromCredentials } = require("@aws-sdk/credential-provider-node");
+
+      // Convert credentials into AWS format
+      const awsCredentials = fromCredentials({
         accessKeyId: credentials["ACCESS-KEY"],
         secretAccessKey: credentials["SECRET-KEY"],
+      });
+
+      // Debug Log - Ensuring AWS resolves credentials properly
+      awsCredentials()
+      .then((resolvedCreds) => {
+        console.log("✅ AWS Resolved Credentials:", resolvedCreds);
+      })
+      .catch((err) => {
+        console.error("❌ AWS Failed to Resolve Credentials:", err);
       });
 
 
