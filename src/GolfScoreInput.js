@@ -90,13 +90,13 @@ const GolfScoreInput = ({ user }) => {
       const s3Client = new S3Client({
         region: REGION,
         credentials: {
-          accessKeyId: credentials.ACCESS_KEY,
-          secretAccessKey: credentials.SECRET_KEY,
+          accessKeyId: credentials["ACCESS-KEY"],
+          secretAccessKey: credentials["SECRET-KEY"],
         },
       });      
 
       console.log("🛠️ Debug: S3 Credentials Object", credentials);
-      
+
       const fileStream = await selectedFile.arrayBuffer();
 
       const params = {
