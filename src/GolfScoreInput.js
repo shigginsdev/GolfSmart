@@ -95,7 +95,12 @@ const GolfScoreInput = ({ user }) => {
         },
       });      
 
-      console.log("🛠️ Debug: S3 Credentials Object", credentials);
+      console.log("🛠️ Debug: Raw Credentials Object", credentials);
+      console.log("🛠️ Debug: S3 Credentials", {
+        accessKeyId: credentials["ACCESS-KEY"],
+        secretAccessKey: credentials["SECRET-KEY"],
+      });
+
 
       const fileStream = await selectedFile.arrayBuffer();
 
