@@ -95,6 +95,8 @@ const GolfScoreInput = ({ user }) => {
         },
       });
 
+      console.log("🛠️ S3 Credentials:", credentials);
+
       const fileStream = await selectedFile.arrayBuffer();
 
       const params = {
@@ -110,7 +112,7 @@ const GolfScoreInput = ({ user }) => {
       alert("✅ Upload Successful!");
     } catch (error) {
       console.error("❌ Error uploading file:", error);
-      alert("Upload failed!");
+      alert("Upload failed!");      
     } finally {
       setUploading(false);
     }

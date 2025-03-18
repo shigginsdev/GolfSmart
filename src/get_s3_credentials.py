@@ -30,14 +30,21 @@ def get_s3_creds(event):
     )
 
     try:
-        secret_response = client.get_secret_value(SecretId=secret_name)
-        secret_dict = json.loads(secret_response["SecretString"])
+        secret_response = client.get_secret_value(SecretId=secret_name)  
+        logger.info(f"Retrieved secret: {secret_response}")      
+                
+        # ✅ Parse the JSON string inside "SecretString"        
+        
+        secret_dict = json.loads(secret_response['SecretString'])
+        logger.info(f"Retrieved secret_dict: {secret_dict}")
         
         return {
             "statusCode": 200,
+            #"headers": {"Access-Control-Allow-Origin": "*", "Content-Type": "application/json"},            
             "headers": {"Access-Control-Allow-Origin": "*"},
             "body": json.dumps(secret_dict),
         }
+    
     except ClientError as e:
         logger.error(f"Error retrieving secret: {e}")
         return {
