@@ -84,7 +84,7 @@ const GolfScoreInput = ({ user }) => {
     }
 
     setUploading(true);
-    const fileName = `scorecards/${Date.now()}-${selectedFile.name}`;
+    const fileName = `scorecards/${Date.now()}-${selectedFile.name}`;    
 
     try {
       const s3Client = new S3Client({
@@ -106,13 +106,12 @@ const GolfScoreInput = ({ user }) => {
       };
 
       await s3Client.send(new PutObjectCommand(params));
-      const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
+      const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;  
 
-      //Lot the image url
-      console.log("✅ Image URL:", uploadedImageUrl);
-      
       setImageUrl(uploadedImageUrl);
-      alert("✅ Upload Successful!");
+      alert("✅ Upload Successful!");      
+
+
     } catch (error) {
       console.error("❌ Error uploading file:", error);
       alert("Upload failed!");      
@@ -137,6 +136,30 @@ const GolfScoreInput = ({ user }) => {
 
     setLoading(true);
 
+    //Get the presignedURL link for the file we just uploaded
+    const fetchPresignedUrl = async (fileName) => {
+      try {
+        const response = await fetch("https://your-presigned-url-api.com/DEV", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fileName }), // Send the file name to API
+        });
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        console.log("✅ Pre-signed URL:", data.presignedUrl);
+        return data.presignedUrl;
+      } catch (error) {
+        console.error("❌ Error fetching pre-signed URL:", error);
+        return null;
+      }
+    };
+    
     try {
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
