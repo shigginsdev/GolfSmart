@@ -120,6 +120,29 @@ const GolfScoreInput = ({ user }) => {
     }
   };
 
+  const fetchPresignedUrl = async (fileName) => {
+    try {
+      const response = await fetch("https://your-presigned-url-api.com/DEV", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fileName }), // Send the file name to API
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log("✅ Pre-signed URL:", data.presignedUrl);
+      return data.presignedUrl;
+    } catch (error) {
+      console.error("❌ Error fetching pre-signed URL:", error);
+      return null;
+    }
+  };
+
   // ✅ Scan Image & Prepopulate Scores
   const handleTopSubmit = async () => {
     console.log("🔼 Scan in my scorecard clicked!");
@@ -137,28 +160,17 @@ const GolfScoreInput = ({ user }) => {
     setLoading(true);
 
     //Get the presignedURL link for the file we just uploaded
-    const fetchPresignedUrl = async (fileName) => {
-      try {
-        const response = await fetch("https://your-presigned-url-api.com/DEV", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ fileName }), // Send the file name to API
-        });
-    
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-    
-        const data = await response.json();
-        console.log("✅ Pre-signed URL:", data.presignedUrl);
-        return data.presignedUrl;
-      } catch (error) {
-        console.error("❌ Error fetching pre-signed URL:", error);
-        return null;
+    try {      
+      const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
+      const presignedUrl = await fetchPresignedUrl(fileName);
+  
+      if (!presignedUrl) {
+        throw new Error("❌ Failed to get pre-signed URL.");
       }
-    };
+    } catch (error) {
+      console.error("❌ Error getting pre-signed URL:", error);      
+      return;
+    }    
     
     try {
       const response = await fetch(scanScorecardApiEndpoint, {
