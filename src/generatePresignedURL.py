@@ -41,7 +41,7 @@ def get_url(event):
         # Generate pre-signed URL
         presigned_url = s3_client.generate_presigned_url(
             "get_object",
-            Params={"Bucket": S3_BUCKET, "Key": file_name, "ContentType": content_type},
+            Params={"Bucket": S3_BUCKET, "Key": file_name, "ResponseContentType": content_type},
             ExpiresIn=3600  # URL expires in 1 hour
         )
 

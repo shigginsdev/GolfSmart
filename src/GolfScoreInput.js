@@ -163,24 +163,22 @@ const GolfScoreInput = ({ user }) => {
 
     setLoading(true);
 
-    //Get the presignedURL link for the file we just uploaded
-    try {      
-      const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
-      const presignedUrl = await fetchPresignedUrl(fileName);
-  
-      if (!presignedUrl) {
-        throw new Error("❌ Failed to get pre-signed URL.");
-      }
-    } catch (error) {
-      console.error("❌ Error getting pre-signed URL:", error);      
-      return;
-    }    
-    
+    //Get the presignedURL link for the file we just uploaded     
     try {
+
+      const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
+        const { presignedURL } = await fetchPresignedUrl(fileName);
+    
+        if (!presignedURL) {
+          throw new Error("❌ Failed to get pre-signed URL.");
+        }
+
+      console.log("✅ Using Pre-signed URL for scan:", presignedURL);
+
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, fileUrl: imageUrl }),
+        body: JSON.stringify({ userId, fileUrl: presignedURL }),
       });
 
       const result = await response.json();
