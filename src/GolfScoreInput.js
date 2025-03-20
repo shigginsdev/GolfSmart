@@ -128,7 +128,10 @@ const GolfScoreInput = ({ user }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fileName }), // Send the file name to API
+        body: JSON.stringify({
+          fileName,
+          contentType: "image/jpeg", // Ensure content type is always sent
+        }),
       });
   
       if (!response.ok) {

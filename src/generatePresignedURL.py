@@ -29,12 +29,18 @@ def get_url(event):
         if file_name == "" or content_type == "":
             return {
                 "statusCode": 400,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                    "Content-Type": "application/json"
+                },
                 "body": json.dumps({"message": "Missing fileName or contentType"})
             }
 
         # Generate pre-signed URL
         presigned_url = s3_client.generate_presigned_url(
-            "put_object",
+            "get_object",
             Params={"Bucket": S3_BUCKET, "Key": file_name, "ContentType": content_type},
             ExpiresIn=3600  # URL expires in 1 hour
         )
@@ -43,13 +49,25 @@ def get_url(event):
 
         return {
             "statusCode": 200,
-            "body": json.dumps({"uploadUrl": presigned_url, "fileUrl": file_url})
+            "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                    "Content-Type": "application/json"
+                },
+            "body": json.dumps({"presignedURL": presigned_url, "fileUrl": file_url})
         }
 
     except ClientError as e:
         logger.error(f"Error generating pre-signed URL: {e}")
         return {
             "statusCode": 500,
+            "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                    "Content-Type": "application/json"
+                },
             "body": json.dumps({"message": "Error generating pre-signed URL"})
         }
 
@@ -67,6 +85,12 @@ def lambda_handler(event, context):
     if origin not in ALLOWED_ORIGINS:
         return {
             "statusCode": 400,
+            "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                    "Content-Type": "application/json"
+                },
             "body": json.dumps({"status": "error", "message": "Invalid origin"},)                           
         }
 
@@ -80,7 +104,12 @@ def lambda_handler(event, context):
     if http_method == 'GET':
         return {
             'statusCode': 200,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                    "Content-Type": "application/json"
+                },
             'body': json.dumps('Smart Golf GET method')
         }
     elif http_method == 'POST':
@@ -88,7 +117,12 @@ def lambda_handler(event, context):
     else:
         return {
             "statusCode": 405,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                    "Content-Type": "application/json"
+                },
             "body": json.dumps({"message": "Method Not Allowed"})
         }
 
