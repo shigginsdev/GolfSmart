@@ -24,6 +24,7 @@ const GolfScoreInput = ({ user }) => {
   const saveScoreApiEndpoint = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/"; // Save form data
   const scanScorecardApiEndpoint = "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV"; // Scan image with OpenAI
   const fetchS3UploadCredentialsApiEndpoint = "https://fs1qgmv86f.execute-api.us-east-2.amazonaws.com/DEV"; // Get AWS credentials
+  const getPresignedURL = "https://uvcdb20nw5.execute-api.us-east-2.amazonaws.com/DEV" //get presigned URL
 
   const S3_BUCKET = "golf-scorecards-bucket";
   const REGION = "us-east-2";
@@ -122,7 +123,7 @@ const GolfScoreInput = ({ user }) => {
 
   const fetchPresignedUrl = async (fileName) => {
     try {
-      const response = await fetch("https://your-presigned-url-api.com/DEV", {
+      const response = await fetch(getPresignedURL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
