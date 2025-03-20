@@ -94,24 +94,7 @@ const GolfScoreInput = ({ user }) => {
           secretAccessKey: credentials["SECRET-KEY"],
         },
       });      
-
-      /* const { fromCredentials } = require("@aws-sdk/credential-provider-node");
-
-      // Convert credentials into AWS format
-      const awsCredentials = fromCredentials({
-        accessKeyId: credentials["ACCESS-KEY"],
-        secretAccessKey: credentials["SECRET-KEY"],
-      }); */
-
-      /* // Debug Log - Ensuring AWS resolves credentials properly
-      awsCredentials()
-      .then((resolvedCreds) => {
-        console.log("✅ AWS Resolved Credentials:", resolvedCreds);
-      })
-      .catch((err) => {
-        console.error("❌ AWS Failed to Resolve Credentials:", err);
-      });
- */
+      
 
       const fileStream = await selectedFile.arrayBuffer();
 
@@ -124,6 +107,10 @@ const GolfScoreInput = ({ user }) => {
 
       await s3Client.send(new PutObjectCommand(params));
       const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
+
+      //Lot the image url
+      console.log("✅ Image URL:", uploadedImageUrl);
+      
       setImageUrl(uploadedImageUrl);
       alert("✅ Upload Successful!");
     } catch (error) {
