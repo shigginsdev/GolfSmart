@@ -22,6 +22,7 @@ def get_secret(event):
     # Parse request body
     body = json.loads(event.get("body", "{}"))
     imageURL = body.get("fileUrl")
+    first_name = body.get("firstName", "Unknown")
     logger.info(f"Received event: {json.dumps(event)}")
     logger.info(f"Received imageURL: {imageURL}")
     
@@ -71,7 +72,7 @@ def get_secret(event):
             messages=[{
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Provide a list of all scores, holes 1 - 18, for Paul from the attached scorecard."},
+                    {"type": "text", "text": "Provide a list of all scores, holes 1 - 18, for {first_name} from the attached scorecard. Provide the output as json key value pairs with the hole number and their score for that hole."},
                     {
                         "type": "image_url",
                         "image_url": {

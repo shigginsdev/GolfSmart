@@ -136,13 +136,13 @@ const GolfScoreInput = ({ user }) => {
 
     setLoading(true);
 
-    //Get the presignedURL link for the file we just uploaded     
+    //Send the scorecard to OpenAI for extracting the user scores     
     try {      
-      
+
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, fileUrl: imageUrl }),
+        body: JSON.stringify({ userId, fileUrl: imageUrl, firstName: user?.firstName || "Unknown" }),
       });
 
       const result = await response.json();
