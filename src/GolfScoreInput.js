@@ -102,8 +102,7 @@ const GolfScoreInput = ({ user }) => {
       const params = {
         Bucket: S3_BUCKET,
         Key: fileName,
-        Body: new Uint8Array(fileStream),
-        ACL: "public-read",        
+        Body: new Uint8Array(fileStream),                
         ContentType: selectedFile.type,
       };
 
