@@ -103,6 +103,7 @@ const GolfScoreInput = ({ user }) => {
         Bucket: S3_BUCKET,
         Key: fileName,
         Body: new Uint8Array(fileStream),
+        ACL: "public-read",
         ContentType: selectedFile.type,
       };
 
@@ -121,7 +122,7 @@ const GolfScoreInput = ({ user }) => {
     }
   };
 
-  const fetchPresignedUrl = async (fileName) => {
+  /* const fetchPresignedUrl = async (fileName) => {
     try {
       const response = await fetch(getPresignedURL, {
         method: "POST",
@@ -150,7 +151,7 @@ const GolfScoreInput = ({ user }) => {
     console.error("❌ Error fetching pre-signed URL:", error);
     return null;
   }
-  };
+  }; */
 
   // ✅ Scan Image & Prepopulate Scores
   const handleTopSubmit = async () => {
@@ -169,15 +170,8 @@ const GolfScoreInput = ({ user }) => {
     setLoading(true);
 
     //Get the presignedURL link for the file we just uploaded     
-    try {
-
-      /* const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
-        const { presignedURL } = await fetchPresignedUrl(fileName);
-    
-        if (!presignedURL) {
-          throw new Error("❌ Failed to get pre-signed URL.");
-        } */
-
+    try {      
+/* 
         const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
         let presignedURL = ""; // ✅ Define presignedURL before try block
     
@@ -189,12 +183,12 @@ const GolfScoreInput = ({ user }) => {
             throw new Error("❌ Failed to get pre-signed URL.");
         }    
 
-      console.log("✅ Using Pre-signed URL for scan:", presignedURL);
+      console.log("✅ Using Pre-signed URL for scan:", presignedURL); */
 
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, fileUrl: presignedURL }),
+        body: JSON.stringify({ userId, fileUrl: imageUrl }),
       });
 
       const result = await response.json();
