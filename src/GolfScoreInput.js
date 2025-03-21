@@ -134,17 +134,22 @@ const GolfScoreInput = ({ user }) => {
         }),
       });
   
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      console.log("✅ Pre-signed URL:", data.presignedUrl);
-      return data.presignedUrl;
-    } catch (error) {
-      console.error("❌ Error fetching pre-signed URL:", error);
-      return null;
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
+    const data = await response.json();
+    console.log("✅ Pre-signed URL:", data.presignedUrl);
+    if (!data.presignedURL) {
+      throw new Error("❌ No presigned URL found in response.");
+    }
+
+  return data; // ✅ Ensure this function always returns a valid response
+
+  } catch (error) {
+    console.error("❌ Error fetching pre-signed URL:", error);
+    return null;
+  }
   };
 
   // ✅ Scan Image & Prepopulate Scores
@@ -166,12 +171,23 @@ const GolfScoreInput = ({ user }) => {
     //Get the presignedURL link for the file we just uploaded     
     try {
 
-      const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
+      /* const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
         const { presignedURL } = await fetchPresignedUrl(fileName);
     
         if (!presignedURL) {
           throw new Error("❌ Failed to get pre-signed URL.");
-        }
+        } */
+
+        const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
+        let presignedURL = ""; // ✅ Define presignedURL before try block
+    
+        const presignedResponse = await fetchPresignedUrl(fileName);
+        
+        if (presignedResponse && presignedResponse.presignedURL) {
+            presignedURL = presignedResponse.presignedURL; // ✅ Assign value here
+        } else {
+            throw new Error("❌ Failed to get pre-signed URL.");
+        }    
 
       console.log("✅ Using Pre-signed URL for scan:", presignedURL);
 
