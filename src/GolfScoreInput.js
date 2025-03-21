@@ -23,8 +23,7 @@ const GolfScoreInput = ({ user }) => {
   // ✅ API Endpoints
   const saveScoreApiEndpoint = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/"; // Save form data
   const scanScorecardApiEndpoint = "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV"; // Scan image with OpenAI
-  const fetchS3UploadCredentialsApiEndpoint = "https://fs1qgmv86f.execute-api.us-east-2.amazonaws.com/DEV"; // Get AWS credentials
-  const getPresignedURL = "https://uvcdb20nw5.execute-api.us-east-2.amazonaws.com/DEV" //get presigned URL
+  const fetchS3UploadCredentialsApiEndpoint = "https://fs1qgmv86f.execute-api.us-east-2.amazonaws.com/DEV"; // Get AWS credentials  
 
   const S3_BUCKET = "golf-scorecards-bucket";
   const REGION = "us-east-2";
@@ -119,38 +118,7 @@ const GolfScoreInput = ({ user }) => {
     } finally {
       setUploading(false);
     }
-  };
-
-  /* const fetchPresignedUrl = async (fileName) => {
-    try {
-      const response = await fetch(getPresignedURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fileName,
-          contentType: "image/jpeg", // Ensure content type is always sent
-        }),
-      });
-  
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log("✅ Pre-signed URL:", data.presignedUrl);
-    if (!data.presignedURL) {
-      throw new Error("❌ No presigned URL found in response.");
-    }
-
-  return data; // ✅ Ensure this function always returns a valid response
-
-  } catch (error) {
-    console.error("❌ Error fetching pre-signed URL:", error);
-    return null;
-  }
-  }; */
+  };  
 
   // ✅ Scan Image & Prepopulate Scores
   const handleTopSubmit = async () => {
@@ -170,20 +138,7 @@ const GolfScoreInput = ({ user }) => {
 
     //Get the presignedURL link for the file we just uploaded     
     try {      
-/* 
-        const fileName = imageUrl.split("/").pop(); // Extract filename from S3 URL
-        let presignedURL = ""; // ✅ Define presignedURL before try block
-    
-        const presignedResponse = await fetchPresignedUrl(fileName);
-        
-        if (presignedResponse && presignedResponse.presignedURL) {
-            presignedURL = presignedResponse.presignedURL; // ✅ Assign value here
-        } else {
-            throw new Error("❌ Failed to get pre-signed URL.");
-        }    
-
-      console.log("✅ Using Pre-signed URL for scan:", presignedURL); */
-
+      
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -285,14 +240,6 @@ const GolfScoreInput = ({ user }) => {
           {loading ? "Scanning..." : "Scan in my scorecard"}
         </button>
       </div>
-
-      {/* ✅ Display Scan Result */}
-      {scanResult && (
-        <div className="scan-result">
-          <h3>Scan Result:</h3>
-          <pre>{JSON.stringify(scanResult, null, 2)}</pre>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
