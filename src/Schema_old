@@ -1,0 +1,762 @@
+[
+  {
+    "Hole5Score": {
+      "N": "4"
+    },
+    "scoreID": {
+      "S": "2ef98e2b-8f8f-4338-9980-f75203b02df1"
+    },
+    "Hole12Score": {
+      "N": "4"
+    },
+    "Hole8Score": {
+      "N": "4"
+    },
+    "Hole8Par": {
+      "N": "4"
+    },
+    "Hole16Par": {
+      "N": "4"
+    },
+    "Hole18Par": {
+      "N": "4"
+    },
+    "Hole6Par": {
+      "N": "4"
+    },
+    "Hole14Par": {
+      "N": "4"
+    },
+    "Hole4Par": {
+      "N": "4"
+    },
+    "Hole12Par": {
+      "N": "4"
+    },
+    "Hole1Par": {
+      "N": "4"
+    },
+    "Hole11Par": {
+      "N": "4"
+    },
+    "Hole3Par": {
+      "N": "4"
+    },
+    "Hole11Score": {
+      "N": "4"
+    },
+    "Hole3Score": {
+      "N": "4"
+    },
+    "Hole4Score": {
+      "N": "4"
+    },
+    "Hole18Score": {
+      "N": "4"
+    },
+    "Hole7Score": {
+      "N": "4"
+    },
+    "Hole15Score": {
+      "N": "4"
+    },
+    "Date": {
+      "S": "2025-03-04"
+    },
+    "Hole16Score": {
+      "N": "4"
+    },
+    "Hole13Score": {
+      "N": "4"
+    },
+    "Hole1Score": {
+      "N": "4"
+    },
+    "Hole17Par": {
+      "N": "4"
+    },
+    "Hole7Par": {
+      "N": "4"
+    },
+    "Hole9Score": {
+      "N": "4"
+    },
+    "Hole9Par": {
+      "N": "4"
+    },
+    "Hole5Par": {
+      "N": "4"
+    },
+    "Hole15Par": {
+      "N": "4"
+    },
+    "Hole10Par": {
+      "N": "4"
+    },
+    "Hole13Par": {
+      "N": "4"
+    },
+    "Hole6Score": {
+      "N": "4"
+    },
+    "Hole2Par": {
+      "N": "4"
+    },
+    "Hole14Score": {
+      "N": "4"
+    },
+    "userID": {
+      "S": "919b8520-e061-70d4-233a-b97f869e8378"
+    },
+    "Hole17Score": {
+      "N": "4"
+    },
+    "Hole10Score": {
+      "N": "4"
+    },
+    "Hole2Score": {
+      "N": "4"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "4"
+    },
+    "Date": {
+      "S": "2025-03-05"
+    },
+    "scoreID": {
+      "S": "4fe549c9-f274-464b-a668-5dfba876c9e9"
+    },
+    "Hole16Score": {
+      "N": "4"
+    },
+    "Hole13Score": {
+      "N": "4"
+    },
+    "Hole12Score": {
+      "N": "4"
+    },
+    "Hole8Score": {
+      "N": "4"
+    },
+    "Hole1Score": {
+      "N": "4"
+    },
+    "Hole9Score": {
+      "N": "4"
+    },
+    "Hole6Score": {
+      "N": "4"
+    },
+    "Hole14Score": {
+      "N": "4"
+    },
+    "Hole11Score": {
+      "N": "4"
+    },
+    "Hole3Score": {
+      "N": "4"
+    },
+    "Hole17Score": {
+      "N": "4"
+    },
+    "userID": {
+      "S": "919b8520-e061-70d4-233a-b97f869e8378"
+    },
+    "Hole4Score": {
+      "N": "4"
+    },
+    "Hole18Score": {
+      "N": "4"
+    },
+    "Hole10Score": {
+      "N": "4"
+    },
+    "Hole7Score": {
+      "N": "4"
+    },
+    "Hole15Score": {
+      "N": "4"
+    },
+    "Hole2Score": {
+      "N": "4"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "5"
+    },
+    "Date": {
+      "S": "2025-03-11"
+    },
+    "scoreID": {
+      "S": "67890-fghij-12345"
+    },
+    "Hole16Score": {
+      "N": "3"
+    },
+    "Hole13Score": {
+      "N": "4"
+    },
+    "Hole12Score": {
+      "N": "3"
+    },
+    "Hole8Score": {
+      "N": "4"
+    },
+    "Hole1Score": {
+      "N": "4"
+    },
+    "Hole9Score": {
+      "N": "5"
+    },
+    "Hole6Score": {
+      "N": "4"
+    },
+    "Hole14Score": {
+      "N": "5"
+    },
+    "Hole11Score": {
+      "N": "5"
+    },
+    "Hole3Score": {
+      "N": "3"
+    },
+    "Hole17Score": {
+      "N": "4"
+    },
+    "userID": {
+      "S": "12345-abcde-67890"
+    },
+    "Hole4Score": {
+      "N": "4"
+    },
+    "Hole18Score": {
+      "N": "5"
+    },
+    "Hole10Score": {
+      "N": "4"
+    },
+    "Hole7Score": {
+      "N": "3"
+    },
+    "Hole15Score": {
+      "N": "4"
+    },
+    "Hole2Score": {
+      "N": "5"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "3"
+    },
+    "Date": {
+      "S": "2025-03-09"
+    },
+    "scoreID": {
+      "S": "27823a0a-bc49-45af-8f22-82797d4fa4ca"
+    },
+    "Hole16Score": {
+      "N": "3"
+    },
+    "Hole13Score": {
+      "N": "3"
+    },
+    "Hole12Score": {
+      "N": "3"
+    },
+    "Hole8Score": {
+      "N": "3"
+    },
+    "Hole1Score": {
+      "N": "3"
+    },
+    "Hole9Score": {
+      "N": "3"
+    },
+    "Hole6Score": {
+      "N": "3"
+    },
+    "Hole14Score": {
+      "N": "3"
+    },
+    "Hole11Score": {
+      "N": "3"
+    },
+    "Hole3Score": {
+      "N": "3"
+    },
+    "Hole17Score": {
+      "N": "3"
+    },
+    "userID": {
+      "S": "910b0580-1011-70c0-81eb-043f806a2f91"
+    },
+    "Hole4Score": {
+      "N": "3"
+    },
+    "Hole18Score": {
+      "N": "3"
+    },
+    "Hole10Score": {
+      "N": "3"
+    },
+    "Hole7Score": {
+      "N": "3"
+    },
+    "Hole15Score": {
+      "N": "3"
+    },
+    "Hole2Score": {
+      "N": "3"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "4"
+    },
+    "Date": {
+      "S": "2025-03-21"
+    },
+    "scoreID": {
+      "S": "644c49ae-a937-410f-b78b-3b28b21a4e73"
+    },
+    "Hole16Score": {
+      "N": "8"
+    },
+    "Hole13Score": {
+      "N": "5"
+    },
+    "Hole12Score": {
+      "N": "7"
+    },
+    "Hole8Score": {
+      "N": "8"
+    },
+    "Hole1Score": {
+      "N": "6"
+    },
+    "Hole9Score": {
+      "N": "5"
+    },
+    "Hole6Score": {
+      "N": "6"
+    },
+    "Hole14Score": {
+      "N": "7"
+    },
+    "Hole11Score": {
+      "N": "6"
+    },
+    "Hole3Score": {
+      "N": "6"
+    },
+    "Hole17Score": {
+      "N": "6"
+    },
+    "userID": {
+      "S": "910b0580-1011-70c0-81eb-043f806a2f91"
+    },
+    "Hole4Score": {
+      "N": "6"
+    },
+    "Hole18Score": {
+      "N": "7"
+    },
+    "Hole10Score": {
+      "N": "4"
+    },
+    "Hole7Score": {
+      "N": "6"
+    },
+    "Hole15Score": {
+      "N": "5"
+    },
+    "Hole2Score": {
+      "N": "5"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "5"
+    },
+    "Date": {
+      "S": "2025-03-13"
+    },
+    "scoreID": {
+      "S": "7ec076b1-2cc9-4f25-a66f-98d2e57b9a21"
+    },
+    "Hole16Score": {
+      "N": "4"
+    },
+    "Hole13Score": {
+      "N": "3"
+    },
+    "Hole12Score": {
+      "N": "5"
+    },
+    "Hole8Score": {
+      "N": "4"
+    },
+    "Hole1Score": {
+      "N": "5"
+    },
+    "Hole9Score": {
+      "N": "5"
+    },
+    "Hole6Score": {
+      "N": "3"
+    },
+    "Hole14Score": {
+      "N": "4"
+    },
+    "Hole11Score": {
+      "N": "6"
+    },
+    "Hole3Score": {
+      "N": "4"
+    },
+    "Hole17Score": {
+      "N": "6"
+    },
+    "userID": {
+      "S": "910b0580-1011-70c0-81eb-043f806a2f91"
+    },
+    "Hole4Score": {
+      "N": "3"
+    },
+    "Hole18Score": {
+      "N": "6"
+    },
+    "Hole10Score": {
+      "N": "6"
+    },
+    "Hole7Score": {
+      "N": "4"
+    },
+    "Hole15Score": {
+      "N": "5"
+    },
+    "Hole2Score": {
+      "N": "4"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "3"
+    },
+    "Date": {
+      "S": "2025-03-05"
+    },
+    "scoreID": {
+      "S": "8015acfd-3f6f-471c-8eb2-74ce01cd822b"
+    },
+    "Hole16Score": {
+      "N": "3"
+    },
+    "Hole13Score": {
+      "N": "3"
+    },
+    "Hole12Score": {
+      "N": "3"
+    },
+    "Hole8Score": {
+      "N": "3"
+    },
+    "Hole1Score": {
+      "N": "3"
+    },
+    "Hole9Score": {
+      "N": "3"
+    },
+    "Hole6Score": {
+      "N": "3"
+    },
+    "Hole14Score": {
+      "N": "3"
+    },
+    "Hole11Score": {
+      "N": "3"
+    },
+    "Hole3Score": {
+      "N": "3"
+    },
+    "Hole17Score": {
+      "N": "3"
+    },
+    "userID": {
+      "S": "910b0580-1011-70c0-81eb-043f806a2f91"
+    },
+    "Hole4Score": {
+      "N": "3"
+    },
+    "Hole18Score": {
+      "N": "3"
+    },
+    "Hole10Score": {
+      "N": "3"
+    },
+    "Hole7Score": {
+      "N": "3"
+    },
+    "Hole15Score": {
+      "N": "3"
+    },
+    "Hole2Score": {
+      "N": "3"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "1"
+    },
+    "Date": {
+      "S": "2025-03-07"
+    },
+    "scoreID": {
+      "S": "80308fbf-74df-4cac-b598-c4389bd8d0eb"
+    },
+    "Hole16Score": {
+      "N": "1"
+    },
+    "Hole13Score": {
+      "N": "1"
+    },
+    "Hole12Score": {
+      "N": "1"
+    },
+    "Hole8Score": {
+      "N": "1"
+    },
+    "Hole1Score": {
+      "N": "1"
+    },
+    "Hole9Score": {
+      "N": "1"
+    },
+    "Hole6Score": {
+      "N": "1"
+    },
+    "Hole14Score": {
+      "N": "1"
+    },
+    "Hole11Score": {
+      "N": "1"
+    },
+    "Hole3Score": {
+      "N": "1"
+    },
+    "Hole17Score": {
+      "N": "1"
+    },
+    "userID": {
+      "S": "910b0580-1011-70c0-81eb-043f806a2f91"
+    },
+    "Hole4Score": {
+      "N": "1"
+    },
+    "Hole18Score": {
+      "N": "1"
+    },
+    "Hole10Score": {
+      "N": "1"
+    },
+    "Hole7Score": {
+      "N": "1"
+    },
+    "Hole15Score": {
+      "N": "1"
+    },
+    "Hole2Score": {
+      "N": "1"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "4"
+    },
+    "Date": {
+      "S": "2025-03-04"
+    },
+    "scoreID": {
+      "S": "d7103b9f-9df5-4f42-b090-630a5c6515ee"
+    },
+    "Hole16Score": {
+      "N": "4"
+    },
+    "Hole13Score": {
+      "N": "4"
+    },
+    "Hole12Score": {
+      "N": "4"
+    },
+    "Hole8Score": {
+      "N": "4"
+    },
+    "Hole1Score": {
+      "N": "4"
+    },
+    "Hole9Score": {
+      "N": "4"
+    },
+    "Hole6Score": {
+      "N": "4"
+    },
+    "Hole14Score": {
+      "N": "4"
+    },
+    "Hole11Score": {
+      "N": "4"
+    },
+    "Hole3Score": {
+      "N": "4"
+    },
+    "Hole17Score": {
+      "N": "4"
+    },
+    "userID": {
+      "S": "910b0580-1011-70c0-81eb-043f806a2f91"
+    },
+    "Hole4Score": {
+      "N": "4"
+    },
+    "Hole18Score": {
+      "N": "4"
+    },
+    "Hole10Score": {
+      "N": "4"
+    },
+    "Hole7Score": {
+      "N": "4"
+    },
+    "Hole15Score": {
+      "N": "4"
+    },
+    "Hole2Score": {
+      "N": "4"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "2"
+    },
+    "Date": {
+      "S": "2025-03-08"
+    },
+    "scoreID": {
+      "S": "e1560206-a5e9-4d40-ac9f-6b0195db918d"
+    },
+    "Hole16Score": {
+      "N": "2"
+    },
+    "Hole13Score": {
+      "N": "2"
+    },
+    "Hole12Score": {
+      "N": "2"
+    },
+    "Hole8Score": {
+      "N": "2"
+    },
+    "Hole1Score": {
+      "N": "2"
+    },
+    "Hole9Score": {
+      "N": "2"
+    },
+    "Hole6Score": {
+      "N": "2"
+    },
+    "Hole14Score": {
+      "N": "2"
+    },
+    "Hole11Score": {
+      "N": "2"
+    },
+    "Hole3Score": {
+      "N": "2"
+    },
+    "Hole17Score": {
+      "N": "2"
+    },
+    "userID": {
+      "S": "910b0580-1011-70c0-81eb-043f806a2f91"
+    },
+    "Hole4Score": {
+      "N": "2"
+    },
+    "Hole18Score": {
+      "N": "2"
+    },
+    "Hole10Score": {
+      "N": "2"
+    },
+    "Hole7Score": {
+      "N": "2"
+    },
+    "Hole15Score": {
+      "N": "2"
+    },
+    "Hole2Score": {
+      "N": "2"
+    }
+  },
+  {
+    "Hole5Score": {
+      "N": "4"
+    },
+    "Hole16Score": {
+      "N": "4"
+    },
+    "Hole13Score": {
+      "N": "4"
+    },
+    "Hole12Score": {
+      "N": "4"
+    },
+    "Hole8Score": {
+      "N": "3"
+    },
+    "Hole1Score": {
+      "N": "5"
+    },
+    "Hole9Score": {
+      "N": "3"
+    },
+    "Hole6Score": {
+      "N": "4"
+    },
+    "Hole14Score": {
+      "N": "5"
+    },
+    "Hole11Score": {
+      "N": "3"
+    },
+    "Hole3Score": {
+      "N": "4"
+    },
+    "Hole17Score": {
+      "N": "4"
+    },
+    "Hole4Score": {
+      "N": "5"
+    },
+    "Hole18Score": {
+      "N": "5"
+    },
+    "Hole10Score": {
+      "N": "4"
+    },
+    "Hole7Score": {
+      "N": "3"
+    },
+    "Hole15Score": {
+      "N": "4"
+    },
+    "Hole2Score": {
+      "N": "5"
+    }
+  }
+]
