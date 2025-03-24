@@ -28,6 +28,8 @@ def get_avg_per_hole(event):
         if not user_id:
             return {
                 "statusCode": 401,
+                "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'},
                 "body": json.dumps({"status": "error", "message": "User not authenticated"})
             }
 
@@ -44,7 +46,8 @@ def get_avg_per_hole(event):
             "statusCode": 200,
             "headers": {
                 "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
-                "Content-Type": "application/json"
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
             "body": json.dumps(response["Items"])
         }
@@ -53,7 +56,8 @@ def get_avg_per_hole(event):
         logger.error(f"Error: {e}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'},
             "body": json.dumps({"message": "Server error"})
         }
 
@@ -72,6 +76,8 @@ def lambda_handler(event, context):
     if origin not in ALLOWED_ORIGINS:
         return {
             "statusCode": 400,
+            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'},
             "body": json.dumps({"status": "error", "message": "Invalid origin"},)                           
         }
 
@@ -86,6 +92,17 @@ def lambda_handler(event, context):
     elif http_method == 'POST':
         return {
             "statusCode": 405,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'},
             "body": json.dumps({"message": "Method Not Allowed"})
+        }
+    elif http_method == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps({"status": "ok"})
         }

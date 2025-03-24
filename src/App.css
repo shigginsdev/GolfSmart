@@ -14,7 +14,10 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-image: url('./assets/img/matt-aylward-Nmh-pEBRt2Y-unsplash.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -22,6 +25,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Better readability over image */
 }
 
 .App-link {
