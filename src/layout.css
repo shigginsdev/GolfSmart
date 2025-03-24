@@ -49,23 +49,48 @@ a {
 }
 
 .banner {
-  flex: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 300px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding-left: 20px;
+  justify-content: center;
+  position: relative;
+  color: white;
+}
+
+.banner-overlay {
+  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for contrast */
+  padding: 20px 40px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.banner h1 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.header-buttons {
+  margin-top: 10px;
 }
 
 .header-buttons button {
-  margin-left: 10px;
-  padding: 5px 12px;
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #ffffffaa;
+  color: #222;
   border: none;
-  background-color: #ffffff;
-  color: #55595e;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
 }
+
+.header-buttons button:hover {
+  background-color: #fff;
+}
+
 
 .breadcrumb {
   padding: 10px 20px;
