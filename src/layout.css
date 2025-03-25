@@ -219,6 +219,13 @@ a {
     width: 90vw;
     padding: 16px;
   }
+
+  .settings-container
+  {
+    width: 90vw;
+    flex-direction: column;
+    padding: 16px;
+  }
  
   .main {
     flex-direction: column;
