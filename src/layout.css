@@ -187,7 +187,28 @@ a {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #ccc;
+    padding: 10px 0;
   }
+
+  .sidebar ul {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .sidebar li {
+    margin: 0;
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar img {
+    margin: 0 0 4px;
+  }
+
 
   .content {
     width: 100%;
