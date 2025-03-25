@@ -27,8 +27,7 @@ a {
 
 .header {
   display: flex;
-  align-items: center;
-  padding: 10px;
+  align-items: center;  
   background-color: #3c3a3b;
   color: white;
   letter-spacing: -.025em;
