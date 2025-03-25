@@ -8,8 +8,7 @@
 
 body {
   font-family: ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-  background-color: #dfe9f5;
-  backgroundImage: url(${bannerImg});
+  background-color: #dfe9f5;  
   color: #55595e;
 }
 
