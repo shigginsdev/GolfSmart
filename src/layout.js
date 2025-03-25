@@ -17,11 +17,7 @@ const Layout = ({ user, signOut, children }) => {
       <header className="header">        
         <div className="banner" style={{ backgroundImage: `url(${bannerImg})` }}>
           <div className="banner-overlay">
-            <h1>SWINGSTAT</h1>
-            <div className="header-buttons">
-              <button>Pricing</button>
-              <button onClick={signOut}>Logout</button>
-            </div>
+            <h1>SWINGSTAT</h1>            
           </div>
         </div>
       </header>
@@ -49,6 +45,9 @@ const Layout = ({ user, signOut, children }) => {
             <li>
               <img src={settingsIcon} alt="Settings" />
               <Link to="/settings">Settings</Link>
+            </li>
+            <li>
+              <button onClick={signOut}>Logout</button>
             </li>
           </ul>
         </nav>
