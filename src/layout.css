@@ -1,4 +1,5 @@
-/* General reset */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -54,8 +55,7 @@ a {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 300px;
-  display: flex;
+  height: 300px;  
   align-items: center;
   justify-content: right;
   position: relative;
@@ -63,18 +63,24 @@ a {
   width: 100%;
 }
 
-.banner-overlay {
-  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for contrast */
+.banner-overlay {  
   padding: 20px 40px;
   text-align: center;
   border-radius: 8px;
 }
 
+.banner-overlay h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
 .banner h1 {
   font-size: 26px;
   margin: 0;
-  font-family: "Montserrat, san-serif";
-  letter-spacing: 20px;
+  font-family: Montserrat, san-serif;
+  letter-spacing: 10px;
 }
 
 .header-buttons {

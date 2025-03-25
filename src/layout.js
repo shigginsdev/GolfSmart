@@ -7,11 +7,12 @@ import settingsIcon from './assets/img/settings-icon.png';
 import insightsIcon from './assets/img/insights-icon.png';import bannerImg from './assets/img/matt-aylward-Nmh-pEBRt2Y-unsplash.png';
 
 
+
 const Layout = ({ user, signOut, children }) => {
   const location = useLocation();
   const currentPath = location.pathname.slice(1);
 
-  return (
+  return (    
     <div className="layout">
 
       <header className="header">        
