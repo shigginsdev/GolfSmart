@@ -16,13 +16,11 @@ const Layout = ({ user, signOut, children }) => {
   return (    
     <div className="layout">
 
-      {/* <header className="header">        
-        <div className="banner" style={{ backgroundImage: `url(${bannerImg})` }}>
-          <div className="banner-overlay">
-            <h1>SWINGSTAT</h1>            
-          </div>
+      {<header className="header">        
+        <div className="banner">
+          <h1>SWINGSTAT</h1>                      
         </div>
-      </header> */}
+      </header>}
 
       <div className="breadcrumb">
         <Link to="/">Home</Link>
