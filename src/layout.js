@@ -5,7 +5,6 @@ import scoresIcon from './assets/img/scores-icon.png';
 import leaguesIcon from './assets/img/leagues-icon.png';
 import settingsIcon from './assets/img/settings-icon.png';
 import insightsIcon from './assets/img/insights-icon.png';
-import gsLogo from './assets/img/golf-smart-logo.png';
 import bannerImg from './assets/img/matt-aylward-Nmh-pEBRt2Y-unsplash.png';
 
 
@@ -16,10 +15,7 @@ const Layout = ({ user, signOut, children }) => {
   return (
     <div className="layout">
 
-      <header className="header">
-        <div className="logo">
-          <img src={gsLogo} alt="Golf Smart Logo" className="logo-img" />
-        </div>
+      <header className="header">        
         <div className="banner" style={{ backgroundImage: `url(${bannerImg})` }}>
           <div className="banner-overlay">
             <h1>Golf Smart</h1>
