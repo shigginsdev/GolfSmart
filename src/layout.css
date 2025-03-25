@@ -58,9 +58,10 @@ a {
   height: 300px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
   position: relative;
   color: white;
+  width: 100%;
 }
 
 .banner-overlay {
