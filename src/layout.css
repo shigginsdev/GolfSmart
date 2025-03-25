@@ -183,6 +183,17 @@ a {
     overflow-x: hidden;
   }
 
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .content {
+    width: 100%;
+    padding: 10px;
+  }
+
   .score-input-container {
     width: 90vw;
     padding: 16px;
