@@ -35,6 +35,8 @@ a {
   line-height: 1;
   font-weight: 600;
   font-size: 1.5rem;
+  width: 100vw;
+  box-sizing: border-box;
 }
 
 .h2 {
@@ -108,6 +110,8 @@ a {
   font-size: 14px;
   border-bottom: 1px solid #ccc;
   color: #e2e2e2;
+  width: 100vw;
+  box-sizing: border-box;
 }
 
 .breadcrumb a {
@@ -116,7 +120,10 @@ a {
 
 .main {
   display: flex;
-  flex: 1;
+  flex: 1 0 auto;
+  min-height: calc(100vh - 100px); /* adjust based on your header height */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .sidebar {
@@ -144,15 +151,16 @@ a {
   margin-right: 10px;
 }
 
-.content {    
-  background-color: #dfe9f5;
-  background-image: url('./assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png');
-  color: #2e2c2f;  
+
+.content {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  width: 100%;
+  align-items: flex-start; /* top align form content */
+  background-color: #dfe9f5;
+  background-image: url('./assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png');
   background-size: cover;
 }
 
