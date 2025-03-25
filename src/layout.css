@@ -71,8 +71,10 @@ a {
 }
 
 .banner h1 {
-  font-size: 2.5rem;
+  font-size: 26px;
   margin: 0;
+  font-family: "Montserrat, san-serif";
+  letter-spacing: 20px;
 }
 
 .header-buttons {
