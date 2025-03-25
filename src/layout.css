@@ -148,7 +148,9 @@ a {
   flex: 1;
   padding: 40px;
   background-color: #dfe9f5;
+  background-image: url('./assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png');
   color: #2e2c2f;
+  background-blend-mode: soft-light;
   display: flex;
   justify-content: center;
   align-items: center;

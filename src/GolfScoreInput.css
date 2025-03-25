@@ -1,7 +1,9 @@
 .score-input-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
+    /* max-width: 800px;
+    margin: auto; */
+    width: 80%;
+    height: 80%;
+    padding: 100px;
     font-family: ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     color: #55595e;
     background-color: #ffffff;
