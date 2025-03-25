@@ -33,19 +33,15 @@ const Layout = ({ user, signOut, children }) => {
         <nav className="sidebar">
           <ul>
             <li>
-              <img src={scoresIcon} alt="Scores" />
               <Link to="/">Scores</Link>
             </li>
             <li>
-              <img src={insightsIcon} alt="Insights" />
               <Link to="/insights">Insights</Link>
             </li>
             <li>
-              <img src={leaguesIcon} alt="Leagues" />
               <Link to="/leagues">Leagues</Link>
             </li>
             <li>
-              <img src={settingsIcon} alt="Settings" />
               <Link to="/settings">Settings</Link>
             </li>
             <li>

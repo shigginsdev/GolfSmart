@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: 'Montserrat', sans-serif;
   background-color: #dfe9f5;  
   color: #55595e;
 }
@@ -122,7 +122,7 @@ a {
 .sidebar {
   width: 200px;
   background-color: #000000;
-  color: #55595e;
+  color: ##e2e2e2;
   padding: 20px;
   border-right: 1px solid #ccc;
 }
@@ -149,8 +149,7 @@ a {
   padding: 40px;
   background-color: #dfe9f5;
   background-image: url('./assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png');
-  color: #2e2c2f;
-  background-blend-mode: soft-light;
+  color: #2e2c2f;  
   display: flex;
   justify-content: center;
   align-items: center;
