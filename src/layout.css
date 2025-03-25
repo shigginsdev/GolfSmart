@@ -73,14 +73,13 @@ a {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
 }
 
 .banner h1 {
   font-size: 26px;
   margin: 0;
-  font-family: Montserrat, san-serif;
-  letter-spacing: 10px;
+  font-family: Montserrat, san-serif;  
 }
 
 .header-buttons {
