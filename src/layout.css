@@ -187,11 +187,7 @@ a {
     width: 90vw;
     padding: 16px;
   }
-
-  .sidebar {
-    display: none; /* Optional: Hide sidebar on mobile */
-  }
-
+ 
   .main {
     flex-direction: column;
     width: 100vw;

@@ -22,18 +22,17 @@
   }
   
   .holes-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+    width: 100%;
   }
   
   .hole {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1;
-    min-width: 60px;
   }
   
   .hole label {
