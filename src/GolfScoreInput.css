@@ -1,5 +1,4 @@
-.score-input-container {
-  width: 100%;
+.score-input-container {  
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
@@ -43,16 +42,14 @@
     font-weight: bold;
   }
   
-  .hole input {
-    width: 100%;
+  .hole input {    
     padding: 6px;
     font-size: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-  }   
+  }
 
-  .submit-button, .clear-button {
-    width: 100%;
+  .submit-button, .clear-button {    
     max-width: 200px;
     margin: 10px auto;
     display: block;
