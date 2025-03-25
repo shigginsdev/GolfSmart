@@ -29,7 +29,7 @@ a {
 .header {
   display: flex;
   align-items: center;  
-  background-color: #3c3a3b;
+  background-color: #000000;
   color: white;
   letter-spacing: -.025em;
   line-height: 1;
@@ -55,7 +55,7 @@ a {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 300px;  
+  padding: 10px;    
   align-items: center;
   justify-content: right;
   position: relative;
@@ -144,9 +144,7 @@ a {
   margin-right: 10px;
 }
 
-.content {
-  flex: 1;
-  padding: 40px;
+.content {    
   background-color: #dfe9f5;
   background-image: url('./assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png');
   color: #2e2c2f;  

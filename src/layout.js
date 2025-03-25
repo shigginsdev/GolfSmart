@@ -1,10 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './layout.css';
-import scoresIcon from './assets/img/scores-icon.png';
-import leaguesIcon from './assets/img/leagues-icon.png';
-import settingsIcon from './assets/img/settings-icon.png';
-import insightsIcon from './assets/img/insights-icon.png';
 import bannerImg from './assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png';
 
 
