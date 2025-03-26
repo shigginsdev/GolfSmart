@@ -6,6 +6,17 @@
   box-sizing: border-box;
 }
 
+:root {
+  --amplify-components-button-primary-background-color: black;
+  --amplify-internal-button-background-color: #000000;
+  --amplify-internal-button-color: #000000;
+  --amplify-components-tabs-item-active-border-color: #000000;
+  --amplify-components-tabs-item-active-border-color: #000000;
+  --amplify-components-button-primary-color: white;
+  --amplify-components-tabs-item-color: black;
+  --amplify-components-tabs-item-active-color: black;
+}
+
 html, body {
   margin: 0;
   padding: 0;
