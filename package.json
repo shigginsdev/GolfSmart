@@ -1,7 +1,7 @@
 {
   "name": "golf-smart",
   "version": "0.1.0",
-  "private": true,
+  "private": true,  
   "dependencies": {
     "@aws-amplify/auth": "^6.11.3",
     "@aws-amplify/ui-react": "^6.9.3",
