@@ -100,7 +100,7 @@ def lambda_handler(event, context):
         return get_avg_per_hole(event)
     elif http_method == 'POST':
         return {
-            "statusCode": 405,
+            "statusCode": 200,
             "headers": {
                     "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 
                     "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
