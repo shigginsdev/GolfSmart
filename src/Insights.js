@@ -8,7 +8,7 @@ const Insights = ({ user }) => {
   const insightsApiEndpoint = "https://uvcdb20nw5.execute-api.us-east-2.amazonaws.com/DEV"; // Replace with your deployed Lambda API
 
   useEffect(() => {
-    const fetchScores = async () => {
+    const fetchInsights  = async () => {
       try {
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
@@ -27,7 +27,13 @@ const Insights = ({ user }) => {
           body: JSON.stringify({ userId: user.userId }),
         });
 
+        if (!response.ok) {
+          throw new Error(`❌ Failed to fetch insights: ${response.status}`);
+        }
+
         const rounds = await response.json();
+        console.log("✅ Insights data:", rounds);
+
         if (!Array.isArray(rounds)) return;
 
         const totals = Array(18).fill(0);
@@ -55,7 +61,7 @@ const Insights = ({ user }) => {
       }
     };
 
-    fetchScores();
+    fetchInsights();
   }, [user]);
 
   return (
