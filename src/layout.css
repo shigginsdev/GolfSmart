@@ -15,7 +15,7 @@
   --amplify-components-button-primary-color: white;
   --amplify-components-tabs-item-color: black;
   --amplify-components-tabs-item-active-color: black;
-  --amplify-components-button-link-color: #000000;
+  --amplify-components-button-link-color: #000000; 
 }
 
 html, body {
@@ -26,7 +26,7 @@ html, body {
 
 body {
   font-family: 'Montserrat', sans-serif;
-  background-color: #dfe9f5;  
+  background-color: #000000;  
   color: #55595e;
 }
 
