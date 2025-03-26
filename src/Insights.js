@@ -19,7 +19,7 @@ const Insights = ({ user }) => {
         }
 
         const response = await fetch(insightsApiEndpoint, {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
