@@ -75,13 +75,12 @@
     background: #55595e;
   }
   
-    /* Responsive */
-    @media (max-width: 768px) {
-        .holes-row {
-          flex-wrap: wrap;
-        }
-      
-        .hole {
-          min-width: 80px;
-        }
-      }
+  @media (max-width: 768px) {
+    .settings-form {
+      grid-template-columns: 1fr; /* Stack into a single column */
+    }
+  
+    .form-actions {
+      grid-column: span 1; /* Adjust to match new column layout */
+    }
+  }
