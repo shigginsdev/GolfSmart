@@ -15,6 +15,7 @@
   --amplify-components-button-primary-color: white;
   --amplify-components-tabs-item-color: black;
   --amplify-components-tabs-item-active-color: black;
+  --amplify-components-button-link-color: #000000;
 }
 
 html, body {
