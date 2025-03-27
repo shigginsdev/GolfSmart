@@ -5,6 +5,7 @@ import "./GolfScoreInput.css";
 const Insights = ({ user }) => {
   const [averageScores, setAverageScores] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [roundTotals, setRoundTotals] = useState([]);
 
   const insightsApiEndpoint = "https://n0l87dnv8j.execute-api.us-east-2.amazonaws.com/DEV"; // Replace with your deployed Lambda API
 
@@ -54,6 +55,24 @@ const Insights = ({ user }) => {
         );
 
         setAverageScores(averages);
+
+        // Calculate total score per round
+        const roundSummaries = rounds.map(round => {
+          let total = 0;
+          for (let i = 1; i <= 18; i++) {
+            const score = parseInt(round[`Hole${i}Score`], 10);
+            if (!isNaN(score)) {
+              total += score;
+            }
+          }
+          return { date: round.Date, total };
+        });
+
+        // Sort by most recent
+        roundSummaries.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        setRoundTotals(roundSummaries);
+
       } catch (err) {
         console.error("❌ Error fetching insights:", err);
       } finally {
@@ -65,9 +84,34 @@ const Insights = ({ user }) => {
   }, [user]);
 
   return (
-    <div className="score-input-container">
-      <h2>Insights</h2>
-      <p>Average score per hole (last 10 rounds)</p>
+    <div className="insights-container">
+      <div className="score-input-container">
+        <h2>Average score per hole (last 10 rounds)</h2>      
+
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <table style={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>
+            <thead>
+              <tr>
+                {Array.from({ length: 18 }, (_, i) => (
+                  <th key={i}>Hole {i + 1}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {averageScores.map((score, i) => (
+                  <td key={i}>{score}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <div className="score-input-container">
+      <h2>Average score per round</h2>      
 
       {loading ? (
         <p>Loading...</p>
@@ -75,20 +119,21 @@ const Insights = ({ user }) => {
         <table style={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>
           <thead>
             <tr>
-              {Array.from({ length: 18 }, (_, i) => (
-                <th key={i}>Hole {i + 1}</th>
-              ))}
+              <th>Date</th>
+              <th>Total Score</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              {averageScores.map((score, i) => (
-                <td key={i}>{score}</td>
-              ))}
-            </tr>
+            {roundTotals.map((round, i) => (
+              <tr key={i}>
+                <td>{round.date}</td>
+                <td>{round.total}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}
+      </div>
     </div>
   );
 };
