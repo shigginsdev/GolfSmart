@@ -5,7 +5,7 @@ const Insights = ({ user }) => {
   const [averageScores, setAverageScores] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const insightsApiEndpoint = "https://uvcdb20nw5.execute-api.us-east-2.amazonaws.com/DEV"; // Replace with your deployed Lambda API
+  const insightsApiEndpoint = "https://n0l87dnv8j.execute-api.us-east-2.amazonaws.com/DEV"; // Replace with your deployed Lambda API
 
   useEffect(() => {
     const fetchInsights  = async () => {
