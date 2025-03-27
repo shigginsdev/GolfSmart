@@ -18,8 +18,18 @@ ALLOWED_ORIGINS = [
 dynamodb = boto3.resource('dynamodb')
 users_table = dynamodb.Table('sg_user_scores')
 
+def decimal_to_native(obj):
+    """ Recursively convert Decimal to int or float """
+    if isinstance(obj, list):
+        return [decimal_to_native(i) for i in obj]
+    elif isinstance(obj, dict):
+        return {k: decimal_to_native(v) for k, v in obj.items()}
+    elif isinstance(obj, Decimal):
+        return int(obj) if obj % 1 == 0 else float(obj)
+    else:
+        return obj
 
-def get_avg_per_hole(event):
+def get_avg_per_hole(event, origin):
     """Fetches the user scores securely using Cognito authentication."""
     try:
         # 🔹 Extract user ID from Cognito claims
@@ -30,7 +40,7 @@ def get_avg_per_hole(event):
                 "statusCode": 401,
                 "headers": {
                     "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 
-                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
                 },
                 "body": json.dumps({"status": "error", "message": "User not authenticated"})
@@ -40,7 +50,7 @@ def get_avg_per_hole(event):
 
         # Query the last 10 rounds sorted by date descending
         response = users_table.query(
-            KeyConditionExpression=Key("userId").eq(user_id),
+            KeyConditionExpression=Key("userID").eq(user_id),
             ScanIndexForward=False,  # Descending order
             Limit=10
         )
@@ -50,11 +60,12 @@ def get_avg_per_hole(event):
         return {
             "statusCode": 200,
             "headers": {
-                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
-                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
-            "body": json.dumps(response["Items"])
+            "body": json.dumps(decimal_to_native(response["Items"]))
+
         }
 
     except Exception as e:
@@ -62,8 +73,8 @@ def get_avg_per_hole(event):
         return {
             "statusCode": 500,
             "headers": {
-                    "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 
-                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Origin": origin, 
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },            
             "body": json.dumps({"message": "Server error"})
@@ -74,7 +85,7 @@ def lambda_handler(event, context):
     """Main AWS Lambda handler"""
 
     logger.info(f"Received event: {json.dumps(event)}")
-    
+
     # Ensure 'headers' exists in the event before accessing it
     headers = event.get('headers') or {}  # Ensure it's always a dictionary
 
@@ -87,8 +98,8 @@ def lambda_handler(event, context):
         return {
             "statusCode": 400,
             "headers": {
-                    "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 
-                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Origin": origin, 
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
             "body": json.dumps({"status": "error", "message": "Invalid origin"},)                           
@@ -101,13 +112,13 @@ def lambda_handler(event, context):
     path = event.get('path', '')
 
     if http_method == 'GET':
-        return get_avg_per_hole(event)
+        return get_avg_per_hole(event, origin)
     elif http_method == 'POST':
         return {
             "statusCode": 200,
             "headers": {
-                    "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 
-                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Origin": origin, 
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
             "body": json.dumps({"message": "Method Not Allowed"})
@@ -116,8 +127,8 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "headers": {
-                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
-                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",                
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
             "body": json.dumps({"status": "ok"})

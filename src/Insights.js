@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import "./GolfScoreInput.css";
 
 const Insights = ({ user }) => {
   const [averageScores, setAverageScores] = useState([]);
@@ -64,7 +65,7 @@ const Insights = ({ user }) => {
   }, [user]);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="score-input-container">
       <h2>Insights</h2>
       <p>Average score per hole (last 10 rounds)</p>
 
