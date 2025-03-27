@@ -75,12 +75,35 @@ const Settings = ({ user }) => {
 
   const searchCourses = async (query) => {
     if (!query || query.length < 2) return;
+  
     try {
-      //const response = await fetch(`${courseSearchApi}?search_query=${encodeURIComponent(query)}`);
-      const response = await fetch(courseSearchApi);
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+  
+      if (!token) {
+        console.error("❌ No token found for authenticated request");
+        return;
+      }
+  
+      const response = await fetch(
+        `${courseSearchApi}?search_query=${encodeURIComponent(query)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`❌ Search API failed with ${response.status}`);
+      }
+  
       const data = await response.json();
       setCourseSuggestions(data.courses || []);
       setShowSuggestions(true);
+  
     } catch (error) {
       console.error("❌ Error searching courses:", error);
     }

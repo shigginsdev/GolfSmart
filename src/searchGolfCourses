@@ -49,8 +49,7 @@ def searchCourseByName(event, origin):
         data = res.read()
         logger.info(data.decode("utf-8"))
 
-        #add in secrets management
-        response = requests.request("GET", url, headers=headers, data=payload)
+        #add in secrets management        
 
         logger.info(response.text)
 
