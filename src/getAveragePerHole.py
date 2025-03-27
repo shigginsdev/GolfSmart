@@ -45,6 +45,8 @@ def get_avg_per_hole(event):
             Limit=10
         )
 
+        logger.info(f"DynamoDB response: {response['Items']}")
+
         return {
             "statusCode": 200,
             "headers": {
@@ -71,6 +73,8 @@ def get_avg_per_hole(event):
 def lambda_handler(event, context):
     """Main AWS Lambda handler"""
 
+    logger.info(f"Received event: {json.dumps(event)}")
+    
     # Ensure 'headers' exists in the event before accessing it
     headers = event.get('headers') or {}  # Ensure it's always a dictionary
 
