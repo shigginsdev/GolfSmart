@@ -76,7 +76,8 @@ const Settings = ({ user }) => {
   const searchCourses = async (query) => {
     if (!query || query.length < 2) return;
     try {
-      const response = await fetch(`${courseSearchApi}?search_query=${encodeURIComponent(query)}`);
+      //const response = await fetch(`${courseSearchApi}?search_query=${encodeURIComponent(query)}`);
+      const response = await fetch(courseSearchApi);
       const data = await response.json();
       setCourseSuggestions(data.courses || []);
       setShowSuggestions(true);
