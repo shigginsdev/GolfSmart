@@ -95,7 +95,7 @@ const Insights = ({ user }) => {
             <thead>
               <tr>
                 {Array.from({ length: 18 }, (_, i) => (
-                  <th key={i}>Hole {i + 1}</th>
+                  <th key={i}>{i + 1}</th>
                 ))}
               </tr>
             </thead>
@@ -111,7 +111,7 @@ const Insights = ({ user }) => {
       </div>
 
       <div className="score-input-container">
-      <h2>Average score per round</h2>      
+      <h2>Score per round</h2>      
 
       {loading ? (
         <p>Loading...</p>
@@ -130,6 +130,26 @@ const Insights = ({ user }) => {
                 <td>{round.total}</td>
               </tr>
             ))}
+          </tbody>
+        </table>
+      )}
+      </div>
+
+      <div className="score-input-container">
+      <h2>Over/Under per hole for the last round</h2>      
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table style={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>
+          <thead>
+            <tr>
+              <th>TBD</th>
+              <th>Total Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            TBD
           </tbody>
         </table>
       )}

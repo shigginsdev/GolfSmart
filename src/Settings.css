@@ -1,14 +1,5 @@
 /* General container */
 .settings-container {
-    /* padding: 20px;
-    max-width: 600px;
-    margin: auto;
-    background: #ffffff;
-    border-radius: 8px;
-    width: 100vw;
-    box-sizing: border-box;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-
     max-width: 800px;
     margin: 20px auto;
     padding: 20px;
@@ -74,6 +65,30 @@
   .form-actions button:hover {
     background: #55595e;
   }
+
+  .autocomplete-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 10;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .autocomplete-dropdown li {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .autocomplete-dropdown li:hover {
+    background-color: #f0f0f0;
+  }
+  
   
   @media (max-width: 768px) {
     .settings-form {

@@ -20,3 +20,16 @@
 # )
 
 # print(response.choices[0].message.content)
+
+""" import http.client
+
+conn = http.client.HTTPSConnection("api.golfcourseapi.com")
+payload = ''
+headers = {
+  'Authorization': 'Key xxx'
+}
+conn.request("GET", "/v1/search?search_query=pinehurst", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+ """

@@ -1,7 +1,7 @@
 {
   "name": "golf-smart",
   "version": "0.1.0",
-  "private": true,  
+  "private": true,
   "dependencies": {
     "@aws-amplify/auth": "^6.11.3",
     "@aws-amplify/ui-react": "^6.9.3",
@@ -11,6 +11,7 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "aws-amplify": "^6.13.3",
+    "lodash.debounce": "^4.0.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
