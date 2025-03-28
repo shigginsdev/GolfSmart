@@ -65,26 +65,24 @@ const Settings = ({ user }) => {
   };
 
   const handleCourseSelect = (course) => {
-    setFormData(prev => ({
-      ...prev,
-      homeCourse: `${course.club_name} (${course.location.city}, ${course.location.state})`
-    }));
+    const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
+    setFormData(prev => ({ ...prev, homeCourse: courseName }));
     setCourseSuggestions([]);
     setShowSuggestions(false);
   };
 
   const searchCourses = async (query) => {
     if (!query || query.length < 2) return;
-  
+
     try {
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString();
-  
+
       if (!token) {
         console.error("❌ No token found for authenticated request");
         return;
       }
-  
+
       const response = await fetch(
         `${courseSearchApi}?search_query=${encodeURIComponent(query)}`,
         {
@@ -95,15 +93,15 @@ const Settings = ({ user }) => {
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`❌ Search API failed with ${response.status}`);
       }
-  
+
       const data = await response.json();
       setCourseSuggestions(data.courses || []);
       setShowSuggestions(true);
-  
+
     } catch (error) {
       console.error("❌ Error searching courses:", error);
     }
@@ -176,7 +174,7 @@ const Settings = ({ user }) => {
             value={formData.homeCourse}
             onChange={handleChange}
             autoComplete="off"
-            onFocus={() => formData.homeCourse && setShowSuggestions(true)}
+            onFocus={() => setShowSuggestions(courseSuggestions.length > 0)}
           />
           {showSuggestions && courseSuggestions.length > 0 && (
             <ul className="autocomplete-dropdown">

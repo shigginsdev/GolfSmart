@@ -49,9 +49,7 @@ def searchCourseByName(event, origin):
         data = res.read()
         logger.info(data.decode("utf-8"))
 
-        #add in secrets management        
-
-        logger.info(response.text)
+        #add in secrets management                
 
         
         return {
@@ -61,7 +59,7 @@ def searchCourseByName(event, origin):
                 "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
-            "body": json.dumps(response.text)
+            "body": json.dumps(data.decode("utf-8"))
 
         }
 

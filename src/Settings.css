@@ -68,26 +68,36 @@
 
   .autocomplete-dropdown {
     position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    max-height: 150px;
-    overflow-y: auto;
-    width: 100%;
+    top: 100%;
+    left: 0;
+    right: 0;
     z-index: 10;
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
   }
   
   .autocomplete-dropdown li {
-    padding: 10px;
+    padding: 10px 15px;
     cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .autocomplete-dropdown li:last-child {
+    border-bottom: none;
   }
   
   .autocomplete-dropdown li:hover {
-    background-color: #f0f0f0;
+    background-color: #f2f2f2;
   }
+  
   
   
   @media (max-width: 768px) {
