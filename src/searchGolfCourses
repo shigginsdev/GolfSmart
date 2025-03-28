@@ -5,6 +5,7 @@ from decimal import Decimal
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key
 import http.client
+import urllib.request
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -39,15 +40,44 @@ def searchCourseByName(event, origin):
 
         logger.info(f"Fetching user profile for userID: {user_id}")
 
-        conn = http.client.HTTPSConnection("api.golfcourseapi.com")
-        payload = ''
-        headers = {
-        'Authorization': 'Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA'
-        }
-        conn.request("GET", "/v1/search?search_query=pinehurst", payload, headers)
-        res = conn.getresponse()
-        data = res.read()
-        logger.info(data.decode("utf-8"))
+        # conn = http.client.HTTPSConnection("api.golfcourseapi.com")
+        # payload = ''
+        # headers = {
+        # 'Authorization': 'Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA'
+        # }
+        # conn.request("GET", "/v1/search?search_query=pinehurst", payload, headers)
+        # res = conn.getresponse()
+        # #data = res.read()
+        # #logger.info(data.decode("utf-8"))
+
+        # Build the external API call
+        search_query = event.get("queryStringParameters", {}).get("search_query", "")
+        if not search_query:
+            return { ... }  # handle missing query
+        
+        url = f"https://api.golfcourseapi.com/v1/search?search_query=pinehurst"
+        req = urllib.request.Request(
+            url,
+            headers={"Authorization": "Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA"}
+        )
+
+        with urllib.request.urlopen(req) as response:
+            raw_data = response.read()
+            data = json.loads(raw_data)
+
+        trimmed_courses = [
+            {
+                "id": course["id"],
+                "club_name": course["club_name"],
+                "location": {
+                    "city": course["location"]["city"],
+                    "state": course["location"]["state"]
+                }
+            }
+            for course in data.get("courses", [])
+        ]
+
+        
 
         #add in secrets management                
 
@@ -59,7 +89,7 @@ def searchCourseByName(event, origin):
                 "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
-            "body": json.dumps(data.decode("utf-8"))
+             "body": json.dumps({ "courses": trimmed_courses })
 
         }
 
