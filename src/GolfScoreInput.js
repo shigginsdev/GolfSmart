@@ -65,6 +65,38 @@ const GolfScoreInput = ({ user }) => {
     fetchS3UploadCredentials(); // ✅ Call function here directly
   }, []);
 
+  // Fetch the user's first name so that we can scan their score fromt the scorecard
+  const [firstName, setFirstName] = useState("Unknown");
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+
+        if (!token) return;
+
+        const response = await fetch("https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const result = await response.json();
+        if (result.status === "success") {
+          setFirstName(result.data.firstName || "Unknown");
+        }
+      } catch (error) {
+        console.error("❌ Error fetching profile in GolfScoreInput:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+
   // ✅ Handle Input Changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -123,7 +155,7 @@ const GolfScoreInput = ({ user }) => {
   // ✅ Scan Image & Prepopulate Scores
   const handleTopSubmit = async () => {
     console.log("🔼 Scan in my scorecard clicked!");
-
+    
     if (!userId) {
       alert("User not authenticated.");
       return;
@@ -142,7 +174,7 @@ const GolfScoreInput = ({ user }) => {
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, fileUrl: imageUrl, firstName: user?.firstName || "Unknown" }),
+        body: JSON.stringify({ userId, fileUrl: imageUrl, firstName }),
       });
 
       const result = await response.json();

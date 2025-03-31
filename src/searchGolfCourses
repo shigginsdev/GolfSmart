@@ -55,7 +55,7 @@ def searchCourseByName(event, origin):
         if not search_query:
             return { ... }  # handle missing query
         
-        url = f"https://api.golfcourseapi.com/v1/search?search_query=pinehurst"
+        url = f"https://api.golfcourseapi.com/v1/search?search_query={search_query}"
         req = urllib.request.Request(
             url,
             headers={"Authorization": "Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA"}

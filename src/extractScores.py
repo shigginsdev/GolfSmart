@@ -16,11 +16,11 @@ ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
 
-def get_secret(event):
-
-    # first_name = event.get("firstName", "")
+def get_secret(event, origin):
+    
     # Parse request body
     body = json.loads(event.get("body", "{}"))
+    logger.info(f"Received body: {body}")
     imageURL = body.get("fileUrl")
     first_name = body.get("firstName", "Unknown")
     logger.info(f"Received event: {json.dumps(event)}")
@@ -45,7 +45,11 @@ def get_secret(event):
         # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
         return {
             "statusCode": 405,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
             "body": json.dumps({"message": "Error returning secrets"})
         }
     
@@ -56,23 +60,28 @@ def get_secret(event):
         logger.error("No API key found in Secrets Manager")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
             "body": json.dumps({"message": "Invalid API key retrieved"})
         }
 
     logger.info(f"Using OpenAI API Key: {api_key[:5]}********")  # ✅ Logs only part of the key for security
-    
+    logger.info("Provide a list of all scores, holes 1 - 18, for the row where the first column contains the name" + first_name + " from the attached scorecard. Provide the output as json key value pairs with the hole number and their score for that hole.")
 
     try:
         openai.api_key = api_key
 
+
         #oai_client = OpenAI(api_key)
         response = openai.chat.completions.create(
-            model="gpt-4o-mini",
+            model="chatgpt-4o-latest",
             messages=[{
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Provide a list of all scores, holes 1 - 18, for {first_name} from the attached scorecard. Provide the output as json key value pairs with the hole number and their score for that hole."},
+                    {"type": "text", "text": "Provide a list of all scores, holes 1 - 18, for the row where the first column contains the name Phil from the attached scorecard. Provide the output as json key value pairs with the hole number and their score for that hole."},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -85,14 +94,22 @@ def get_secret(event):
         )
         return {
                 "statusCode": 200,
-                "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+                "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
                 "body": json.dumps({"status": "success", "message": response.choices[0].message.content})
             }   
     except ClientError as e:
         logger.error(f"Error: {str(e)}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
             "body": json.dumps({"status": "error", "message": "Error occurred"})
         }   
     
@@ -121,14 +138,22 @@ def lambda_handler(event, context):
     if http_method == 'GET':
         return {
             'statusCode': 200,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
             'body': json.dumps('Smart Golf GET method')
         }
     elif http_method == 'POST':
-        return get_secret(event)
+        return get_secret(event, origin)
     else:
         return {
             "statusCode": 405,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
             "body": json.dumps({"message": "Method Not Allowed"})
         }
