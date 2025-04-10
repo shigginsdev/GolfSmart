@@ -69,6 +69,7 @@ const Settings = ({ user }) => {
       }));
       debouncedSearch(value);
     }
+  };
 
   const handleCourseSelect = (course) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
