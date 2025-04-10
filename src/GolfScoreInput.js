@@ -332,7 +332,7 @@ const GolfScoreInput = ({ user }) => {
           <input
             type="text"
             name="homeCourseName"
-            value={formData.courseName}
+            value={formData.homeCourseName}
             onChange={handleChange}
             placeholder="Enter course name"
           />
