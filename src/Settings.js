@@ -6,6 +6,7 @@ import './Settings.css';
 const Settings = ({ user }) => {
   const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
+  const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -57,6 +58,37 @@ const Settings = ({ user }) => {
     fetchUserProfile();
   }, [user]);
 
+
+  const checkOrCreateCourse = async (courseData) => {
+    try {
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+  
+      if (!token) {
+        console.error("❌ No token found for checkCreateCourse API.");
+        return;
+      }
+  
+      const response = await fetch(checkCreateCourseAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(courseData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`❌ checkCreateCourse failed with status ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log("✅ checkCreateCourse API response:", result);
+    } catch (error) {
+      console.error("❌ Error calling checkCreateCourse:", error);
+    }
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -80,6 +112,9 @@ const Settings = ({ user }) => {
     }));
     setCourseSuggestions([]);
     setShowSuggestions(false);
+
+    //add a new course if necessary
+    checkOrCreateCourse(course);
   };
 
   const searchCourses = async (query) => {

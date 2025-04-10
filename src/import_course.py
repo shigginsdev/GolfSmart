@@ -30,7 +30,8 @@ table = dynamodb.Table(DYNAMO_TABLE_NAME)
 item = {
     "courseID": course_id,
     "courseName": course_name,
-    "course_data": course
+    "course_data": course,
+    "externalCourseID": course.get("id") or "N/A"
 }
 
 try:
