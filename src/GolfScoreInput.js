@@ -69,14 +69,7 @@ const GolfScoreInput = ({ user }) => {
 
   // Fetch the user's first name so that we can scan their score fromt the scorecard
   const [firstName, setFirstName] = useState("Unknown");
-  // 🏌️ Set default course if available
-  if (result.data.homeCourse && result.data.homeCourseID) {
-    setFormData(prev => ({
-      ...prev,
-      courseName: result.data.homeCourse,
-      courseID: result.data.homeCourseID,
-    }));
-  }  
+ 
 
   useEffect(() => {
       const fetchUserProfile = async () => {
@@ -97,6 +90,15 @@ const GolfScoreInput = ({ user }) => {
           const result = await response.json();
           if (result.status === "success") {
             setFirstName(result.data.firstName || "Unknown");
+
+            // set the home course if populated
+            if (result.data.homeCourse && result.data.homeCourseID) {
+              setFormData(prev => ({
+                ...prev,
+                courseName: result.data.homeCourse,
+                courseID: result.data.homeCourseID,
+              }));
+            }
           }
         } catch (error) {
           console.error("❌ Error fetching profile in GolfScoreInput:", error);
