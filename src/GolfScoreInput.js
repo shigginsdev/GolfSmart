@@ -70,37 +70,32 @@ const GolfScoreInput = ({ user }) => {
   const [firstName, setFirstName] = useState("Unknown");
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const session = await fetchAuthSession();
-        const token = session.tokens?.idToken?.toString();
-
-        if (!token) return;
-
-        const response = await fetch("https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const result = await response.json();
-        if (result.status === "success") {
-          setFirstName(result.data.firstName || "Unknown");
-          if (result.data.homeCourseID) {
-            setFormData((prev) => ({
-              ...prev,
-              courseID: result.data.homeCourseID
-            }));
+      const fetchUserProfile = async () => {
+        try {
+          const session = await fetchAuthSession();
+          const token = session.tokens?.idToken?.toString();
+  
+          if (!token) return;
+  
+          const response = await fetch("https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          const result = await response.json();
+          if (result.status === "success") {
+            setFirstName(result.data.firstName || "Unknown");
+          }
+        } catch (error) {
+          console.error("❌ Error fetching profile in GolfScoreInput:", error);
         }
-      } catch (error) {
-        console.error("❌ Error fetching profile in GolfScoreInput:", error);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
+      };
+  
+      fetchUserProfile();
+    }, []);
 
 
   // ✅ Handle Input Changes
