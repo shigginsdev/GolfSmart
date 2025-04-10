@@ -29,6 +29,7 @@ def add_score(event):
         score_table.put_item(Item={
             'userID': str(user_score['userId']),
             'scoreID': str(user_score['scoreId']),
+            'courseID': str(user_score.get('courseID', '')),
             'Date': str(user_score['Date']),
             **{f'Hole{i+1}Score': int(user_score[f'Hole{i+1}Score']) for i in range(18)}
         })

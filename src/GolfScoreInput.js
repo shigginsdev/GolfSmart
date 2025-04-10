@@ -7,7 +7,8 @@ import "./GolfScoreInput.css";
 const GolfScoreInput = ({ user }) => {
   const initialFormState = {
     scoreId: uuidv4(),
-    courseID: "", // ⛳ Will default to home course (if available)
+    courseID: "",
+    courseName: '',  
     Date: new Date().toISOString().split("T")[0], // ✅ Default to today's date
     ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`Hole${i + 1}Score`, ""])),
   };
@@ -68,6 +69,14 @@ const GolfScoreInput = ({ user }) => {
 
   // Fetch the user's first name so that we can scan their score fromt the scorecard
   const [firstName, setFirstName] = useState("Unknown");
+  // 🏌️ Set default course if available
+  if (result.data.homeCourse && result.data.homeCourseID) {
+    setFormData(prev => ({
+      ...prev,
+      courseName: result.data.homeCourse,
+      courseID: result.data.homeCourseID,
+    }));
+  }  
 
   useEffect(() => {
       const fetchUserProfile = async () => {
@@ -99,9 +108,14 @@ const GolfScoreInput = ({ user }) => {
 
 
   // ✅ Handle Input Changes
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   // ✅ Handle File Selection
@@ -231,6 +245,7 @@ const GolfScoreInput = ({ user }) => {
       userId,
       scoreId: formData.scoreId,
       Date: formData.Date,
+      courseID: formData.courseID,
       ...formData,
     };
 
@@ -308,7 +323,16 @@ const GolfScoreInput = ({ user }) => {
             </div>
           ))}
         </div>
-
+        <div className="form-group">
+          <label>Course Played:</label>
+          <input
+            type="text"
+            name="courseName"
+            value={formData.courseName}
+            onChange={handleChange}
+            placeholder="Enter course name"
+          />
+        </div>
         <div className="button-group">
           <button type="submit" className="submit-button">Submit</button>
         </div>
