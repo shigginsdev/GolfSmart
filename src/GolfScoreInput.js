@@ -88,14 +88,16 @@ const GolfScoreInput = ({ user }) => {
           });
   
           const result = await response.json();
+          console.log("🏌️‍♂️ Full user profile:", result);
+          
           if (result.status === "success") {
             setFirstName(result.data.firstName || "Unknown");
 
             // set the home course if populated
-            if (result.data.homeCourse && result.data.homeCourseID) {
+            if (result.data.homeCourseName && result.data.homeCourseID) {
               setFormData(prev => ({
                 ...prev,
-                courseName: result.data.homeCourse,
+                homeCourseName: result.data.homeCourseName,
                 courseID: result.data.homeCourseID,
               }));
             }
