@@ -7,6 +7,7 @@ import "./GolfScoreInput.css";
 const GolfScoreInput = ({ user }) => {
   const initialFormState = {
     scoreId: uuidv4(),
+    courseID: "", // ⛳ Will default to home course (if available)
     Date: new Date().toISOString().split("T")[0], // ✅ Default to today's date
     ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`Hole${i + 1}Score`, ""])),
   };
@@ -87,6 +88,11 @@ const GolfScoreInput = ({ user }) => {
         const result = await response.json();
         if (result.status === "success") {
           setFirstName(result.data.firstName || "Unknown");
+          if (result.data.homeCourseID) {
+            setFormData((prev) => ({
+              ...prev,
+              courseID: result.data.homeCourseID
+            }));
         }
       } catch (error) {
         console.error("❌ Error fetching profile in GolfScoreInput:", error);
@@ -271,8 +277,7 @@ const GolfScoreInput = ({ user }) => {
         <button type="button" className="submit-button top-submit" onClick={handleTopSubmit} disabled={loading}>
           {loading ? "Scanning..." : "Scan in my scorecard"}
         </button>
-      </div>
-
+      </div>      
       <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
           Date:

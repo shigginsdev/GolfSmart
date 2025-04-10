@@ -73,7 +73,8 @@ def save_user_profile(event):
             'firstName': str(user_profile['firstName']),
             'lastName': str(user_profile['lastName']),
             'email': str(user_profile['email']),
-            'homeCourse': str(user_profile.get('homeCourse', '')),
+            'homeCourseName': str(user_profile.get('homeCourseName', '')),
+            'homeCourseID': str(user_profile.get('homeCourseID', '')),
             'scoringType': str(user_profile.get('scoringType', 'Normal Scoring')),
             'teeBox': str(user_profile.get('teeBox', 'Championship Back'))            
         })

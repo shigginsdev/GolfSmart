@@ -12,6 +12,7 @@ const Settings = ({ user }) => {
     lastName: '',
     email: user?.attributes?.email || '',
     homeCourse: '',
+    homeCourseID: '',
     scoringType: 'Normal Scoring',
     teeBox: 'Championship Back',
   });
@@ -43,6 +44,7 @@ const Settings = ({ user }) => {
             lastName: userData.data.lastName || '',
             email: userData.data?.email || user?.attributes?.email || '',
             homeCourse: userData.data.homeCourse || '',
+            homeCourseID: userData.data.homeCourseID || '',
             scoringType: userData.data.scoringType || 'Normal Scoring',
             teeBox: userData.data.teeBox || 'Championship Back',
           });
@@ -66,7 +68,11 @@ const Settings = ({ user }) => {
 
   const handleCourseSelect = (course) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
-    setFormData(prev => ({ ...prev, homeCourse: courseName }));
+    setFormData(prev => ({
+      ...prev,
+      homeCourseName: courseName,
+      homeCourseID: course.id, // save ID too
+    }));
     setCourseSuggestions([]);
     setShowSuggestions(false);
   };
@@ -125,6 +131,7 @@ const Settings = ({ user }) => {
         lastName: formData.lastName,
         email: formData.email,
         homeCourse: formData.homeCourse,
+        homeCourseID: formData.homeCourseID,
         scoringType: formData.scoringType,
         teeBox: formData.teeBox,
       };
@@ -170,8 +177,8 @@ const Settings = ({ user }) => {
           <label>Home Course:</label>
           <input
             type="text"
-            name="homeCourse"
-            value={formData.homeCourse}
+            name="homeCourseName"
+            value={formData.homeCourseName}
             onChange={handleChange}
             autoComplete="off"
             onFocus={() => setShowSuggestions(courseSuggestions.length > 0)}
