@@ -89,7 +89,7 @@ const GolfScoreInput = ({ user }) => {
   
           const result = await response.json();
           console.log("🏌️‍♂️ Full user profile:", result);
-          
+
           if (result.status === "success") {
             setFirstName(result.data.firstName || "Unknown");
 
@@ -331,7 +331,7 @@ const GolfScoreInput = ({ user }) => {
           <label>Course Played:</label>
           <input
             type="text"
-            name="courseName"
+            name="homeCourseName"
             value={formData.courseName}
             onChange={handleChange}
             placeholder="Enter course name"
