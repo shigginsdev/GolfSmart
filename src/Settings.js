@@ -61,10 +61,14 @@ const Settings = ({ user }) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
 
-    if (name === 'homeCourse') {
+    if (name === 'homeCourseName') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        homeCourseID: '', // clear when typing
+      }));
       debouncedSearch(value);
     }
-  };
 
   const handleCourseSelect = (course) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
