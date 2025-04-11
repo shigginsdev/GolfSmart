@@ -14,7 +14,7 @@ Generate the code with clear comments explaining the logic.
 
 We now need to implement the ability for a user to save the course played when they save their score.
 Key requirements:
-1. There should be a text field on the golfscoreinput.js page for course played that defaults to the users home course. If there is no home course, leave the field blank
+1. There should be a text field on the golfscoreinput.js page for course played that defaults to the users homeCourseName. If there is no home course, leave the field blank
 2. When the user submits their score, the course ID should be saved to the sg_user_scores table
 Please consider:
 - Error handling

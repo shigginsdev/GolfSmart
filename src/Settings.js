@@ -69,13 +69,19 @@ const Settings = ({ user }) => {
         return;
       }
   
+      // 🔁 Transform the incoming courseData from courseSearchAPI
+      const payload = {
+        externalCourseID: courseData.id.toString(), // DynamoDB requires string keys
+        courseName: courseData.club_name
+      };
+  
       const response = await fetch(checkCreateCourseAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(courseData),
+        body: JSON.stringify(payload),
       });
   
       if (!response.ok) {
@@ -88,6 +94,7 @@ const Settings = ({ user }) => {
       console.error("❌ Error calling checkCreateCourse:", error);
     }
   };
+  
   
   const handleChange = (e) => {
     const { name, value } = e.target;
