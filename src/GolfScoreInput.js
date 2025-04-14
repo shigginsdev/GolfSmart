@@ -99,16 +99,27 @@ const GolfScoreInput = ({ user }) => {
   // ✅ Handle Input Changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    // setFormData(prev => ({ ...prev, [name]: value }));
+
+    // if (name === 'courseName') {
+    //   setFormData(prev => ({
+    //     ...prev,
+    //     courseName: value,
+    //     courseID: '', // reset ID if name changes
+    //   }));
 
     if (name === 'courseName') {
       setFormData(prev => ({
         ...prev,
         courseName: value,
-        courseID: '', // reset ID if name changes
+        courseID: '', // Clear this when typing
       }));
+      console.log("🔍 Calling debouncedSearch with:", value); // Add this
       debouncedSearch(value);
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
+    
   };
 
   const handleCourseSelect = (course) => {
