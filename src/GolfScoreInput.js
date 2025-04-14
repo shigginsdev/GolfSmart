@@ -36,6 +36,26 @@ const GolfScoreInput = ({ user }) => {
   const REGION = "us-east-2";
   const userId = user?.userId;
 
+   // ✅ Handle Input Changes
+   const handleChange = (e) => {
+    console.log("Handle change called")
+    const { name, value } = e.target;    
+
+    if (name === 'courseName') {
+      setFormData(prev => ({
+        ...prev,
+        courseName: value,
+        courseID: '', // Clear this when typing
+      }));
+      console.log("🔍 Calling debouncedSearch with:", value); // Add this
+      debouncedSearch(value);
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+
+  };
+
+
   useEffect(() => {
     const fetchS3UploadCredentials = async () => {
       const session = await fetchAuthSession();
@@ -97,25 +117,7 @@ const GolfScoreInput = ({ user }) => {
     fetchUserProfile();
   }, []);
 
-  // ✅ Handle Input Changes
-  const handleChange = (e) => {
-    console.log("Handle change called")
-    const { name, value } = e.target;    
-
-    if (name === 'courseName') {
-      setFormData(prev => ({
-        ...prev,
-        courseName: value,
-        courseID: '', // Clear this when typing
-      }));
-      console.log("🔍 Calling debouncedSearch with:", value); // Add this
-      debouncedSearch(value);
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-
-  };
-
+ 
   const handleCourseSelect = (course) => {
     const courseName = `${course.courseName} (${course.course_data.location.city}, ${course.course_data.location.state})`;
     setFormData(prev => ({
