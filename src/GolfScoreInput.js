@@ -117,7 +117,10 @@ const GolfScoreInput = ({ user }) => {
     fetchUserProfile();
   }, []);
 
- 
+  useEffect(() => {
+    console.log("📦 formData initialized:", formData);
+  }, []);
+  
   const handleCourseSelect = (course) => {
     const courseName = `${course.courseName} (${course.course_data.location.city}, ${course.course_data.location.state})`;
     setFormData(prev => ({
