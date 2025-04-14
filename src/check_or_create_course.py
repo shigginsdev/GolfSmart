@@ -2,6 +2,7 @@ import json
 import uuid
 import boto3
 import logging
+from decimal import Decimal
 import urllib.request
 from boto3.dynamodb.conditions import Attr
 
@@ -20,24 +21,33 @@ EXTERNAL_COURSE_LOOKUP_API = "https://c8h20trzmh.execute-api.us-east-2.amazonaws
 
 def fetch_course_data_from_external_api(external_course_id):
     """Fetch full course JSON from external API."""
-    try:
-        url = EXTERNAL_COURSE_LOOKUP_API + str(external_course_id)
-        with urllib.request.urlopen(url) as response:
-            return json.loads(response.read().decode())
-    except Exception as e:
-        logger.error(f"❌ Failed to fetch external course data: {e}")
-        return None
+    # try:
+    #     url = EXTERNAL_COURSE_LOOKUP_API + str(external_course_id)
+    #     with urllib.request.urlopen(url) as response:
+    #         return json.loads(response.read().decode())
+    # except Exception as e:
+    #     logger.error(f"❌ Failed to fetch external course data: {e}")
+    #     return None
+            
+    url = f"https://api.golfcourseapi.com/v1/courses/{external_course_id}"
+    req = urllib.request.Request(
+        url,
+        headers={"Authorization": "Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA"}
+    )
 
+    with urllib.request.urlopen(req) as response:
+        raw_data = response.read()
+        return json.loads(raw_data, parse_float=Decimal)    
 
 def check_create_course(event):
     try:
         body = json.loads(event.get("body", "{}"))
         logger.info(f"📥 Incoming course data: {body}")
 
-        external_course_id = str(body.get("externalCourseID"))
-        course_name = body.get("courseName")
+        external_course_id = str(body.get("id"))
+        course_name = body.get("club_name")        
 
-        if not external_course_id or not course_name:
+        if not external_course_id or not course_name:            
             return {
                 "statusCode": 400,
                 "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
@@ -48,6 +58,8 @@ def check_create_course(event):
         response = COURSES_TABLE.scan(
             FilterExpression=Attr("externalCourseID").eq(external_course_id)
         )
+
+        logger.info(f"🔍 DynamoDB response: {response}")
 
         if response["Items"]:
             logger.info("✅ Course already exists.")
@@ -109,6 +121,23 @@ def lambda_handler(event, context):
 
     method = event.get("httpMethod", "")
     if method == "GET":
+        # New logic to search for courses in DynamoDB
+        query_params = event.get("queryStringParameters", {})
+        search_query = query_params.get("search_query", "").lower()
+
+        if not search_query or len(search_query) < 2:
+            return {
+                "statusCode": 400,
+                "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+                "body": json.dumps({"status": "error", "message": "Missing or too short search_query"})
+            }
+
+        # Scan DynamoDB using FilterExpression on courseName
+        response = COURSES_TABLE.scan(
+            FilterExpression=Attr("courseName").contains(search_query)
+        )
+
+        courses = response.get("Items", [])
         return {
             "statusCode": 200,
             "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},

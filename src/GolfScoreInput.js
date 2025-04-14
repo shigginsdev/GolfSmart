@@ -273,6 +273,59 @@ const GolfScoreInput = ({ user }) => {
     }
   };
 
+  const checkOrCreateCourse = async (courseData) => {
+    try {
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+      const courseSuggestionApi = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV?search_query=YourTerm";
+
+  
+      if (!token) {
+        console.error("❌ No token found for checkCreateCourse API.");
+        return;
+      }
+  
+      // 🔁 Transform the incoming courseData from courseSearchAPI
+      const payload = {
+        externalCourseID: courseData.id.toString(), // DynamoDB requires string keys
+        courseName: courseData.club_name
+      };
+  
+      const response = await fetch(courseSuggestionApi, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`❌ checkCreateCourse failed with status ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log("✅ checkCreateCourse API response:", result);
+    } catch (error) {
+      console.error("❌ Error calling checkCreateCourse:", error);
+    }
+  };
+  
+
+  const handleCourseSelect = (course) => {
+    const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
+    setFormData(prev => ({
+      ...prev,
+      homeCourseName: courseName,
+      homeCourseID: course.id,
+    }));
+    setCourseSuggestions([]);
+    setShowSuggestions(false);
+  
+    // ✅ Trigger backend check/create logic
+    checkOrCreateCourse(course);
+  };
+  
   return (
     <div className="score-input-container">
       <h2>Enter Golf Scores</h2>
@@ -333,7 +386,7 @@ const GolfScoreInput = ({ user }) => {
             type="text"
             name="homeCourseName"
             value={formData.homeCourseName}
-            onChange={handleChange}
+            onChange={handleCourseSelect}
             placeholder="Enter course name"
           />
         </div>
