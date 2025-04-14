@@ -120,6 +120,8 @@ const GolfScoreInput = ({ user }) => {
 
   // ✅ Fetch course suggestions from DynamoDB
   const searchCourses = async (query) => {
+
+    console.log('Searching for', query)
     if (!query || query.length < 2) return;
 
     try {
