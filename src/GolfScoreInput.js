@@ -34,9 +34,7 @@ const GolfScoreInput = ({ user }) => {
 
   const S3_BUCKET = "golf-scorecards-bucket";
   const REGION = "us-east-2";
-  const userId = user?.userId;
-
-  console.log("🚀 GolfScoreInput component mounted");
+  const userId = user?.userId;  
 
 
    // ✅ Handle Input Changes
@@ -49,12 +47,12 @@ const GolfScoreInput = ({ user }) => {
         ...prev,
         courseName: value,
         courseID: '', // Clear this when typing
-      }));
-      console.log("🔍 Calling debouncedSearch with:", value); // Add this
-      debouncedSearch(value);
+      }));            
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
+
+    debouncedSearch(value);
 
   };
 
@@ -106,8 +104,7 @@ const GolfScoreInput = ({ user }) => {
           if (result.data.homeCourseName && result.data.homeCourseID) {
             setFormData(prev => ({
               ...prev,
-              // courseName: result.data.homeCourseName,
-              courseName: "Test course",
+              courseName: result.data.homeCourseName,              
               courseID: result.data.homeCourseID,
             }));
           }
