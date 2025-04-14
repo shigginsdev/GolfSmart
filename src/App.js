@@ -12,6 +12,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 Amplify.configure(awsExports);
 
+console.log("👀 Rendering page that includes GolfScoreInput");
+
 function App() {
   return (
     <Authenticator>
