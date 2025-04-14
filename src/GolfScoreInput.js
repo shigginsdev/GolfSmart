@@ -107,6 +107,7 @@ const GolfScoreInput = ({ user }) => {
         courseName: value,
         courseID: '', // reset ID if name changes
       }));
+      debouncedSearch(value);
     }
   };
 
