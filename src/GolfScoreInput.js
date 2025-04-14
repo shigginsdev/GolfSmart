@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import "./GolfScoreInput.css";
+import * as e from 'express';
 
 const GolfScoreInput = ({ user }) => {
   const initialFormState = {
@@ -152,6 +153,9 @@ const GolfScoreInput = ({ user }) => {
       });
 
       const data = await response.json();
+
+      console.log('🔍 Search results:', data);
+
       setCourseSuggestions(data.courses || []);
       setShowSuggestions(true);
     } catch (error) {
