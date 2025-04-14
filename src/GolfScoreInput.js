@@ -83,7 +83,8 @@ const GolfScoreInput = ({ user }) => {
           if (result.data.homeCourseName && result.data.homeCourseID) {
             setFormData(prev => ({
               ...prev,
-              courseName: result.data.homeCourseName,
+              // courseName: result.data.homeCourseName,
+              courseName: "Test course",
               courseID: result.data.homeCourseID,
             }));
           }
@@ -99,15 +100,7 @@ const GolfScoreInput = ({ user }) => {
   // ✅ Handle Input Changes
   const handleChange = (e) => {
     console.log("Handle change called")
-    const { name, value } = e.target;
-    // setFormData(prev => ({ ...prev, [name]: value }));
-
-    // if (name === 'courseName') {
-    //   setFormData(prev => ({
-    //     ...prev,
-    //     courseName: value,
-    //     courseID: '', // reset ID if name changes
-    //   }));
+    const { name, value } = e.target;    
 
     if (name === 'courseName') {
       setFormData(prev => ({
