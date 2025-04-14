@@ -36,6 +36,9 @@ const GolfScoreInput = ({ user }) => {
   const REGION = "us-east-2";
   const userId = user?.userId;
 
+  console.log("🚀 GolfScoreInput component mounted");
+
+
    // ✅ Handle Input Changes
    const handleChange = (e) => {
     console.log("Handle change called")
@@ -120,7 +123,7 @@ const GolfScoreInput = ({ user }) => {
   useEffect(() => {
     console.log("📦 formData initialized:", formData);
   }, []);
-  
+
   const handleCourseSelect = (course) => {
     const courseName = `${course.courseName} (${course.course_data.location.city}, ${course.course_data.location.state})`;
     setFormData(prev => ({
