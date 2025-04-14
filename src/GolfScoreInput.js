@@ -16,7 +16,7 @@ const GolfScoreInput = ({ user }) => {
 
   // ✅ State Hooks
   const [formData, setFormData] = useState(initialFormState);
-  // const [scanResult, setScanResult] = useState(null);
+  const [scanResult, setScanResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
