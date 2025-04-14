@@ -16,7 +16,7 @@ const GolfScoreInput = ({ user }) => {
 
   // ✅ State Hooks
   const [formData, setFormData] = useState(initialFormState);
-  const [scanResult, setScanResult] = useState(null);
+  // const [scanResult, setScanResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -102,8 +102,11 @@ const GolfScoreInput = ({ user }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
 
     if (name === 'courseName') {
-      setFormData(prev => ({ ...prev, courseID: '' }));
-      debouncedSearch(value);
+      setFormData(prev => ({
+        ...prev,
+        courseName: value,
+        courseID: '', // reset ID if name changes
+      }));
     }
   };
 
