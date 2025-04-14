@@ -98,6 +98,7 @@ const GolfScoreInput = ({ user }) => {
 
   // ✅ Handle Input Changes
   const handleChange = (e) => {
+    console.log("Handle change called")
     const { name, value } = e.target;
     // setFormData(prev => ({ ...prev, [name]: value }));
 
@@ -119,7 +120,7 @@ const GolfScoreInput = ({ user }) => {
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
-    
+
   };
 
   const handleCourseSelect = (course) => {
