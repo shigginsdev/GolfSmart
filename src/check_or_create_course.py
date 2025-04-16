@@ -125,24 +125,34 @@ def lambda_handler(event, context):
         query_params = event.get("queryStringParameters", {})
         search_query = query_params.get("search_query", "").lower()
 
+        logger.info(f"🔍 Query params: {json.dumps(query_params)}")
+        logger.info(f"🔍 Search query: {search_query}")
+
         if not search_query or len(search_query) < 2:
             return {
                 "statusCode": 400,
                 "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
                 "body": json.dumps({"status": "error", "message": "Missing or too short search_query"})
-            }
+            }        
 
-        # Scan DynamoDB using FilterExpression on courseName
         response = COURSES_TABLE.scan(
-            FilterExpression=Attr("courseName").contains(search_query)
+    ProjectionExpression="courseID, externalCourseID, courseName"
         )
 
-        courses = response.get("Items", [])
+        all_courses = response.get("Items", [])
+
+        matches = [
+            course for course in all_courses
+            if "courseName" in course and search_query in course["courseName"].lower()
+        ]
+
+        logger.info(f"🎯 Matched courses: {json.dumps(matches)}")
+
         return {
             "statusCode": 200,
             "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            "body": json.dumps("Smart Golf GET method")
-        }
+            "body": json.dumps({"courses": matches})
+        }        
     elif method == "POST":
         return check_create_course(event)
     else:

@@ -334,7 +334,7 @@ const GolfScoreInput = ({ user }) => {
             <ul className="autocomplete-dropdown">
               {courseSuggestions.map((course) => (
                 <li key={course.courseID} onClick={() => handleCourseSelect(course)}>
-                  {course.courseName} – {course.course_data?.location?.city}, {course.course_data?.location?.state}
+                  {course.courseName}
                 </li>
               ))}
             </ul>
