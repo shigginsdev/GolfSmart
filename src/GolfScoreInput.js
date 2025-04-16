@@ -123,7 +123,8 @@ const GolfScoreInput = ({ user }) => {
   }, []);
 
   const handleCourseSelect = (course) => {
-    const courseName = `${course.courseName} (${course.course_data.location.city}, ${course.course_data.location.state})`;
+    // const courseName = `${course.courseName} (${course.course_data.location.city}, ${course.course_data.location.state})`;
+    const courseName = `${course.courseName}`;
     setFormData(prev => ({
       ...prev,
       courseName,
