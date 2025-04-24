@@ -68,8 +68,8 @@ def check_create_course(event):
             logger.info("✅ Course already exists.")
             return {
                 "statusCode": 200,
-                "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-                "body": json.dumps({"status": "exists", "message": "Course already in sg_courses"})
+                "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},                
+                "body": json.dumps({"uuid": response["Items"][0]["courseID"]})
             }
 
         # Fetch full course data
@@ -94,8 +94,8 @@ def check_create_course(event):
 
         return {
             "statusCode": 201,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
-            "body": json.dumps({"status": "inserted", "message": "Course added to sg_courses"})
+            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},            
+            "body": json.dumps({"uuid": new_course_item["courseID"]})
         }
 
     except Exception as e:

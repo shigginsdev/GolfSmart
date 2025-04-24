@@ -62,10 +62,12 @@ const Settings = ({ user }) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
     const uuid = await checkOrCreateCourse(course);
 
-    if (!uuid) {
-      alert("Unable to set course—please try again.");
-      return;
-    }
+    // if (!uuid) {
+    //   alert("Unable to set course—please try again.");
+    //   return;
+    // }
+
+    console.log("✅ Course selected:", courseName, "with UUID:", uuid);
 
     setFormData(prev => ({
       ...prev,
