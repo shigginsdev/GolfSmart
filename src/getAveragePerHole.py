@@ -44,9 +44,7 @@ def get_avg_per_hole(event, origin):
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
                 },
                 "body": json.dumps({"status": "error", "message": "User not authenticated"})
-            }
-
-        logger.info(f"Fetching user profile for userID: {user_id}")
+            }        
 
         # Query the last 10 rounds sorted by date descending
         response = users_table.query(
@@ -55,7 +53,38 @@ def get_avg_per_hole(event, origin):
             Limit=10
         )
 
-        logger.info(f"DynamoDB response: {response['Items']}")
+        items = response.get("Items", [])
+
+        # get unique course ids
+        course_ids = list({ item["courseID"] for item in items })
+
+         # BatchGetItem to fetch courseName for each courseID
+        if course_ids:
+            keys = [{"courseID": cid} for cid in course_ids]
+            batch_resp = dynamodb.batch_get_item(
+                RequestItems={
+                    "sg_courses": {
+                        "Keys": keys,
+                        "ProjectionExpression": "courseID, courseName"
+                    }
+                }
+            )
+            name_map = {
+                rec["courseID"]: rec["courseName"]
+                for rec in batch_resp["Responses"].get("sg_courses", [])
+            }
+        else:
+            name_map = {}
+        
+        logger.info(f"📝 Name map: {name_map}")
+        
+        # Merge courseName into each score item
+        for rec in items:
+            rec["courseName"] = name_map.get(rec["courseID"], "")
+        
+        # Serialize Decimals
+        safe_items = decimal_to_native(items)
+
 
         return {
             "statusCode": 200,
@@ -64,7 +93,7 @@ def get_avg_per_hole(event, origin):
                 "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
-            "body": json.dumps(decimal_to_native(response["Items"]))
+            "body": json.dumps(safe_items)
 
         }
 

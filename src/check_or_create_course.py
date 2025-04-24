@@ -44,8 +44,11 @@ def check_create_course(event):
         body = json.loads(event.get("body", "{}"))
         logger.info(f"📥 Incoming course data: {body}")
 
-        external_course_id = str(body.get("id"))
-        course_name = body.get("club_name")        
+        external_course_id = str(body.get("externalCourseID"))
+        course_name = body.get("courseName")
+
+        # external_course_id = str(body.get("id"))
+        # course_name = body.get("club_name") 
 
         if not external_course_id or not course_name:            
             return {

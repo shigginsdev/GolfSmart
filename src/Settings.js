@@ -58,6 +58,24 @@ const Settings = ({ user }) => {
     fetchUserProfile();
   }, [user]);
 
+  const handleCourseSelect = async (course) => {
+    const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
+    const uuid = await checkOrCreateCourse(course);
+
+    if (!uuid) {
+      alert("Unable to set course—please try again.");
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      homeCourseName: courseName,
+      homeCourseID: uuid, // save ID too
+    }));
+    setCourseSuggestions([]);
+    setShowSuggestions(false);
+
+  };
 
   const checkOrCreateCourse = async (courseData) => {
     try {
@@ -108,20 +126,6 @@ const Settings = ({ user }) => {
       }));
       debouncedSearch(value);
     }
-  };
-
-  const handleCourseSelect = (course) => {
-    const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
-    setFormData(prev => ({
-      ...prev,
-      homeCourseName: courseName,
-      homeCourseID: course.id, // save ID too
-    }));
-    setCourseSuggestions([]);
-    setShowSuggestions(false);
-
-    //add a new course if necessary
-    checkOrCreateCourse(course);
   };
 
   const searchCourses = async (query) => {
