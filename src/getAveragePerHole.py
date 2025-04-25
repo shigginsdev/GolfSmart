@@ -17,6 +17,7 @@ ALLOWED_ORIGINS = [
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
 users_table = dynamodb.Table('sg_user_scores')
+COURSES_TABLE = dynamodb.Table("sg_courses")
 
 def decimal_to_native(obj):
     """ Recursively convert Decimal to int or float """
@@ -58,23 +59,36 @@ def get_avg_per_hole(event, origin):
         # get unique course ids
         course_ids = list({ item["courseID"] for item in items })
 
-         # BatchGetItem to fetch courseName for each courseID
+        # 🚧 TEMPORARY WORKAROUND: Scan full table and filter in-memory
         if course_ids:
-            keys = [{"courseID": cid} for cid in course_ids]
-            batch_resp = dynamodb.batch_get_item(
-                RequestItems={
-                    "sg_courses": {
-                        "Keys": keys,
-                        "ProjectionExpression": "courseID, courseName"
-                    }
-                }
-            )
+            course_scan = COURSES_TABLE.scan()
+            all_courses = course_scan.get("Items", [])
+
             name_map = {
-                rec["courseID"]: rec["courseName"]
-                for rec in batch_resp["Responses"].get("sg_courses", [])
+                course["courseID"]: course["courseName"]
+                for course in all_courses
+                if course["courseID"] in course_ids
             }
         else:
             name_map = {}
+
+         # BatchGetItem to fetch courseName for each courseID
+        # if course_ids:
+        #     keys = [{"courseID": cid} for cid in course_ids]
+        #     batch_resp = dynamodb.batch_get_item(
+        #         RequestItems={
+        #             "sg_courses": {
+        #                 "Keys": keys,
+        #                 "ProjectionExpression": "courseID, courseName"
+        #             }
+        #         }
+        #     )
+        #     name_map = {
+        #         rec["courseID"]: rec["courseName"]
+        #         for rec in batch_resp["Responses"].get("sg_courses", [])
+        #     }
+        # else:
+        #     name_map = {}
         
         logger.info(f"📝 Name map: {name_map}")
         
