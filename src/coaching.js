@@ -6,9 +6,12 @@ const Coaching = () => {
   const [selectedCourseID, setSelectedCourseID] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedCourseName, setSelectedCourseName] = useState('');
 
   // ✅ API Endpoints
   const userCoursesApiEndpoint = "https://8ix76i3knc.execute-api.us-east-2.amazonaws.com/DEV";
+  const analyzeCoursePerformance = "https://vucmlioeb2.execute-api.us-east-2.amazonaws.com/DEV";
+  
 
   useEffect(() => {
     const fetchUserCourses = async () => {
@@ -59,8 +62,45 @@ const Coaching = () => {
   }, []);
 
   const handleCourseChange = (e) => {
-    setSelectedCourseID(e.target.value);
+    // setSelectedCourseID(e.target.value);
+    const selectedOption = courses.find(course => course.courseID === e.target.value);
+    setSelectedCourseID(selectedOption.courseID);
+    setSelectedCourseName(selectedOption.courseName);
   };
+
+  const handleAnalyzeClick = async () => {
+    const session = await fetchAuthSession();
+    const token = session.tokens?.idToken?.toString();
+  
+    const payload = {
+      courseID: selectedCourseID,
+      courseName: selectedCourseName,
+    };
+  
+    try {
+      const response = await fetch(analyzeCoursePerformance, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to analyze course');
+      }
+  
+      const data = await response.json();
+      console.log("✅ AI Coaching Response:", data);
+  
+      // TODO: setState to show the AI response if you want
+    } catch (err) {
+      console.error('❌ Error analyzing course:', err);
+      setError('Unable to analyze course');
+    }
+  };
+  
 
   return (
     <div className="coaching-container">
@@ -85,10 +125,10 @@ const Coaching = () => {
       {/* Placeholder for the future analysis trigger */}
       <button
         disabled={!selectedCourseID}
-        onClick={() => console.log("➡️ Analyze course:", selectedCourseID)}
-      >
+        onClick={handleAnalyzeClick}
+        >
         Analyze My Game
-      </button>
+        </button>
     </div>
   );
 };
