@@ -8,7 +8,7 @@ import GolfScoreInput from "./GolfScoreInput";
 import Insights from "./Insights";
 import Leagues from "./Leagues";
 import Settings from "./Settings";
-import Coaching from "./Coaching";
+import Coaching from "./coaching";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 Amplify.configure(awsExports);
