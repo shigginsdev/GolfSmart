@@ -6,7 +6,6 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import Layout from "./layout";
 import GolfScoreInput from "./GolfScoreInput";
 import Insights from "./Insights";
-import Leagues from "./Leagues";
 import Settings from "./Settings";
 import Coaching from "./coaching";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";

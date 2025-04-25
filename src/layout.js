@@ -33,7 +33,7 @@ const Layout = ({ user, signOut, children }) => {
               <Link to="/insights">Insights</Link>
             </li>
             <li>
-              <Link to="/leagues">Leagues</Link>
+              <Link to="/coaching">Coaching</Link>
             </li>
             <li>
               <Link to="/settings">Settings</Link>
