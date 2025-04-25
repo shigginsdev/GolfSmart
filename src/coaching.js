@@ -1,11 +1,89 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Coaching = () => {
+  const [courses, setCourses] = useState([]);
+  const [selectedCourseID, setSelectedCourseID] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // ✅ API Endpoints
+  const userCoursesApiEndpoint = "https://8ix76i3knc.execute-api.us-east-2.amazonaws.com/DEV";
+
+  useEffect(() => {
+    const fetchUserCourses = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(userCoursesApiEndpoint, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch course list');
+        }
+
+        const data = await response.json();
+
+        // Map to unique courseID/courseName pairs
+        const uniqueCoursesMap = {};
+        data.forEach((item) => {
+          uniqueCoursesMap[item.courseID] = item.courseName;
+        });
+
+        const uniqueCourses = Object.entries(uniqueCoursesMap).map(([courseID, courseName]) => ({
+          courseID,
+          courseName,
+        }));
+
+        setCourses(uniqueCourses);
+        if (uniqueCourses.length > 0) {
+          setSelectedCourseID(uniqueCourses[0].courseID);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error('❌ Error loading courses:', err);
+        setError('Unable to load courses');
+        setLoading(false);
+      }
+    };
+
+    fetchUserCourses();
+  }, []);
+
+  const handleCourseChange = (e) => {
+    setSelectedCourseID(e.target.value);
+  };
+
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Coaching</h2>
-      <p>Get real-time feedback and AI-powered tips to improve your game — like having a coach in your pocket. </p>
-      {/* Future: Add a list of leagues and league management features */}
+    <div className="coaching-container">
+      <h2>AI Coaching</h2>
+
+      {loading && <p>Loading course options...</p>}
+      {error && <p className="error">{error}</p>}
+
+      {!loading && courses.length > 0 && (
+        <div className="form-group">
+          <label>Select a Course:</label>
+          <select value={selectedCourseID} onChange={handleCourseChange}>
+            {courses.map((course) => (
+              <option key={course.courseID} value={course.courseID}>
+                {course.courseName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Placeholder for the future analysis trigger */}
+      <button
+        disabled={!selectedCourseID}
+        onClick={() => console.log("➡️ Analyze course:", selectedCourseID)}
+      >
+        Analyze My Game
+      </button>
     </div>
   );
 };
