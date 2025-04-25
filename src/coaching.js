@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { fetchAuthSession } from '@aws-amplify/auth';
 
 const Coaching = () => {
   const [courses, setCourses] = useState([]);
@@ -12,6 +13,10 @@ const Coaching = () => {
   useEffect(() => {
     const fetchUserCourses = async () => {
       setLoading(true);
+
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+
       try {
         const response = await fetch(userCoursesApiEndpoint, {
           method: 'GET',
