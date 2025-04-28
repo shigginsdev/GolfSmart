@@ -70,14 +70,13 @@ const Coaching = () => {
 
   const handleAnalyzeClick = async () => {
     const session = await fetchAuthSession();
-    const token = session.tokens?.idToken?.toString();
+    const token = session.tokens?.accessToken?.toString();
   
     const payload = {
       courseID: selectedCourseID,
       courseName: selectedCourseName,
     };
-
-    console.log(JSON.stringify(payload))
+    
   
     try {
       const response = await fetch(analyzeCoursePerformance, {
