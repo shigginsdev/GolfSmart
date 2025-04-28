@@ -84,8 +84,8 @@ const Coaching = () => {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
-        },        
       });
 
       console.log(response.stringify)
