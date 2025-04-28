@@ -76,6 +76,8 @@ const Coaching = () => {
       courseID: selectedCourseID,
       courseName: selectedCourseName,
     };
+
+    console.log(JSON.stringify(payload))
   
     try {
       const response = await fetch(analyzeCoursePerformance, {
