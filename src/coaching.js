@@ -87,6 +87,8 @@ const Coaching = () => {
         body: JSON.stringify(payload),
         },        
       });
+
+      console.log(response.stringify)
   
       if (!response.ok) {
         throw new Error('Failed to analyze course');
