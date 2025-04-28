@@ -70,7 +70,7 @@ const Coaching = () => {
 
   const handleAnalyzeClick = async () => {
     const session = await fetchAuthSession();
-    const token = session.tokens?.idTokenToken?.toString();
+    const token = session.tokens?.idToken?.toString();
   
     const payload = {
       courseID: selectedCourseID,
