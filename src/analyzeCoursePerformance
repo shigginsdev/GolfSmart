@@ -1,0 +1,310 @@
+import json
+import boto3
+import openai
+import logging
+from decimal import Decimal
+from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+# CORS Allowed Origins
+ALLOWED_ORIGINS = [
+    "https://master.d2dnzia3915c3v.amplifyapp.com",
+    "http://localhost:3000"
+]
+
+# Initialize DynamoDB resource
+dynamodb = boto3.resource('dynamodb')
+users_table = dynamodb.Table('sg_user_scores')
+COURSES_TABLE = dynamodb.Table("sg_courses")
+
+def decimal_to_native(obj):
+    """ Recursively convert Decimal to int or float """
+    if isinstance(obj, list):
+        return [decimal_to_native(i) for i in obj]
+    elif isinstance(obj, dict):
+        return {k: decimal_to_native(v) for k, v in obj.items()}
+    elif isinstance(obj, Decimal):
+        return int(obj) if obj % 1 == 0 else float(obj)
+    else:
+        return obj
+
+def analyze_scores(event, origin):    
+    
+    secret_name = "openAI_API2"
+    region_name = "us-east-2"    
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+   
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )        
+    except ClientError as e:        
+        return {
+            "statusCode": 405,
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps({"message": "Error returning secrets"})
+        }
+    
+    secret_dict = json.loads(get_secret_value_response['SecretString'])
+    api_key = secret_dict.get("openAI_API2")  
+    # logger.info("retrieved secrets manager secret") - got here successfully
+
+    if api_key == "":
+        logger.error("No API key found in Secrets Manager")
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps({"message": "Invalid API key retrieved"})
+        }
+    
+
+    prompt_text = (
+    """Here are the pars for broken tee golf course in json format.
+
+{
+    "hole 1": 4,
+    "hole 2": 4,
+    "hole 3": 4,
+    "hole 4": 4,
+    "hole 5": 3,
+    "hole 6": 5,
+    "hole 7": 3,
+    "hole 8": 4,
+    "hole 9": 5,
+    "hole 10": 3,
+    "hole 11": 4,
+    "hole 12": 4,
+    "hole 13": 5,
+    "hole 14": 4,
+    "hole 15": 5,
+    "hole 16": 4,
+    "hole 17": 3,
+    "hole 18": 5
+}
+
+Here is the json for my last 11 rounds at this golf course.
+
+[
+  {
+    "Hole5Score": {"N": "3"},
+    "Date": {"S": "2025-03-09"},
+    ...
+  },
+  {
+    "Hole5Score": {"N": "4"},
+    "Date": {"S": "2025-03-28"},
+    ...
+  },
+  ...
+]
+
+You are a golf coach for recreational golfers. Based on the information above, what would you recommend I work on to improve my game? In addition, give me 3 specific tips I can practice at the driving range. Make sure your recommendation is specific to the data above.
+"""
+    )
+    
+
+    try:
+        openai.api_key = api_key
+        logger.info("retrieved openAI_API2 secret")
+
+        #oai_client = OpenAI(api_key)
+        response = openai.chat.completions.create(
+            model="chatgpt-4o-latest",
+            messages=[{
+                "role": "user",
+                "content": prompt_text,
+            }],       
+        )
+        logger.info(response.choices[0].message.content)
+        return {
+                "statusCode": 200,
+                "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+                "body": json.dumps({"status": "success", "message": response.choices[0].message.content})
+            }   
+    except ClientError as e:
+        logger.error(f"Error: {str(e)}")
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps({"status": "error", "message": "Error occurred"})
+        }   
+
+def analyze_course_performance(event, origin):         
+
+    try:
+        # 🔹 Extract user ID from Cognito claims
+        user_id = event.get("requestContext", {}).get("authorizer", {}).get("claims", {}).get("sub")
+
+        if not user_id:
+            return {
+                "statusCode": 401,
+                "headers": {
+                    "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+                },
+                "body": json.dumps({"status": "error", "message": "User not authenticated"})
+            }        
+
+        # Query the last 10 rounds for the userID and course ID passed in         
+        body = json.loads(event.get("body", "{}"))
+        course_id = body.get("courseID")
+        course_name = body.get("courseName")
+
+        if not course_id:
+            return {
+                "statusCode": 400,
+                "headers": {
+                    "Access-Control-Allow-Origin": origin,
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+                },
+                "body": json.dumps({"message": "courseID missing"})
+            }
+
+        # Query last 10 scores for that user and course
+        response = users_table.query(
+            IndexName="userID-courseID-index",
+            KeyConditionExpression=Key("userID").eq(user_id) & Key("courseID").eq(course_id),
+            Limit=10,
+            ScanIndexForward=False
+            )
+        
+        scores = response["Items"]          
+
+        # Get the course data fro the course ID passed in and trim down to the holes and pars in this format
+        # "holes": [
+        #                 {
+        #                     "par": 4,
+        #                     "yardage": 319,
+        #                     "handicap": 10
+        #                 },
+        #                 {
+        #                     "par": 4,
+        #                     "yardage": 389,
+        #                     "handicap": 4
+        #                 },
+        course_resp = COURSES_TABLE.get_item(
+            Key={
+                "courseID": course_id,
+                "courseName": course_name
+            }
+        )
+        course_data = course_resp.get("Item", {})
+        
+
+        #pass a query to openAI
+        analysis_resonse = analyze_scores(event, origin)
+        logger.info(f"Analysis response: {analysis_resonse}")
+
+
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps(analysis_resonse)
+
+        }
+
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        return {
+            "statusCode": 500,
+            "headers": {
+                    "Access-Control-Allow-Origin": origin, 
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },            
+            "body": json.dumps({"message": "Server error"})
+        }
+
+def lambda_handler(event, context):
+    """Main AWS Lambda handler"""    
+
+    logger.info(f"Received event: {json.dumps(event)}")
+
+    # Ensure 'headers' exists in the event before accessing it
+    headers = event.get('headers') or {}  # Ensure it's always a dictionary
+
+    origin = headers.get('origin', '')  # Use default empty string if missing
+
+    if origin == "" or "amazonaws.com" in headers.get("User-Agent", ""):
+        origin = ALLOWED_ORIGINS[0]  # Default to Amplify origin for testing
+
+    if origin not in ALLOWED_ORIGINS:
+        return {
+            "statusCode": 400,
+            "headers": {
+                    "Access-Control-Allow-Origin": origin, 
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps({"status": "error", "message": "Invalid origin"},)                           
+        }
+
+    logger.info(f"Received event: {json.dumps(event)}")
+
+    # Detect the HTTP method
+    http_method = event.get('httpMethod', '')
+    path = event.get('path', '')
+
+    if http_method == 'GET':
+        return {
+            "statusCode": 200,
+            "headers": {
+                    "Access-Control-Allow-Origin": origin, 
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps({"message": "Method Not Allowed"})
+        }
+    elif http_method == 'POST':
+        return analyze_course_performance(event, origin)                
+        # return {
+        #     "statusCode": 200,
+        #     "headers": {
+        #             "Access-Control-Allow-Origin": origin, 
+        #             "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        #             "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+        #     },
+        #     "body": json.dumps({"message": "POST method called"})
+        # }
+    elif http_method == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",                
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            },
+            "body": json.dumps({"status": "ok"})
+        }
