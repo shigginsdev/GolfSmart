@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import "./coaching.css";
 
 const Coaching = () => {
   const [courses, setCourses] = useState([]);
