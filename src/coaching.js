@@ -99,8 +99,10 @@ const Coaching = () => {
       const data = await response.json();
       console.log("✅ AI Coaching Response:", data);
 
-      // ✅ Set the coaching tips into state
-      setCoachingTips(data.message || 'No coaching tips received.');
+      
+      const parsedBody = JSON.parse(data.body);  // parses the nested body
+
+      setCoachingTips(parsedBody.message || 'No coaching tips received.');
         
     } catch (err) {
       console.error('❌ Error analyzing course:', err);
