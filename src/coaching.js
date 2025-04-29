@@ -7,6 +7,8 @@ const Coaching = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCourseName, setSelectedCourseName] = useState('');
+  const [coachingTips, setCoachingTips] = useState('');
+
 
   // ✅ API Endpoints
   const userCoursesApiEndpoint = "https://8ix76i3knc.execute-api.us-east-2.amazonaws.com/DEV";
@@ -96,8 +98,10 @@ const Coaching = () => {
   
       const data = await response.json();
       console.log("✅ AI Coaching Response:", data);
-  
-      // TODO: setState to show the AI response if you want
+
+      // ✅ Set the coaching tips into state
+      setCoachingTips(data.message || 'No coaching tips received.');
+        
     } catch (err) {
       console.error('❌ Error analyzing course:', err);
       setError('Unable to analyze course');
@@ -132,6 +136,13 @@ const Coaching = () => {
         >
         Analyze My Game
         </button>
+        {coachingTips && (
+          <div className="coaching-tips">
+            <h3>Coaching Tips:</h3>
+            <p>{coachingTips}</p>
+          </div>
+        )}
+
     </div>
   );
 };
