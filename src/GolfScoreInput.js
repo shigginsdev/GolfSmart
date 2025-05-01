@@ -167,7 +167,7 @@ const GolfScoreInput = ({ user }) => {
   const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
 
   // ✅ Handle File Selection
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     setSelectedFile(event.target.files[0]);
 
     if (!selectedFile || !credentials) {
@@ -187,7 +187,7 @@ const GolfScoreInput = ({ user }) => {
         },
       });
 
-      const fileStream = await selectedFile.arrayBuffer();
+      const fileStream = await selectedFile.arrayBuffer();            
 
       const params = {
         Bucket: S3_BUCKET,
