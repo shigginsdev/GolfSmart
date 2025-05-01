@@ -170,10 +170,10 @@ const GolfScoreInput = ({ user }) => {
   const handleFileChange = async (event) => {
     setSelectedFile(event.target.files[0]);
 
-    if (!selectedFile || !credentials) {
-      alert("❌ No file selected or credentials missing.");
-      return;
-    }
+    // if (!selectedFile || !credentials) {
+    //   alert("❌ No file selected or credentials missing.");
+    //   return;
+    // }
 
     setUploading(true);
     const fileName = `scorecards/${Date.now()}-${selectedFile.name}`;
