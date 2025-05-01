@@ -242,83 +242,6 @@ const GolfScoreInput = ({ user }) => {
   };
   
 
-  // ✅ Upload to S3
-  const handleUpload = async () => {
-    // if (!selectedFile || !credentials) {
-    //   alert("❌ No file selected or credentials missing.");
-    //   return;
-    // }
-
-    // setUploading(true);
-    // const fileName = `scorecards/${Date.now()}-${selectedFile.name}`;
-
-    // try {
-    //   const s3Client = new S3Client({
-    //     region: REGION,
-    //     credentials: {
-    //       accessKeyId: credentials["ACCESS-KEY"],
-    //       secretAccessKey: credentials["SECRET-KEY"],
-    //     },
-    //   });
-
-    //   const fileStream = await selectedFile.arrayBuffer();
-
-    //   const params = {
-    //     Bucket: S3_BUCKET,
-    //     Key: fileName,
-    //     Body: new Uint8Array(fileStream),
-    //     ContentType: selectedFile.type,
-    //   };
-
-    //   await s3Client.send(new PutObjectCommand(params));
-    //   const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
-    //   setImageUrl(uploadedImageUrl);
-    //   alert("✅ Upload Successful!");
-    // } catch (error) {
-    //   console.error("❌ Error uploading file:", error);
-    // } finally {
-    //   setUploading(false);
-    // }
-  };
-
-  // ✅ Scan Image with OpenAI
-  const handleTopSubmit = async () => {
-    // if (!userId || !imageUrl) {
-    //   alert("Missing user or image.");
-    //   return;
-    // }
-
-    // setLoading(true);
-
-    // try {
-    //   const response = await fetch(scanScorecardApiEndpoint, {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ userId, fileUrl: imageUrl, firstName }),
-    //   });
-
-    //   const result = await response.json();
-    //   setScanResult(result.message || "No scores detected.");
-
-    //   const jsonMatch = result.message.match(/```json\n([\s\S]+?)\n```/);
-    //   if (!jsonMatch) return;
-
-    //   const parsedScores = JSON.parse(jsonMatch[1]);
-
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     ...Object.entries(parsedScores).reduce((acc, [key, value]) => {
-    //       acc[`Hole${key}Score`] = value.toString();
-    //       return acc;
-    //     }, {}),
-    //   }));
-    // } catch (error) {
-    //   console.error("❌ Error scanning:", error);
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
-
   // ✅ Submit to DynamoDB
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -351,21 +274,24 @@ const GolfScoreInput = ({ user }) => {
     <div className="score-input-container">
       <h2>Enter Golf Scores</h2>
 
-      {/* ✅ Upload Section */}
       <div className="upload-section">
-        <label>Upload Scorecard:</label>
-        <input type="file" accept="image/jpeg,image/png" onChange={handleFileChange} />
-        <button onClick={handleUpload} disabled={uploading || !credentials}>
-          {uploading ? "Uploading..." : "Upload to S3"}
-        </button>
+        <label htmlFor="file-upload">Upload Scorecard:</label>
+        <input
+          id="file-upload"
+          type="file"
+          accept="image/jpeg,image/png"
+          onChange={handleFileChange}
+          disabled={uploading}
+        />
+        {uploading && <p>Uploading and scanning...</p>}
       </div>
 
       {/* ✅ Scan Button */}
-      <div className="top-button-group">
+      {/* <div className="top-button-group">
         <button type="button" className="submit-button top-submit" onClick={handleTopSubmit} disabled={loading}>
           {loading ? "Scanning..." : "Scan in my scorecard"}
         </button>
-      </div>
+      </div> */}
 
       <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
