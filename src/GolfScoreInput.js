@@ -168,16 +168,17 @@ const GolfScoreInput = ({ user }) => {
 
   // ✅ Handle File Selection
   const handleFileChange = async (event) => {
-    setSelectedFile(event.target.files[0]);
-
-    // if (!selectedFile || !credentials) {
-    //   alert("❌ No file selected or credentials missing.");
-    //   return;
-    // }
-
+    const file = event.target.files[0];
+    setSelectedFile(file); // Save to state if needed elsewhere
+  
+    if (!file || !credentials) {
+      alert("❌ No file selected or credentials missing.");
+      return;
+    }
+  
     setUploading(true);
-    const fileName = `scorecards/${Date.now()}-${selectedFile.name}`;
-
+    const fileName = `scorecards/${Date.now()}-${file.name}`;
+  
     try {
       const s3Client = new S3Client({
         region: REGION,
@@ -186,16 +187,16 @@ const GolfScoreInput = ({ user }) => {
           secretAccessKey: credentials["SECRET-KEY"],
         },
       });
-
-      const fileStream = await selectedFile.arrayBuffer();            
-
+  
+      const fileStream = await file.arrayBuffer();
+  
       const params = {
         Bucket: S3_BUCKET,
         Key: fileName,
         Body: new Uint8Array(fileStream),
-        ContentType: selectedFile.type,
+        ContentType: file.type,
       };
-
+  
       await s3Client.send(new PutObjectCommand(params));
       const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
       setImageUrl(uploadedImageUrl);
@@ -206,6 +207,7 @@ const GolfScoreInput = ({ user }) => {
       setUploading(false);
     }
   };
+  
 
   // ✅ Upload to S3
   const handleUpload = async () => {
