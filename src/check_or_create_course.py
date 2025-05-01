@@ -5,6 +5,7 @@ import logging
 from decimal import Decimal
 import urllib.request
 from boto3.dynamodb.conditions import Attr
+from botocore.exceptions import ClientError
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -18,21 +19,35 @@ dynamodb = boto3.resource("dynamodb")
 COURSES_TABLE = dynamodb.Table("sg_courses")
 EXTERNAL_COURSE_LOOKUP_API = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV?course_id="
 
-
 def fetch_course_data_from_external_api(external_course_id):
-    """Fetch full course JSON from external API."""
-    # try:
-    #     url = EXTERNAL_COURSE_LOOKUP_API + str(external_course_id)
-    #     with urllib.request.urlopen(url) as response:
-    #         return json.loads(response.read().decode())
-    # except Exception as e:
-    #     logger.error(f"❌ Failed to fetch external course data: {e}")
-    #     return None
+    """Fetch full course JSON from external API."""  
+
+    secret_name = "golfCourseAPI"
+    region_name = "us-east-2"
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except ClientError as e:
+        # For a list of exceptions thrown, see
+        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        raise e
+
+    secret = get_secret_value_response['SecretString']
+
             
-    url = f"https://api.golfcourseapi.com/v1/courses/{external_course_id}"
+    url = f"https://api.golfcourseapi.com/v1/courses/{external_course_id}"   
     req = urllib.request.Request(
         url,
-        headers={"Authorization": "Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA"}
+        headers={"Authorization": secret}
     )
 
     with urllib.request.urlopen(req) as response:

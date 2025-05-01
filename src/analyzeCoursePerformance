@@ -20,6 +20,27 @@ dynamodb = boto3.resource('dynamodb')
 users_table = dynamodb.Table('sg_user_scores')
 COURSES_TABLE = dynamodb.Table("sg_courses")
 
+def extract_pars(course_data):
+    # Safety check: look for 'tees' under male or female
+    tee_sets = course_data.get("course_data", {}).get("tees", {})
+    for gender in ["male", "female"]:
+        if gender in tee_sets:
+            # Look through all tee options
+            for tee in tee_sets[gender]:
+                if tee.get("tee_name", "").lower() == "blue":
+                    holes = tee.get("holes", [])
+                    # Build the par dictionary
+                    par_map = {
+                        f"hole {i + 1}": int(hole["par"])
+                        for i, hole in enumerate(holes)
+                        if "par" in hole
+                    }
+                    return par_map
+
+    # fallback if Blue tee not found
+    return {}
+
+
 def decimal_to_native(obj):
     """ Recursively convert Decimal to int or float """
     if isinstance(obj, list):
@@ -31,7 +52,7 @@ def decimal_to_native(obj):
     else:
         return obj
 
-def analyze_scores(event, origin):    
+def analyze_scores(scores, course_pars, origin):    
     
     secret_name = "openAI_API2"
     region_name = "us-east-2"    
@@ -60,8 +81,7 @@ def analyze_scores(event, origin):
         }
     
     secret_dict = json.loads(get_secret_value_response['SecretString'])
-    api_key = secret_dict.get("openAI_API2")  
-    # logger.info("retrieved secrets manager secret") - got here successfully
+    api_key = secret_dict.get("openAI_API2")      
 
     if api_key == "":
         logger.error("No API key found in Secrets Manager")
@@ -74,51 +94,58 @@ def analyze_scores(event, origin):
             },
             "body": json.dumps({"message": "Invalid API key retrieved"})
         }
-    
+       
 
     prompt_text = (
-    """Here are the pars for broken tee golf course in json format.
-
-{
-    "hole 1": 4,
-    "hole 2": 4,
-    "hole 3": 4,
-    "hole 4": 4,
-    "hole 5": 3,
-    "hole 6": 5,
-    "hole 7": 3,
-    "hole 8": 4,
-    "hole 9": 5,
-    "hole 10": 3,
-    "hole 11": 4,
-    "hole 12": 4,
-    "hole 13": 5,
-    "hole 14": 4,
-    "hole 15": 5,
-    "hole 16": 4,
-    "hole 17": 3,
-    "hole 18": 5
-}
-
-Here is the json for my last 11 rounds at this golf course.
-
-[
-  {
-    "Hole5Score": {"N": "3"},
-    "Date": {"S": "2025-03-09"},
-    ...
-  },
-  {
-    "Hole5Score": {"N": "4"},
-    "Date": {"S": "2025-03-28"},
-    ...
-  },
-  ...
-]
-
-You are a golf coach for recreational golfers. Based on the information above, what would you recommend I work on to improve my game? In addition, give me 3 specific tips I can practice at the driving range. Make sure your recommendation is specific to the data above.
-"""
+        f"You are a golf coach helping a recreational golfer.\n\n"
+        f"Here are the par values for the course:\n{json.dumps(course_pars, indent=2)}\n\n"
+        f"And here are the player's last {len(scores)} rounds of scores:\n{json.dumps(scores, indent=2)}\n\n"
+        f"Based on this, give 3 personalized tips to help the player improve their game."
     )
+
+#     prompt_text = (
+#     """Here are the pars for broken tee golf course in json format.
+
+# {
+#     "hole 1": 4,
+#     "hole 2": 4,
+#     "hole 3": 4,
+#     "hole 4": 4,
+#     "hole 5": 3,
+#     "hole 6": 5,
+#     "hole 7": 3,
+#     "hole 8": 4,
+#     "hole 9": 5,
+#     "hole 10": 3,
+#     "hole 11": 4,
+#     "hole 12": 4,
+#     "hole 13": 5,
+#     "hole 14": 4,
+#     "hole 15": 5,
+#     "hole 16": 4,
+#     "hole 17": 3,
+#     "hole 18": 5
+# }
+
+# Here is the json for my last 11 rounds at this golf course.
+
+# [
+#   {
+#     "Hole5Score": {"N": "3"},
+#     "Date": {"S": "2025-03-09"},
+#     ...
+#   },
+#   {
+#     "Hole5Score": {"N": "4"},
+#     "Date": {"S": "2025-03-28"},
+#     ...
+#   },
+#   ...
+# ]
+
+# You are a golf coach for recreational golfers. Based on the information above, what would you recommend I work on to improve my game? In addition, give me 3 specific tips I can practice at the driving range. Make sure your recommendation is specific to the data above.
+# """
+    # )
     
 
     try:
@@ -196,7 +223,8 @@ def analyze_course_performance(event, origin):
             ScanIndexForward=False
             )
         
-        scores = response["Items"]          
+        scores = response["Items"]
+        logger.info(f"Scores: {scores}")         
 
         # Get the course data fro the course ID passed in and trim down to the holes and pars in this format
         # "holes": [
@@ -217,12 +245,18 @@ def analyze_course_performance(event, origin):
             }
         )
         course_data = course_resp.get("Item", {})
+        # logger.info(f"Course data: {course_data}")
+
+        pars = extract_pars(course_data)
+        logger.info(f"🟦 Extracted par values for Blue tee: {pars}")
+
+        scores = decimal_to_native(scores)
+        course_data = decimal_to_native(course_data) 
         
 
-        #pass a query to openAI
-        analysis_resonse = analyze_scores(event, origin)
-        logger.info(f"Analysis response: {analysis_resonse}")
-
+        #pass a query to openAI       
+        analysis_response = analyze_scores(scores, course_data, origin)
+        logger.info(f"Analysis response: {analysis_response}")
 
         return {
             "statusCode": 200,
@@ -231,9 +265,9 @@ def analyze_course_performance(event, origin):
                 "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
-            "body": json.dumps(analysis_resonse)
+            "body": json.dumps(analysis_response)
 
-        }
+        }       
 
     except Exception as e:
         logger.error(f"Error: {e}")

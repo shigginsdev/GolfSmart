@@ -38,28 +38,45 @@ def searchCourseByName(event, origin):
                 "body": json.dumps({"status": "error", "message": "User not authenticated"})
             }
 
-        logger.info(f"Fetching user profile for userID: {user_id}")
+        logger.info(f"Fetching user profile for userID: {user_id}") 
+        
+        # Secrets manager for golfcouseapi
+        secret_name = "golfCourseAPI"
+        region_name = "us-east-2"
 
-        # conn = http.client.HTTPSConnection("api.golfcourseapi.com")
-        # payload = ''
-        # headers = {
-        # 'Authorization': 'Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA'
-        # }
-        # conn.request("GET", "/v1/search?search_query=pinehurst", payload, headers)
-        # res = conn.getresponse()
-        # #data = res.read()
-        # #logger.info(data.decode("utf-8"))
+        # Create a Secrets Manager client
+        session = boto3.session.Session()
+        client = session.client(
+            service_name='secretsmanager',
+            region_name=region_name
+        )
 
+        try:
+            get_secret_value_response = client.get_secret_value(
+                SecretId=secret_name
+            )
+        except ClientError as e:
+            # For a list of exceptions thrown, see
+            # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+            raise e
+
+        # secret = get_secret_value_response['SecretString']
+        # logger.info(f"Secrets Manager: {secret}")
+        
         # Build the external API call
         search_query = event.get("queryStringParameters", {}).get("search_query", "")
         if not search_query:
             return { ... }  # handle missing query
         
         url = f"https://api.golfcourseapi.com/v1/search?search_query={search_query}"
+        
+        secret_dict = json.loads(get_secret_value_response['SecretString'])
+        api_key = secret_dict.get("Authorization")  # Extract just the string, not the whole object
+
         req = urllib.request.Request(
             url,
-            headers={"Authorization": "Key 3SB7CZ3CZR4QLXT3PR6GZI35ZA"}
-        )
+            headers={"Authorization": api_key}
+        )            
 
         with urllib.request.urlopen(req) as response:
             raw_data = response.read()
@@ -75,11 +92,7 @@ def searchCourseByName(event, origin):
                 }
             }
             for course in data.get("courses", [])
-        ]
-
-        
-
-        #add in secrets management                
+        ]                            
 
         
         return {
