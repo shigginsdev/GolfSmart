@@ -205,12 +205,7 @@ const GolfScoreInput = ({ user }) => {
       console.error("❌ Error uploading file:", error);
     } finally {
       setUploading(false);
-    }
-
-    if (!userId || !imageUrl) {
-      alert("Missing user or image.");
-      return;
-    }
+    }    
 
     setLoading(true);
 
