@@ -177,6 +177,7 @@ const GolfScoreInput = ({ user }) => {
     }
   
     setUploading(true);
+    let uploadedImageUrl = "";
     const fileName = `scorecards/${Date.now()}-${file.name}`;
   
     try {
@@ -198,7 +199,7 @@ const GolfScoreInput = ({ user }) => {
       };
   
       await s3Client.send(new PutObjectCommand(params));
-      const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
+      uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
       setImageUrl(uploadedImageUrl);
       alert("✅ Upload Successful!");
     } catch (error) {
