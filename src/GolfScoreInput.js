@@ -169,10 +169,7 @@ const GolfScoreInput = ({ user }) => {
   // ✅ Handle File Selection
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-  };
 
-  // ✅ Upload to S3
-  const handleUpload = async () => {
     if (!selectedFile || !credentials) {
       alert("❌ No file selected or credentials missing.");
       return;
@@ -208,6 +205,45 @@ const GolfScoreInput = ({ user }) => {
     } finally {
       setUploading(false);
     }
+  };
+
+  // ✅ Upload to S3
+  const handleUpload = async () => {
+    // if (!selectedFile || !credentials) {
+    //   alert("❌ No file selected or credentials missing.");
+    //   return;
+    // }
+
+    // setUploading(true);
+    // const fileName = `scorecards/${Date.now()}-${selectedFile.name}`;
+
+    // try {
+    //   const s3Client = new S3Client({
+    //     region: REGION,
+    //     credentials: {
+    //       accessKeyId: credentials["ACCESS-KEY"],
+    //       secretAccessKey: credentials["SECRET-KEY"],
+    //     },
+    //   });
+
+    //   const fileStream = await selectedFile.arrayBuffer();
+
+    //   const params = {
+    //     Bucket: S3_BUCKET,
+    //     Key: fileName,
+    //     Body: new Uint8Array(fileStream),
+    //     ContentType: selectedFile.type,
+    //   };
+
+    //   await s3Client.send(new PutObjectCommand(params));
+    //   const uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
+    //   setImageUrl(uploadedImageUrl);
+    //   alert("✅ Upload Successful!");
+    // } catch (error) {
+    //   console.error("❌ Error uploading file:", error);
+    // } finally {
+    //   setUploading(false);
+    // }
   };
 
   // ✅ Scan Image with OpenAI
