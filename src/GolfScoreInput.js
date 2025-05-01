@@ -206,6 +206,43 @@ const GolfScoreInput = ({ user }) => {
     } finally {
       setUploading(false);
     }
+
+    if (!userId || !imageUrl) {
+      alert("Missing user or image.");
+      return;
+    }
+
+    setLoading(true);
+
+    //scan in to openAI api
+
+    try {
+      const response = await fetch(scanScorecardApiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, fileUrl: imageUrl, firstName }),
+      });
+
+      const result = await response.json();
+      setScanResult(result.message || "No scores detected.");
+
+      const jsonMatch = result.message.match(/```json\n([\s\S]+?)\n```/);
+      if (!jsonMatch) return;
+
+      const parsedScores = JSON.parse(jsonMatch[1]);
+
+      setFormData((prevData) => ({
+        ...prevData,
+        ...Object.entries(parsedScores).reduce((acc, [key, value]) => {
+          acc[`Hole${key}Score`] = value.toString();
+          return acc;
+        }, {}),
+      }));
+    } catch (error) {
+      console.error("❌ Error scanning:", error);
+    } finally {
+      setLoading(false);
+    }
   };
   
 
@@ -250,40 +287,40 @@ const GolfScoreInput = ({ user }) => {
 
   // ✅ Scan Image with OpenAI
   const handleTopSubmit = async () => {
-    if (!userId || !imageUrl) {
-      alert("Missing user or image.");
-      return;
-    }
+    // if (!userId || !imageUrl) {
+    //   alert("Missing user or image.");
+    //   return;
+    // }
 
-    setLoading(true);
+    // setLoading(true);
 
-    try {
-      const response = await fetch(scanScorecardApiEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, fileUrl: imageUrl, firstName }),
-      });
+    // try {
+    //   const response = await fetch(scanScorecardApiEndpoint, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ userId, fileUrl: imageUrl, firstName }),
+    //   });
 
-      const result = await response.json();
-      setScanResult(result.message || "No scores detected.");
+    //   const result = await response.json();
+    //   setScanResult(result.message || "No scores detected.");
 
-      const jsonMatch = result.message.match(/```json\n([\s\S]+?)\n```/);
-      if (!jsonMatch) return;
+    //   const jsonMatch = result.message.match(/```json\n([\s\S]+?)\n```/);
+    //   if (!jsonMatch) return;
 
-      const parsedScores = JSON.parse(jsonMatch[1]);
+    //   const parsedScores = JSON.parse(jsonMatch[1]);
 
-      setFormData((prevData) => ({
-        ...prevData,
-        ...Object.entries(parsedScores).reduce((acc, [key, value]) => {
-          acc[`Hole${key}Score`] = value.toString();
-          return acc;
-        }, {}),
-      }));
-    } catch (error) {
-      console.error("❌ Error scanning:", error);
-    } finally {
-      setLoading(false);
-    }
+    //   setFormData((prevData) => ({
+    //     ...prevData,
+    //     ...Object.entries(parsedScores).reduce((acc, [key, value]) => {
+    //       acc[`Hole${key}Score`] = value.toString();
+    //       return acc;
+    //     }, {}),
+    //   }));
+    // } catch (error) {
+    //   console.error("❌ Error scanning:", error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   // ✅ Submit to DynamoDB
