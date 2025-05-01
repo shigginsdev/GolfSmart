@@ -7,8 +7,10 @@ from botocore.exceptions import ClientError
 # CORS Allowed Origins
 ALLOWED_ORIGINS = [
     "https://master.d2dnzia3915c3v.amplifyapp.com",
+    "https://main.d2dnzia3915c3v.amplifyapp.com/",
     "http://localhost:3000"
 ]
+
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

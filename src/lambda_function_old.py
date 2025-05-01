@@ -10,8 +10,10 @@ logger.setLevel(logging.DEBUG)
 #for CORS
 ALLOWED_ORIGINS = [
     "https://master.d2dnzia3915c3v.amplifyapp.com",
+    "https://main.d2dnzia3915c3v.amplifyapp.com/",
     "http://localhost:3000"
 ]
+
 
 # Initialize DynamoDB resource (AWS Lambda automatically uses IAM role permissions)
 dynamodb = boto3.resource('dynamodb')
