@@ -215,7 +215,7 @@ const GolfScoreInput = ({ user }) => {
       const response = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, fileUrl: imageUrl, firstName }),
+        body: JSON.stringify({ userId, fileUrl: uploadedImageUrl, firstName }),
       });
 
       const result = await response.json();
