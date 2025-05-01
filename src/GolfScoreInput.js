@@ -12,7 +12,7 @@ const GolfScoreInput = ({ user }) => {
     courseID: "",
     courseName: '',
     Date: new Date().toISOString().split("T")[0],
-    ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`Hole${i + 1}Score`, ""]),
+    ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`Hole${i + 1}Score`, ""])),
   };
 
   const [formData, setFormData] = useState(initialFormState);
