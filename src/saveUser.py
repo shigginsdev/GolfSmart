@@ -10,7 +10,7 @@ logger.setLevel(logging.DEBUG)
 # CORS Allowed Origins
 ALLOWED_ORIGINS = [
     "https://master.d2dnzia3915c3v.amplifyapp.com",
-    "https://main.d2dnzia3915c3v.amplifyapp.com/",
+    "https://main.d2dnzia3915c3v.amplifyapp.com",
     "http://localhost:3000"
 ]
 
@@ -21,7 +21,7 @@ users_table = dynamodb.Table('sg_users')
 users_table.scan(Limit=1)  # Test the connection
 logger.info("Connected to sg_users table")
 
-def get_user_profile(event):
+def get_user_profile(event, origin):
     """Fetches the user profile securely using Cognito authentication."""
     try:
         # 🔹 Extract user ID from Cognito claims
@@ -48,7 +48,7 @@ def get_user_profile(event):
         return {
             "statusCode": 200,
             "headers": {
-                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
+                "Access-Control-Allow-Origin": origin,
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
                 "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
             },
@@ -63,7 +63,7 @@ def get_user_profile(event):
         return {"statusCode": 500, "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})}
 
 
-def save_user_profile(event):
+def save_user_profile(event, origin):
     """Handles POST request to save user profile settings"""
     try:
         
@@ -84,7 +84,7 @@ def save_user_profile(event):
         return {
             "statusCode": 200,
             "headers": {
-                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
+                "Access-Control-Allow-Origin": origin,
                 "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "OPTIONS,POST",
             },
@@ -95,14 +95,14 @@ def save_user_profile(event):
         logger.error(f"DynamoDB error: {str(e)}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": origin},
             "body": json.dumps({"status": "error", "message": "Database error occurred"})
         }
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": origin},
             "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})
         }
 
@@ -115,8 +115,8 @@ def lambda_handler(event, context):
 
     origin = headers.get('origin', '')  # Use default empty string if missing
 
-    if origin == "" or "amazonaws.com" in headers.get("User-Agent", ""):
-        origin = ALLOWED_ORIGINS[0]  # Default to Amplify origin for testing
+    # if origin == "" or "amazonaws.com" in headers.get("User-Agent", ""):
+    #     origin = origin  # Default to Amplify origin for testing
 
     if origin not in ALLOWED_ORIGINS:
         return {
@@ -131,12 +131,12 @@ def lambda_handler(event, context):
     path = event.get('path', '')
 
     if http_method == 'GET':
-        return get_user_profile(event)
+        return get_user_profile(event, origin)
     elif http_method == 'POST':
-        return save_user_profile(event)        
+        return save_user_profile(event, origin)        
     else:
         return {
             "statusCode": 405,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": origin},
             "body": json.dumps({"message": "Method Not Allowed"})
         }

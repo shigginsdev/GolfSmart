@@ -10,7 +10,7 @@ logger.setLevel(logging.DEBUG)
 # CORS Allowed Origins
 ALLOWED_ORIGINS = [
     "https://master.d2dnzia3915c3v.amplifyapp.com",
-    "https://main.d2dnzia3915c3v.amplifyapp.com/",
+    "https://main.d2dnzia3915c3v.amplifyapp.com",
     "http://localhost:3000"
 ]
 
@@ -18,7 +18,7 @@ ALLOWED_ORIGINS = [
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
 
-def add_score(event):
+def add_score(event, origin):
     """Handles POST request to add a golf score"""
     try:
         score_table = dynamodb.Table('sg_user_scores')
@@ -39,7 +39,7 @@ def add_score(event):
         return {
             "statusCode": 200,
             "headers": {
-                "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
+                "Access-Control-Allow-Origin": origin,
                 "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "OPTIONS,POST",
             },
@@ -50,14 +50,14 @@ def add_score(event):
         logger.error(f"DynamoDB error: {str(e)}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": origin},
             "body": json.dumps({"status": "error", "message": "Database error occurred"})
         }
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": origin},
             "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})
         }
 
@@ -72,7 +72,7 @@ def lambda_handler(event, context):
     origin = headers.get('origin', '')  # Use default empty string if missing
 
     if origin == "" or "amazonaws.com" in headers.get("User-Agent", ""):
-        origin = ALLOWED_ORIGINS[0]  # Default to Amplify origin for testing
+        origin = origin  # Default to Amplify origin for testing
 
     if origin not in ALLOWED_ORIGINS:
         return {
@@ -89,14 +89,14 @@ def lambda_handler(event, context):
     if http_method == 'GET':
         return {
             'statusCode': 200,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": origin},
             'body': json.dumps('Smart Golf GET method')
         }
     elif http_method == 'POST':
-        return add_score(event)
+        return add_score(event, origin)
     else:
         return {
             "statusCode": 405,
-            "headers": {"Access-Control-Allow-Origin": ALLOWED_ORIGINS[0]},
+            "headers": {"Access-Control-Allow-Origin": origin},
             "body": json.dumps({"message": "Method Not Allowed"})
         }

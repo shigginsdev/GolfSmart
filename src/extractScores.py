@@ -19,7 +19,7 @@ logger.setLevel(logging.DEBUG)
 # CORS Allowed Origins
 ALLOWED_ORIGINS = [
     "https://master.d2dnzia3915c3v.amplifyapp.com",
-    "https://main.d2dnzia3915c3v.amplifyapp.com/",
+    "https://main.d2dnzia3915c3v.amplifyapp.com",
     "http://localhost:3000"
 ]
 
