@@ -9,7 +9,6 @@ import Insights from "./Insights";
 import Settings from "./Settings";
 import Coaching from "./coaching";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import * as e from 'express';
 
 
 Amplify.configure(awsExports);
