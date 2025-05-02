@@ -8,7 +8,7 @@ import GolfScoreInput from "./GolfScoreInput";
 import Insights from "./Insights";
 import Settings from "./Settings";
 import Coaching from "./coaching";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 
 Amplify.configure(awsExports);
@@ -36,6 +36,7 @@ function AppRoutes({ user, signOut }) {
   useEffect(() => {
     const checkUser = async () => {
       try {
+        const token = session.tokens?.idToken?.toString();
         const response = await fetch(getUserProfile, {
           method: "GET",
           headers: {
