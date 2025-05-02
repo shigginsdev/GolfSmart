@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import awsExports from "./aws-exports";
 import "@aws-amplify/ui-react/styles.css";
 import { Authenticator } from "@aws-amplify/ui-react";
+import { fetchAuthSession } from '@aws-amplify/auth';
 import Layout from "./layout";
 import GolfScoreInput from "./GolfScoreInput";
 import Insights from "./Insights";
@@ -36,7 +37,9 @@ function AppRoutes({ user, signOut }) {
   useEffect(() => {
     const checkUser = async () => {
       try {
+        const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
+        
         const response = await fetch(getUserProfile, {
           method: "GET",
           headers: {
