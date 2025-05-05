@@ -45,7 +45,8 @@ const Settings = ({ user }) => {
             ...prev,
             email: user?.attributes?.email || '',
           }));
-          console.log("🟡 User profile not found. Prepopulating email only.");          
+          console.log("🟡 User profile not found. Prepopulating email only.");
+          return;
         }
   
         if (!response.ok) {
@@ -79,7 +80,8 @@ const Settings = ({ user }) => {
     if (user) {
       fetchUserProfile();
     }
-  }, [user]);  
+  }, [user]);
+    
 
   const handleCourseSelect = async (course) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
@@ -131,7 +133,7 @@ const Settings = ({ user }) => {
   
       const result = await response.json();
       console.log("✅ checkCreateCourse API response:", result);
-      result.uuid; // ✅ RETURN the UUID here
+      return result.uuid; // ✅ RETURN the UUID here
 
     } catch (error) {
       console.error("❌ Error calling checkCreateCourse:", error);
