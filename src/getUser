@@ -42,7 +42,7 @@ def getUserProfile(event, origin):
             return {
                 "statusCode": 401,
                 "headers": {
-                    "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0], 
+                    "Access-Control-Allow-Origin": origin, 
                     "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
                 },

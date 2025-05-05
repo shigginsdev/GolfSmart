@@ -26,8 +26,11 @@ const Settings = ({ user }) => {
       try {
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
-        if (!token) return;
-
+  
+        if (!token) {
+          throw new Error("User is not authenticated.");
+        }
+  
         const response = await fetch(apiEndpoint, {
           method: "GET",
           headers: {
@@ -35,36 +38,55 @@ const Settings = ({ user }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        if (!response.ok) throw new Error("Failed to fetch user profile");
+  
+        if (response.status === 404) {
+          // User not found in sg_users – just prefill email
+          setFormData(prev => ({
+            ...prev,
+            email: user?.attributes?.email || '',
+          }));
+          console.log("🟡 User profile not found. Prepopulating email only.");          
+        }
+  
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user profile. Status: ${response.status}`);
+        }
+  
         const userData = await response.json();
-
+  
         if (userData.status === "success") {
           setFormData({
             firstName: userData.data.firstName || '',
             lastName: userData.data.lastName || '',
-            email: userData.data?.email || user?.attributes?.email || '',
+            email: userData.data.email || user?.attributes?.email || '',
             homeCourseName: userData.data.homeCourseName || '',
             homeCourseID: userData.data.homeCourseID || '',
             scoringType: userData.data.scoringType || 'Normal Scoring',
             teeBox: userData.data.teeBox || 'Championship Back',
           });
+          console.log("✅ User profile loaded and prepopulated.");
+        } else {
+          // Unexpected response structure
+          throw new Error("Invalid response format from profile API.");
         }
+  
       } catch (error) {
-        console.error("❌ Error fetching profile:", error);
+        console.error("❌ Error loading user profile:", error);
+        alert("Unable to load profile. Please try again or contact support.");
       }
     };
-
-    fetchUserProfile();
-  }, [user]);
+  
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);  
 
   const handleCourseSelect = async (course) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
     const uuid = await checkOrCreateCourse(course);
 
     if (!uuid) {
-      alert("Unable to set course—please try again.");
-      return;
+      alert("Unable to set course—please try again.");      
     }
 
     console.log("✅ Course selected:", courseName, "with UUID:", uuid);
@@ -85,8 +107,7 @@ const Settings = ({ user }) => {
       const token = session.tokens?.idToken?.toString();
   
       if (!token) {
-        console.error("❌ No token found for checkCreateCourse API.");
-        return;
+        console.error("❌ No token found for checkCreateCourse API.");;
       }
   
       // 🔁 Transform the incoming courseData from courseSearchAPI
@@ -110,7 +131,7 @@ const Settings = ({ user }) => {
   
       const result = await response.json();
       console.log("✅ checkCreateCourse API response:", result);
-      return result.uuid; // ✅ RETURN the UUID here
+      result.uuid; // ✅ RETURN the UUID here
 
     } catch (error) {
       console.error("❌ Error calling checkCreateCourse:", error);

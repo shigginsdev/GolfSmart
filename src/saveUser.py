@@ -30,6 +30,11 @@ def get_user_profile(event, origin):
         if not user_id:
             return {
                 "statusCode": 401,
+                "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+                },
                 "body": json.dumps({"status": "error", "message": "User not authenticated"})
             }
 
@@ -42,6 +47,11 @@ def get_user_profile(event, origin):
         if not user_data:
             return {
                 "statusCode": 404,
+                "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+                },
                 "body": json.dumps({"status": "error", "message": "User not found"})
             }
 
@@ -57,10 +67,22 @@ def get_user_profile(event, origin):
 
     except ClientError as e:
         logger.error(f"DynamoDB error: {str(e)}")
-        return {"statusCode": 500, "body": json.dumps({"status": "error", "message": "Database error"})}
+        return {"statusCode": 500, 
+                "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+            },
+            "body": json.dumps({"status": "error", "message": "Database error"})}
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
-        return {"statusCode": 500, "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})}
+        return {"statusCode": 500,
+                "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+            },
+            "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})}
 
 
 def save_user_profile(event, origin):
@@ -95,14 +117,22 @@ def save_user_profile(event, origin):
         logger.error(f"DynamoDB error: {str(e)}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": origin},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+            },
             "body": json.dumps({"status": "error", "message": "Database error occurred"})
         }
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": origin},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+            },
             "body": json.dumps({"status": "error", "message": "An unexpected error occurred"})
         }
 
@@ -121,6 +151,11 @@ def lambda_handler(event, context):
     if origin not in ALLOWED_ORIGINS:
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+            },
             "body": json.dumps({"status": "error", "message": "Invalid origin"},)                           
         }
 
@@ -137,6 +172,10 @@ def lambda_handler(event, context):
     else:
         return {
             "statusCode": 405,
-            "headers": {"Access-Control-Allow-Origin": origin},
+            "headers": {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+            },
             "body": json.dumps({"message": "Method Not Allowed"})
         }
