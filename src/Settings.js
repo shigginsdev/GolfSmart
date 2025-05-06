@@ -41,11 +41,18 @@ const Settings = ({ user }) => {
   
         if (response.status === 404) {
           // User not found in sg_users – just prefill email
-          setFormData(prev => ({
-            ...prev,
+          setFormData({
+            firstName: '',
+            lastName: '',
             email: user?.attributes?.email || '',
-          }));
-          console.log("🟡 User profile not found. Prepopulating email only.");
+            homeCourseName: '',
+            homeCourseID: '',
+            scoringType: 'Normal Scoring',
+            teeBox: 'Championship Back',
+          });
+
+          console.log("📧 Prepopulating with email:", user?.attributes?.email);
+
           return;
         }
   
