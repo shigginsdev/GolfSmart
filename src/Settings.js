@@ -28,7 +28,7 @@ const Settings = ({ user }) => {
         const token = session.tokens?.idToken?.toString();
         const email = session.tokens?.idToken?.payload?.email;
         console.log ("📧 User email:", email);
-        
+
   
         if (!token) {
           throw new Error("User is not authenticated.");
@@ -47,7 +47,7 @@ const Settings = ({ user }) => {
           setFormData({
             firstName: '',
             lastName: '',
-            email: user?.attributes?.email || '',
+            email: email || '',
             homeCourseName: '',
             homeCourseID: '',
             scoringType: 'Normal Scoring',
