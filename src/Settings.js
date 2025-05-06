@@ -31,7 +31,8 @@ const Settings = ({ user }) => {
 
   
         if (!token) {
-          throw new Error("User is not authenticated.");
+          console.warn("🔒 No token found. Probably signed out.");
+          return;
         }
   
         const response = await fetch(apiEndpoint, {
@@ -82,6 +83,12 @@ const Settings = ({ user }) => {
         }
   
       } catch (error) {
+
+        if (error.name === "NotAuthorizedException") {
+          console.warn("🔒 User is signed out. Skipping profile fetch.");
+          return;
+        }
+        
         console.error("❌ Error loading user profile:", error);
         alert("Unable to load profile. Please try again or contact support.");
       }
