@@ -26,6 +26,9 @@ const Settings = ({ user }) => {
       try {
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
+        const email = session.tokens?.idToken?.payload?.email;
+        console.log ("📧 User email:", email);
+        
   
         if (!token) {
           throw new Error("User is not authenticated.");
