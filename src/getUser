@@ -58,6 +58,9 @@ def getUserProfile(event, origin):
 
         items = response.get("Items", [])
 
+        # Serialize Decimals
+        safe_items = decimal_to_native(items)
+
         return {
             "statusCode": 200,
             "headers": {
@@ -65,7 +68,7 @@ def getUserProfile(event, origin):
                 "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
-            "body": json.dumps(items)
+            "body": json.dumps(safe_items)
         }
 
     except Exception as e:

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import "./GolfScoreInput.css";
+import { useUserTier } from './hooks/useUserTier';
 // import * as e from 'express';
 
 const GolfScoreInput = ({ user }) => {
@@ -26,6 +27,8 @@ const GolfScoreInput = ({ user }) => {
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [firstName, setFirstName] = useState("Unknown");
+  const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
+
 
   // ✅ API Endpoints
   const saveScoreApiEndpoint = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
@@ -168,6 +171,7 @@ const GolfScoreInput = ({ user }) => {
 
   // ✅ Handle File Selection
   const handleFileChange = async (event) => {
+    
     const file = event.target.files[0];
     setSelectedFile(file); // Save to state if needed elsewhere
   
@@ -281,8 +285,9 @@ const GolfScoreInput = ({ user }) => {
           type="file"
           accept="image/jpeg,image/png"
           onChange={handleFileChange}
-          disabled={uploading}
+          disabled={uploading || isUploadLimitReached}
         />
+        {isUploadLimitReached && <p>You’ve reached your upload limit.</p>}
         {uploading && <p>Uploading and scanning...</p>}
       </div>
 
