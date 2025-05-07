@@ -65,22 +65,22 @@ const Settings = ({ user }) => {
           throw new Error(`Failed to fetch user profile. Status: ${response.status}`);
         }
   
-        const userData = await response.json();
-  
-        if (response.status === 200) {
+        const userData = await response.json();  
+        const profile = Array.isArray(userData) ? userData[0] : userData;
+
+        if (profile) {
           setFormData({
-            firstName: userData.data.firstName || '',
-            lastName: userData.data.lastName || '',
-            email: userData.data.email || user?.attributes?.email || '',
-            homeCourseName: userData.data.homeCourseName || '',
-            homeCourseID: userData.data.homeCourseID || '',
-            scoringType: userData.data.scoringType || 'Normal Scoring',
-            teeBox: userData.data.teeBox || 'Championship Back',
+            firstName: profile.firstName || '',
+            lastName: profile.lastName || '',
+            email: profile.email || user?.attributes?.email || '',
+            homeCourseName: profile.homeCourseName || '',
+            homeCourseID: profile.homeCourseID || '',
+            scoringType: profile.scoringType || 'Normal Scoring',
+            teeBox: profile.teeBox || 'Championship Back',
           });
           console.log("✅ User profile loaded and prepopulated.");
         } else {
-          // Unexpected response structure
-          throw new Error("Invalid response format from profile API.");
+          throw new Error("Profile data missing or in unexpected format.");
         }
   
       } catch (error) {
