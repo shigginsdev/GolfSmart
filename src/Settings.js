@@ -4,7 +4,8 @@ import debounce from 'lodash.debounce';
 import './Settings.css';
 
 const Settings = ({ user }) => {
-  const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
+  // const apiEndpoint = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
+  const apiEndpoint = "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV";
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
   const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";
 
@@ -88,7 +89,7 @@ const Settings = ({ user }) => {
           console.warn("🔒 User is signed out. Skipping profile fetch.");
           return;
         }
-        
+
         console.error("❌ Error loading user profile:", error);
         alert("Unable to load profile. Please try again or contact support.");
       }
