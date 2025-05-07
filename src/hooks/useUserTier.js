@@ -1,3 +1,7 @@
+// src/hooks/useUserTier.js
+import { useState, useEffect } from 'react';
+import { fetchAuthSession } from '@aws-amplify/auth';
+
 export function useUserTier() {
     const [tier, setTier] = useState(null);
     const [uploadCount, setUploadCount] = useState(0);
@@ -11,7 +15,7 @@ export function useUserTier() {
           const token = session.tokens?.idToken?.toString();
           if (!token) throw new Error("No token found");
   
-          const response = await fetch("https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV", {
+          const response = await fetch("https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV/getUserProfile", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
