@@ -67,7 +67,7 @@ const Settings = ({ user }) => {
   
         const userData = await response.json();
   
-        if (userData.status === "success") {
+        if (response.status === 200) {
           setFormData({
             firstName: userData.data.firstName || '',
             lastName: userData.data.lastName || '',
