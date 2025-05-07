@@ -67,6 +67,7 @@ const Settings = ({ user }) => {
   
         const userData = await response.json();  
         const profile = Array.isArray(userData) ? userData[0] : userData;
+        console.log(profile);
 
         if (profile) {
           setFormData({
