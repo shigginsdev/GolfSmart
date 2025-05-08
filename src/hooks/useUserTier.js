@@ -23,8 +23,7 @@ export function useUserTier() {
             },
           });
   
-          const raw = await response.json(); 
-          
+          const raw = await response.json();
           console.log("🪵 API Response from getUserProfile:", raw);
 
           // Safely access the user data
@@ -33,10 +32,11 @@ export function useUserTier() {
             throw new Error("User profile not found in response");
           }
 
-          const user = raw.Items[0];          
-  
+          const user = items[0]; // safe now
+
           setTier(user.tier || 'free');
           setUploadCount(user.uploadCount || 0);
+          
         } catch (err) {
           console.error("Error fetching user tier:", err);
           setError(err);
