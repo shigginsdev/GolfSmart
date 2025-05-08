@@ -25,7 +25,7 @@ export function useUserTier() {
   
           const raw = await response.json(); 
           
-          console.log("🪵 API Response from getUserProfile:", raw);
+          console.log("🪵 API Response from getUserProfile:", raw.Items[0]);
 
           // Safely access the user data
           const items = raw?.Items;
