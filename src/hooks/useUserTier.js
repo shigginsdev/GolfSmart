@@ -23,10 +23,17 @@ export function useUserTier() {
             },
           });
   
-          const raw = await response.json();                     
-          const user = raw.Items[0];
+          const raw = await response.json(); 
           
-          if (!user) throw new Error("User data is missing in parsed body");
+          console.log("🪵 API Response from getUserProfile:", raw);
+
+          // Safely access the user data
+          const items = raw?.Items;
+          if (!items || items.length === 0) {
+            throw new Error("User profile not found in response");
+          }
+
+          const user = raw.Items[0];          
   
           setTier(user.tier || 'free');
           setUploadCount(user.uploadCount || 0);
