@@ -26,7 +26,7 @@ export function useUserTier() {
           const raw = await response.json();
           if (!raw.body) throw new Error("Missing body in response");
             
-          const user = parsedArray[0];
+          const user = raw.Items[0];
           if (!user) throw new Error("User data is missing in parsed body");
   
           setTier(user.tier || 'free');
