@@ -14,7 +14,7 @@ export function useUserTier() {
         const token = session.tokens?.idToken?.toString();
         if (!token) throw new Error("No token found");
 
-        const response = await fetch("https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV/getUserProfile", {
+        const response = await fetch("https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
