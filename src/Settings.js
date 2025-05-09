@@ -8,6 +8,7 @@ const Settings = ({ user }) => {
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
   const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";
 
+  // initialize the user profile data when the component loads to set the state
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -21,6 +22,8 @@ const Settings = ({ user }) => {
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  //gets the logged in user's profile information from the API that calls the DynamoDB and prepopulates the form. If the user doesn't exist, that is ok. 
+  // The user should complete the form. The code runs every time there is a change to the Cognito user object which should only be one time.
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -42,6 +45,8 @@ const Settings = ({ user }) => {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        const result = await response.json(); 
   
         if (response.status === 404) {
           // User not found in sg_users – just prefill email
