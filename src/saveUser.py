@@ -21,6 +21,21 @@ users_table = dynamodb.Table('sg_users')
 users_table.scan(Limit=1)  # Test the connection
 logger.info("Connected to sg_users table")
 
+# clean up and flatten json data
+def simplify_dynamodb_item(item):
+    """Convert DynamoDB item to a flat JSON-serializable dict."""
+    def convert_value(value):
+        if isinstance(value, dict) and 'S' in value:
+            return value['S']
+        elif isinstance(value, dict) and 'N' in value:
+            return int(value['N']) if value['N'].isdigit() else float(value['N'])
+        elif isinstance(value, Decimal):
+            return int(value) if value % 1 == 0 else float(value)
+        else:
+            return value
+
+    return {k: convert_value(v) for k, v in item.items()}
+
 def get_user_profile(event, origin):
     """Fetches the user profile securely using Cognito authentication."""
     try:
@@ -62,7 +77,7 @@ def get_user_profile(event, origin):
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
                 "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
             },
-            "body": json.dumps({"status": "success", "data": user_data}),
+            "body": json.dumps({"status": "success", "data": simplify_dynamodb_item(user_data)}),
         }
 
     except ClientError as e:
