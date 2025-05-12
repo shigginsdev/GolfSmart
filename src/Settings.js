@@ -69,8 +69,8 @@ const Settings = ({ user }) => {
           throw new Error(`Failed to fetch user profile. Status: ${response.status}`);
         }
   
-        const userData = await response.json();  
-        const profile = Array.isArray(userData) ? userData[0] : userData;
+        // const userData = await response.json();  
+        const profile = Array.isArray(result) ? result[0] : result;
         console.log(profile);
 
         if (profile) {
