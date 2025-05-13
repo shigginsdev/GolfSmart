@@ -217,14 +217,22 @@ def analyze_course_performance(event, origin):
             }
 
         # Query last 10 scores for that user and course
+        # response = users_table.query(
+        #     IndexName="userID-courseID-index",
+        #     KeyConditionExpression=Key("userID").eq(user_id) & Key("courseID").eq(course_id),
+        #     Limit=10,
+        #     ScanIndexForward=False
+        #     )
+
         response = users_table.query(
-            IndexName="userID-courseID-index",
-            KeyConditionExpression=Key("userID").eq(user_id) & Key("courseID").eq(course_id),
-            Limit=10,
-            ScanIndexForward=False
-            )
-        
-        scores = response["Items"]
+            IndexName="userID-Date-index",
+            KeyConditionExpression=Key("userID").eq(user_id),
+            ScanIndexForward=False,
+            Limit=100
+        )    
+
+
+        scores = [item for item in response["Items"] if item.get("courseID") == course_id][:10]
         logger.info(f"Scores: {scores}")         
 
         # Get the course data fro the course ID passed in and trim down to the holes and pars in this format

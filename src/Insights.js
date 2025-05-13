@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
-import "./GolfScoreInput.css";
+import "./insights.css";
 
 const Insights = ({ user }) => {
   const [averageScores, setAverageScores] = useState([]);
@@ -91,22 +91,24 @@ const Insights = ({ user }) => {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <table style={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>
-            <thead>
-              <tr>
-                {Array.from({ length: 18 }, (_, i) => (
-                  <th key={i}>{i + 1}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {averageScores.map((score, i) => (
-                  <td key={i}>{score}</td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+          <div className="insights-table-wrapper">
+            <table className="insights-table">
+              <thead>
+                <tr>
+                  {Array.from({ length: 18 }, (_, i) => (
+                    <th key={i}>Hole {i + 1}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {averageScores.map((score, i) => (
+                    <td key={i}>{score}</td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

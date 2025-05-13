@@ -51,8 +51,9 @@ def get_avg_per_hole(event, origin):
 
         # Query the last 10 rounds sorted by date descending
         response = users_table.query(
+            IndexName="userID-Date-index",
             KeyConditionExpression=Key("userID").eq(user_id),
-            ScanIndexForward=False,  # Descending order
+            ScanIndexForward=False,  # Sort by Date descending
             Limit=10
         )
 
