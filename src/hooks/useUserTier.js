@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 
+/**
+ * Custom hook to fetch and manage the user's subscription tier and upload count.
+ * Expects the user profile endpoint to return a JSON envelope:
+ * { status: 'success' | 'error', data: { tier, uploadCount, ... }, message? }
+ */
 export function useUserTier() {
   const [tier, setTier] = useState(null);
   const [uploadCount, setUploadCount] = useState(0);
@@ -10,29 +15,40 @@ export function useUserTier() {
   useEffect(() => {
     const fetchTier = async () => {
       try {
+        // Fetch Cognito session token
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
-        if (!token) throw new Error("No token found");
+        if (!token) throw new Error("No auth token found");
 
-        const response = await fetch("https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        // Call the same profile endpoint used by App.js
+        const response = await fetch(
+          "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        const raw = await response.json();
-        console.log("🪵 API Response from getUserProfile:", raw);
-
-        if (!Array.isArray(raw) || raw.length === 0) {
-          throw new Error("User profile not found in response");
+        if (!response.ok) {
+          throw new Error(`Profile fetch failed: ${response.status}`);
         }
 
-        const user = raw[0];
+        const body = await response.json();
+        console.log("🪵 Profile API response (envelope):", body);
 
-        setTier(user.tier || 'free');
-        setUploadCount(user.uploadCount || 0);
+        // Unwrap the envelope
+        if (body.status === 'success' && body.data) {
+          const user = body.data;
+          setTier(user.tier || 'free');
+          setUploadCount(user.uploadCount ?? 0);
+        } else if (body.status === 'error') {
+          throw new Error(body.message || 'Error fetching user profile');
+        } else {
+          throw new Error('Unexpected profile response format');
+        }
       } catch (err) {
         console.error("Error fetching user tier:", err);
         setError(err);
@@ -50,6 +66,6 @@ export function useUserTier() {
     isFreeTier: tier === 'free',
     isUploadLimitReached: tier === 'free' && uploadCount >= 3,
     loading,
-    error
+    error,
   };
 }
