@@ -61,14 +61,34 @@ def getUserProfile(event, origin):
         # Serialize Decimals
         safe_items = decimal_to_native(items)
 
+        # If no matching user, return a 404-style error envelope
+        if not safe_items:
+            return {
+                "statusCode": 404,
+                "headers": {
+                    "Access-Control-Allow-Origin": origin,
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,GET,POST"
+                },
+                "body": json.dumps({
+                    "status": "error",
+                    "message": "User not found"
+                })
+            }
+
+        # Otherwise unwrap the first (and only) item into a success envelope
+        profile = safe_items[0]
         return {
             "statusCode": 200,
             "headers": {
                 "Access-Control-Allow-Origin": origin,
-                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
-                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "OPTIONS,GET,POST"
             },
-            "body": json.dumps(safe_items)
+            "body": json.dumps({
+                "status": "success",
+                "data": profile
+            })
         }
 
     except Exception as e:

@@ -57,19 +57,31 @@ function AppRoutes({ user, signOut }) {
           // ➕ New user — profile not yet saved in DynamoDB
           setIsNewUser(true);
           setUserProfile(null);
-        } else if (response.ok) {
-          const data = await response.json();
-          const profile = data?.data;
 
-          if (profile && profile.userID) {
-            setUserProfile(profile);
+        } else if (response.ok) {
+          const json = await response.json();
+          // Envelope should be: { status: "success"|"error", data: {...}, message?: "..." }
+          if (json.status === "success" && json.data) {
+            // Got a valid profile object
+            setUserProfile(json.data);
             setIsNewUser(false);
-          } else {
+
+          } else if (json.status === "error" && json.message === "User not found") {
+            // Backend explicitly told us there’s no profile yet
             setIsNewUser(true);
+            setUserProfile(null);
+
+          } else {
+            // Unexpected shape or status—treat as new user for safety
+            console.warn("Unexpected profile response:", json);
+            setIsNewUser(true);
+            setUserProfile(null);
           }
+
         } else {
           throw new Error(`Unexpected response: ${response.status}`);
         }
+
       } catch (err) {
         console.error("❌ Error fetching user profile:", err);
         setIsNewUser(true);  // Default to "new user" if there's any issue
