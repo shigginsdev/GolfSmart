@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import './Settings.css';
 
-const Settings = ({ user }) => {
-  const apiEndpoint = "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV";
+const Settings = ({ user, userProfile }) => {
   const getUserProfileApi = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
   const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";
 
-  // initialize the user profile data when the component loads to set the state
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -23,125 +20,52 @@ const Settings = ({ user }) => {
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  //gets the logged in user's profile information from the API that calls the DynamoDB and prepopulates the form. If the user doesn't exist, that is ok. 
-  // The user should complete the form. The code runs every time there is a change to the Cognito user object which should only be one time.
+  // ✅ Populate form from userProfile passed down from App.js
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const session = await fetchAuthSession();
-        const token = session.tokens?.idToken?.toString();
-        const email = session.tokens?.idToken?.payload?.email;
-        console.log ("📧 User email:", email);
-
-  
-        if (!token) {
-          console.warn("🔒 No token found. Probably signed out.");
-          return;
-        }
-  
-        const response = await fetch(apiEndpoint, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const result = await response.json(); 
-  
-        if (response.status === 404) {
-          // User not found in sg_users – just prefill email
-          setFormData({
-            firstName: '',
-            lastName: '',
-            email: email || '',
-            homeCourseName: '',
-            homeCourseID: '',
-            scoringType: 'Normal Scoring',
-            teeBox: 'Championship Back',
-          });
-
-          console.log("📧 Prepopulating with email:", user?.attributes?.email);
-
-          return;
-        }
-  
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user profile. Status: ${response.status}`);
-        }
-  
-        // const userData = await response.json();  
-        const profile = Array.isArray(result) ? result[0] : result;
-        console.log(profile);
-
-        if (profile) {
-          setFormData({
-            firstName: profile.firstName || '',
-            lastName: profile.lastName || '',
-            email: profile.email || user?.attributes?.email || '',
-            homeCourseName: profile.homeCourseName || '',
-            homeCourseID: profile.homeCourseID || '',
-            scoringType: profile.scoringType || 'Normal Scoring',
-            teeBox: profile.teeBox || 'Championship Back',
-          });
-          console.log("✅ User profile loaded and prepopulated.");
-        } else {
-          throw new Error("Profile data missing or in unexpected format.");
-        }
-  
-      } catch (error) {
-
-        if (error.name === "NotAuthorizedException") {
-          console.warn("🔒 User is signed out. Skipping profile fetch.");
-          return;
-        }
-
-        console.error("❌ Error loading user profile:", error);
-        alert("Unable to load profile. Please try again or contact support.");
-      }
-    };
-  
-    if (user) {
-      fetchUserProfile();
+    if (userProfile) {
+      setFormData({
+        firstName: userProfile.firstName || '',
+        lastName: userProfile.lastName || '',
+        email: userProfile.email || user?.attributes?.email || '',
+        homeCourseName: userProfile.homeCourseName || '',
+        homeCourseID: userProfile.homeCourseID || '',
+        scoringType: userProfile.scoringType || 'Normal Scoring',
+        teeBox: userProfile.teeBox || 'Championship Back',
+      });
     }
-  }, [user]);
-    
+  }, [userProfile]);
 
   const handleCourseSelect = async (course) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
     const uuid = await checkOrCreateCourse(course);
 
     if (!uuid) {
-      alert("Unable to set course—please try again.");      
+      alert("Unable to set course—please try again.");
     }
-
-    console.log("✅ Course selected:", courseName, "with UUID:", uuid);
 
     setFormData(prev => ({
       ...prev,
       homeCourseName: courseName,
-      homeCourseID: uuid, // save ID too
+      homeCourseID: uuid,
     }));
     setCourseSuggestions([]);
     setShowSuggestions(false);
-
   };
 
   const checkOrCreateCourse = async (courseData) => {
     try {
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString();
-  
+
       if (!token) {
-        console.error("❌ No token found for checkCreateCourse API.");;
+        console.error("❌ No token found for checkCreateCourse API.");
       }
-  
-      // 🔁 Transform the incoming courseData from courseSearchAPI
+
       const payload = {
-        externalCourseID: courseData.id.toString(), // DynamoDB requires string keys
+        externalCourseID: courseData.id.toString(),
         courseName: courseData.club_name
       };
-  
+
       const response = await fetch(checkCreateCourseAPI, {
         method: "POST",
         headers: {
@@ -150,21 +74,18 @@ const Settings = ({ user }) => {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         throw new Error(`❌ checkCreateCourse failed with status ${response.status}`);
       }
-  
-      const result = await response.json();
-      console.log("✅ checkCreateCourse API response:", result);
-      return result.uuid; // ✅ RETURN the UUID here
 
+      const result = await response.json();
+      return result.uuid;
     } catch (error) {
       console.error("❌ Error calling checkCreateCourse:", error);
     }
   };
-  
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -173,7 +94,7 @@ const Settings = ({ user }) => {
       setFormData(prev => ({
         ...prev,
         [name]: value,
-        homeCourseID: '', // clear when typing
+        homeCourseID: '',
       }));
       debouncedSearch(value);
     }
@@ -248,7 +169,6 @@ const Settings = ({ user }) => {
       });
 
       const result = await response.json();
-      console.log("✅ Profile Update Response:", result);
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("❌ Error updating profile:", error);

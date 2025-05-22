@@ -11,11 +11,9 @@ import Settings from "./Settings";
 import Coaching from "./coaching";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-
 Amplify.configure(awsExports);
 
-
-// ✅ API Endpoints
+// ✅ API Endpoint for fetching the logged-in user's profile
 const getUserProfile = "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV/";
 
 function App() {
@@ -31,15 +29,20 @@ function App() {
 }
 
 function AppRoutes({ user, signOut }) {
-  const [isNewUser, setIsNewUser] = useState(null); // null = loading
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);          // 🔄 Show loading screen until profile is fetched
+  const [isNewUser, setIsNewUser] = useState(null);      // 🚩 Flag to redirect new users to Settings
+  const [userProfile, setUserProfile] = useState(null);  // 📦 Holds full user profile from DynamoDB
 
   useEffect(() => {
-    const checkUser = async () => {
+    const fetchUserProfile = async () => {
       try {
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
-        
+
+        if (!token) {
+          throw new Error("No auth token found");
+        }
+
         const response = await fetch(getUserProfile, {
           method: "GET",
           headers: {
@@ -50,24 +53,39 @@ function AppRoutes({ user, signOut }) {
 
         console.log("📦 User profile response:", response);
 
-        if (response && response.email) {
-          setIsNewUser(false);
-        } else {
+        if (response.status === 404) {
+          // ➕ New user — profile not yet saved in DynamoDB
           setIsNewUser(true);
+          setUserProfile(null);
+        } else if (response.ok) {
+          const data = await response.json();
+          const profile = data?.data;
+
+          if (profile && profile.userID) {
+            setUserProfile(profile);
+            setIsNewUser(false);
+          } else {
+            setIsNewUser(true);
+          }
+        } else {
+          throw new Error(`Unexpected response: ${response.status}`);
         }
       } catch (err) {
-        console.error("Error checking user:", err);
-        setIsNewUser(true); // treat as new if error
+        console.error("❌ Error fetching user profile:", err);
+        setIsNewUser(true);  // Default to "new user" if there's any issue
       } finally {
-        setLoading(false);
+        setLoading(false);  // ✅ Done fetching profile, allow app to render
       }
     };
-    checkUser();
+
+    if (user) {
+      fetchUserProfile();
+    }
   }, [user]);
 
   if (loading) return <div>Loading...</div>;
 
-  // Disable access to app features if user profile not complete
+  // 🔐 Force redirect to Settings if user profile not found and not already there
   if (isNewUser && window.location.pathname !== "/settings") {
     return <Navigate to="/settings" replace />;
   }
@@ -75,10 +93,10 @@ function AppRoutes({ user, signOut }) {
   return (
     <Layout signOut={signOut} user={user} disableNav={isNewUser}>
       <Routes>
-        <Route path="/" element={<GolfScoreInput user={user} />} />
-        <Route path="/insights" element={<Insights user={user} />} />
-        <Route path="/coaching" element={<Coaching user={user} />} />
-        <Route path="/settings" element={<Settings user={user} isNewUser={isNewUser} />} />
+        <Route path="/" element={<GolfScoreInput user={user} userProfile={userProfile} />} />
+        <Route path="/insights" element={<Insights user={user} userProfile={userProfile} />} />
+        <Route path="/coaching" element={<Coaching user={user} userProfile={userProfile} />} />
+        <Route path="/settings" element={<Settings user={user} userProfile={userProfile} isNewUser={isNewUser} />} />
       </Routes>
     </Layout>
   );
