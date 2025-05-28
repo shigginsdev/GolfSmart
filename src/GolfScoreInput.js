@@ -8,6 +8,26 @@ import { useUserTier } from './hooks/useUserTier';
 // import * as e from 'express';
 
 const GolfScoreInput = ({ user }) => {
+
+  // Custom hook to get tier/uploadCount
+  //const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
+
+  // Early guards for tier state
+  if (tierLoading) {
+    return <div className="tier-loading">Loading subscription details...</div>;
+  }
+  if (isUploadLimitReached) {
+    return (
+      <div className="tier-limit-container">
+        <h2>Upload Limit Reached</h2>
+        <p>
+          You are on the free tier and have already uploaded {uploadCount} scorecards. <br />
+          Please upgrade to Pro to continue uploading.
+        </p>
+      </div>
+    );
+  }
+
   const initialFormState = {
     scoreId: uuidv4(),
     courseID: "",
