@@ -52,6 +52,7 @@ const Coaching = () => {
         setCourses(uniqueCourses);
         if (uniqueCourses.length > 0) {
           setSelectedCourseID(uniqueCourses[0].courseID);
+          setSelectedCourseName(uniqueCourses[0].courseName);
         }
         setLoading(false);
       } catch (err) {
