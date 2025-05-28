@@ -10,7 +10,7 @@ import { useUserTier } from './hooks/useUserTier';
 const GolfScoreInput = ({ user }) => {
 
   // Custom hook to get tier/uploadCount
-  //const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
+  const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
 
   // Early guards for tier state
   if (tierLoading) {
@@ -47,7 +47,7 @@ const GolfScoreInput = ({ user }) => {
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [firstName, setFirstName] = useState("Unknown");
-  const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
+  //const { tier, uploadCount, hasReachedUploadLimit, loading: tierLoading } = useUserTier();
 
 
   // ✅ API Endpoints
@@ -307,9 +307,9 @@ const GolfScoreInput = ({ user }) => {
           type="file"
           accept="image/jpeg,image/png"
           onChange={handleFileChange}
-          disabled={uploading || isUploadLimitReached}
+          disabled={uploading || hasReachedUploadLimit}
         />
-        {isUploadLimitReached && <p>You’ve reached your upload limit.</p>}
+        {hasReachedUploadLimit && <p>You have reached your upload limit.</p>}
         {uploading && <p>Uploading and scanning...</p>}
       </div>
 
