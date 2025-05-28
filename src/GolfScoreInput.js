@@ -123,6 +123,8 @@ const GolfScoreInput = ({ user }) => {
 
   useEffect(() => {
     console.log("📦 formData initialized:", formData);
+    console.log("📦 tier loaded:", tier);
+    console.log("📦 uploadCount loaded:", uploadCount);
   }, []);
 
   const handleCourseSelect = (course) => {
