@@ -38,10 +38,7 @@ const GolfScoreInput = ({ user }) => {
   const [showSuggestions, setShowSuggestions]     = useState(false);
   const [firstName, setFirstName]       = useState("Unknown");
 
-  // 1c) Stable callback for search debounce
-  const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
-
-  // 1d) Constants
+    // 1d) Constants
   const saveScoreApiEndpoint            = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
   const scanScorecardApiEndpoint        = "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV";
   const fetchS3UploadCredentialsApi     = "https://fs1qgmv86f.execute-api.us-east-2.amazonaws.com/DEV";
@@ -153,6 +150,9 @@ const GolfScoreInput = ({ user }) => {
       console.error("❌ Error searching courses:", err);
     }
   }
+
+  // 1c) Stable callback for search debounce
+  const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
 
   function handleChange(e) {
     const { name, value } = e.target;
