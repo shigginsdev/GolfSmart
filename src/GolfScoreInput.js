@@ -37,6 +37,8 @@ const GolfScoreInput = ({ user }) => {
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions]     = useState(false);
   const [firstName, setFirstName]       = useState("Unknown");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
 
     // 1d) Constants
   const saveScoreApiEndpoint            = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
@@ -47,6 +49,32 @@ const GolfScoreInput = ({ user }) => {
   const REGION                          = "us-east-2";
   const userId                          = user?.userId;
 
+  async function searchCourses(query) {
+    if (!query || query.length < 2) return;
+    try {
+      const session = await fetchAuthSession();
+      const token   = session.tokens?.idToken?.toString();
+      if (!token) return;
+      const res  = await fetch(
+        `${courseSuggestionApi}?search_query=${encodeURIComponent(query)}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:  `Bearer ${token}`
+          }
+        }
+      );
+      const data = await res.json();
+      setCourseSuggestions(data.courses || []);
+      setShowSuggestions(true);
+    } catch (err) {
+      console.error("❌ Error searching courses:", err);
+    }
+  }
+
+    // 1c) Stable callback for search debounce
+  const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
+  
   // 1e) Effects that run unconditionally
   useEffect(fetchS3UploadCredentials, []);
   useEffect(fetchUserProfile, []);
@@ -128,31 +156,7 @@ const GolfScoreInput = ({ user }) => {
     }
   }
 
-  async function searchCourses(query) {
-    if (!query || query.length < 2) return;
-    try {
-      const session = await fetchAuthSession();
-      const token   = session.tokens?.idToken?.toString();
-      if (!token) return;
-      const res  = await fetch(
-        `${courseSuggestionApi}?search_query=${encodeURIComponent(query)}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:  `Bearer ${token}`
-          }
-        }
-      );
-      const data = await res.json();
-      setCourseSuggestions(data.courses || []);
-      setShowSuggestions(true);
-    } catch (err) {
-      console.error("❌ Error searching courses:", err);
-    }
-  }
 
-  // 1c) Stable callback for search debounce
-  const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
 
   function handleChange(e) {
     const { name, value } = e.target;
