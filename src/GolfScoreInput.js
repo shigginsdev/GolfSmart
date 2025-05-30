@@ -8,21 +8,10 @@ import { useUserTier } from './hooks/useUserTier';
 
 const GolfScoreInput = ({ user }) => {
   //
-  // 1️⃣ All constants and hooks go FIRST:
+  // ——— 1) Declare all hooks at top ——————————————————————————
   //
 
-  // initial form shape
-  const initialFormState = {
-    scoreId: uuidv4(),
-    courseID: "",
-    courseName: "",
-    Date: new Date().toISOString().split("T")[0],
-    ...Object.fromEntries(
-      Array.from({ length: 18 }, (_, i) => [`Hole${i + 1}Score`, ""])
-    ),
-  };
-
-  // subscription / tier info  
+  // 1a) Subscription/tier info
   const {
     tier,
     uploadCount,
@@ -30,22 +19,29 @@ const GolfScoreInput = ({ user }) => {
     loading: tierLoading
   } = useUserTier();
 
-  // form + UI state
+  // 1b) Form & UI state
+  const initialFormState = {
+    scoreId:   uuidv4(),
+    courseID:  "",
+    courseName: "",
+    Date:      new Date().toISOString().split("T")[0],
+    ...Object.fromEntries(
+      Array.from({ length: 18 }, (_, i) => [`Hole${i + 1}Score`, ""])
+    ),
+  };
   const [formData, setFormData]         = useState(initialFormState);
   const [scanResult, setScanResult]     = useState(null);
   const [loading, setLoading]           = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading]       = useState(false);
-  const [imageUrl, setImageUrl]         = useState("");
   const [credentials, setCredentials]   = useState(null);
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions]     = useState(false);
   const [firstName, setFirstName]       = useState("Unknown");
 
-  // stable callback for debounce
+  // 1c) Stable callback for search debounce
   const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
 
-  // API endpoints / constants
+  // 1d) Constants
   const saveScoreApiEndpoint            = "https://weokdphpt7.execute-api.us-east-2.amazonaws.com/DEV/";
   const scanScorecardApiEndpoint        = "https://r2obqlzcrj.execute-api.us-east-2.amazonaws.com/DEV";
   const fetchS3UploadCredentialsApi     = "https://fs1qgmv86f.execute-api.us-east-2.amazonaws.com/DEV";
@@ -54,43 +50,38 @@ const GolfScoreInput = ({ user }) => {
   const REGION                          = "us-east-2";
   const userId                          = user?.userId;
 
-  //
-  // 2️⃣ Early-returns after all hooks/constants:
-  //
+  // 1e) Effects that run unconditionally
+  useEffect(fetchS3UploadCredentials, []);
+  useEffect(fetchUserProfile, []);
+  useEffect(() => {
+    console.log("📦 formData:", formData);
+    console.log("📦 tier:", tier, "uploads:", uploadCount);
+  }, [formData, tier, uploadCount]);
 
-  // still loading subscription?
+
+  //
+  // ——— 2) Early returns (no hooks here!) ——————————————————————
+  //
   if (tierLoading) {
     return <div className="tier-loading">Loading subscription details...</div>;
   }
-
-  // free‐tier upload limit?
   if (isUploadLimitReached) {
     return (
       <div className="tier-limit-container">
         <h2>Upload Limit Reached</h2>
         <p>
-          You are on the free tier and have already uploaded {uploadCount} scorecards.<br/>
+          You are on the free tier and have already uploaded {uploadCount} scorecards.
+          <br />
           Please upgrade to Pro to continue uploading.
         </p>
       </div>
     );
   }
 
+
   //
-  // 3️⃣ All the rest of your effects & helpers:
+  // ——— 3) Helper functions (in scope for JSX) ——————————————————
   //
-
-  // Get AWS creds for S3
-  useEffect(fetchS3UploadCredentials, []);
-
-  // Prefill user profile + home course
-  useEffect(fetchUserProfile, []);
-
-  // Simple debug logger
-  useEffect(() => {
-    console.log("📦 formData:", formData);
-    console.log("📦 tier:", tier, "uploads:", uploadCount);
-  }, [formData, tier, uploadCount]);
 
   async function fetchS3UploadCredentials() {
     try {
@@ -99,7 +90,10 @@ const GolfScoreInput = ({ user }) => {
       if (!token) return;
       const res  = await fetch(fetchS3UploadCredentialsApi, {
         method: "GET",
-        headers: { "Content-Type":"application/json", Authorization:`Bearer ${token}` }
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:  `Bearer ${token}`
+        }
       });
       const data = await res.json();
       setCredentials(data);
@@ -115,7 +109,10 @@ const GolfScoreInput = ({ user }) => {
       if (!token) return;
       const res    = await fetch("https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/", {
         method: "GET",
-        headers: { "Content-Type":"application/json", Authorization:`Bearer ${token}` }
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:  `Bearer ${token}`
+        }
       });
       const result = await res.json();
       if (result.status === "success") {
@@ -125,7 +122,7 @@ const GolfScoreInput = ({ user }) => {
           setFormData(fd => ({
             ...fd,
             courseName: homeCourseName,
-            courseID:   homeCourseID,
+            courseID:   homeCourseID
           }));
         }
       }
@@ -140,10 +137,13 @@ const GolfScoreInput = ({ user }) => {
       const session = await fetchAuthSession();
       const token   = session.tokens?.idToken?.toString();
       if (!token) return;
-      const res = await fetch(
+      const res  = await fetch(
         `${courseSuggestionApi}?search_query=${encodeURIComponent(query)}`, {
           method: "GET",
-          headers: { "Content-Type":"application/json", Authorization:`Bearer ${token}` }
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:  `Bearer ${token}`
+          }
         }
       );
       const data = await res.json();
@@ -154,11 +154,22 @@ const GolfScoreInput = ({ user }) => {
     }
   }
 
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFormData(fd => ({
+      ...fd,
+      [name]: value,
+      // if they're typing courseName, clear the ID so they re-pick
+      ...(name === "courseName" ? { courseID: "" } : {})
+    }));
+    debouncedSearch(value);
+  }
+
   function handleCourseSelect(course) {
     setFormData(fd => ({
       ...fd,
       courseName: course.courseName,
-      courseID:   course.courseID,
+      courseID:   course.courseID
     }));
     setCourseSuggestions([]);
     setShowSuggestions(false);
@@ -179,15 +190,15 @@ const GolfScoreInput = ({ user }) => {
         region: REGION,
         credentials: {
           accessKeyId:     credentials["ACCESS-KEY"],
-          secretAccessKey: credentials["SECRET-KEY"],
-        },
+          secretAccessKey: credentials["SECRET-KEY"]
+        }
       });
       const buf = await file.arrayBuffer();
       await s3.send(new PutObjectCommand({
         Bucket:      S3_BUCKET,
         Key:         fileName,
         Body:        new Uint8Array(buf),
-        ContentType: file.type,
+        ContentType: file.type
       }));
       uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
       setImageUrl(uploadedImageUrl);
@@ -198,13 +209,13 @@ const GolfScoreInput = ({ user }) => {
       setUploading(false);
     }
 
-    // OCR & parse
+    // now scan with OpenAI
     setLoading(true);
     try {
-      const res = await fetch(scanScorecardApiEndpoint, {
+      const res    = await fetch(scanScorecardApiEndpoint, {
         method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ userId, fileUrl: uploadedImageUrl, firstName }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, fileUrl: uploadedImageUrl, firstName })
       });
       const result = await res.json();
       setScanResult(result.message || "No scores detected.");
@@ -214,7 +225,9 @@ const GolfScoreInput = ({ user }) => {
         setFormData(fd => ({
           ...fd,
           ...Object.fromEntries(
-            Object.entries(parsed).map(([hole,val]) => [`Hole${hole}Score`, val.toString()])
+            Object.entries(parsed).map(
+              ([hole, val]) => [`Hole${hole}Score`, val.toString()]
+            )
           )
         }));
       }
@@ -233,13 +246,13 @@ const GolfScoreInput = ({ user }) => {
       scoreId:  formData.scoreId,
       Date:     formData.Date,
       courseID: formData.courseID,
-      ...formData,
+      ...formData
     };
     try {
       await fetch(saveScoreApiEndpoint, {
         method:  "POST",
-        headers: { "Content-Type":"application/json" },
-        body:    JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload)
       });
       alert("Data submitted successfully!");
     } catch (err) {
@@ -247,8 +260,9 @@ const GolfScoreInput = ({ user }) => {
     }
   }
 
+
   //
-  // 4️⃣ Finally—the actual JSX form
+  // ——— 4) The JSX return —————————————————————————————————————
   //
   return (
     <div className="score-input-container">
