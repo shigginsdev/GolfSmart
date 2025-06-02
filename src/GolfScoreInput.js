@@ -157,6 +157,37 @@ const GolfScoreInput = ({ user }) => {
     setShowSuggestions(false);
   };
 
+   // ✅ Fetch course suggestions from DynamoDB
+  const searchCourses = async (query) => {
+
+    console.log('Searching for', query)
+    if (!query || query.length < 2) return;
+
+    try {
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+      if (!token) return;
+
+      const response = await fetch(`${courseSuggestionApi}?search_query=${encodeURIComponent(query)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      console.log('🔍 Search results:', data);
+
+      setCourseSuggestions(data.courses || []);
+      setShowSuggestions(true);
+    } catch (error) {
+      console.error("❌ Error searching courses from DynamoDB:", error);
+    }
+  };
+
+  
   const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
 
   // ✅ Handle File Selection
