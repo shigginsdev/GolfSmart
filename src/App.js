@@ -1,4 +1,3 @@
-
 import { Amplify } from "aws-amplify";
 import React, { useState, useEffect } from 'react';
 import awsExports from "./aws-exports";
