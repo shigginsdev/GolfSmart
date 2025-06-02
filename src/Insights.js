@@ -10,14 +10,7 @@ const Insights = ({ user }) => {
 
   const insightsApiEndpoint = "https://n0l87dnv8j.execute-api.us-east-2.amazonaws.com/DEV"; // Replace with your deployed Lambda API
 
-       
-    // ── 1) GUARD: if user is not yet ready, show a placeholder or spinner
-    if (!user || !user.userId) {
-      return <div>Loading user…</div>;
-    }
-
   useEffect(() => {
-
     const fetchInsights  = async () => {
       try {
         const session = await fetchAuthSession();
@@ -88,8 +81,15 @@ const Insights = ({ user }) => {
       }
     };
 
-    fetchInsights();
-  }, [user.userId]);
+    if (user?.userId) {
+      fetchInsights();
+    }
+  }, [user?.userId]);
+
+  // Return loading state if no user
+  if (!user || !user.userId) {
+    return <div>Loading user…</div>;
+  }
 
   return (
     <div className="insights-container">
