@@ -3,7 +3,6 @@ import { fetchAuthSession } from '@aws-amplify/auth';
 import "./insights.css";
 
 const Insights = ({ user }) => {
-
   const [averageScores, setAverageScores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roundTotals, setRoundTotals] = useState([]);
@@ -11,13 +10,13 @@ const Insights = ({ user }) => {
   const insightsApiEndpoint = "https://n0l87dnv8j.execute-api.us-east-2.amazonaws.com/DEV"; // Replace with your deployed Lambda API
 
   useEffect(() => {
-    const fetchInsights = async () => {
+    const fetchInsights  = async () => {
       try {
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
 
-        if (!token) {
-          console.error("Missing token");
+        if (!token || !user?.userId) {
+          console.error("Missing token or userId");
           return;
         }
 
@@ -81,15 +80,8 @@ const Insights = ({ user }) => {
       }
     };
 
-    if (user?.attributes?.sub) {
-      fetchInsights();
-    }
-  }, [user?.attributes?.sub]);
-
-  // Return loading state if no user
-  if (!user || !user.attributes?.sub) {
-    return <div>Loading user…</div>;
-  }
+    fetchInsights();
+  }, [user]);
 
   return (
     <div className="insights-container">
