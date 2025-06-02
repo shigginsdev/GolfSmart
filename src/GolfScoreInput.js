@@ -4,29 +4,29 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import "./GolfScoreInput.css";
-import { useUserTier } from './hooks/useUserTier';
+// import { useUserTier } from './hooks/useUserTier';
 // import * as e from 'express';
 
 const GolfScoreInput = ({ user }) => {
 
-  // Custom hook to get tier/uploadCount
-  const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
+  // // Custom hook to get tier/uploadCount
+  // const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
 
-  // Early guards for tier state
-  if (tierLoading) {
-    return <div className="tier-loading">Loading subscription details...</div>;
-  }
-  if (isUploadLimitReached) {
-    return (
-      <div className="tier-limit-container">
-        <h2>Upload Limit Reached</h2>
-        <p>
-          You are on the free tier and have already uploaded {uploadCount} scorecards. <br />
-          Please upgrade to Pro to continue uploading.
-        </p>
-      </div>
-    );
-  }
+  // // Early guards for tier state
+  // if (tierLoading) {
+  //   return <div className="tier-loading">Loading subscription details...</div>;
+  // }
+  // if (isUploadLimitReached) {
+  //   return (
+  //     <div className="tier-limit-container">
+  //       <h2>Upload Limit Reached</h2>
+  //       <p>
+  //         You are on the free tier and have already uploaded {uploadCount} scorecards. <br />
+  //         Please upgrade to Pro to continue uploading.
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   const initialFormState = {
     scoreId: uuidv4(),
@@ -142,9 +142,7 @@ const GolfScoreInput = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    console.log("📦 formData initialized:", formData);
-    console.log("📦 tier loaded:", tier);
-    console.log("📦 uploadCount loaded:", uploadCount);
+    console.log("📦 formData initialized:", formData);    
   }, []);
 
   const handleCourseSelect = (course) => {
@@ -159,37 +157,7 @@ const GolfScoreInput = ({ user }) => {
     setShowSuggestions(false);
   };
 
-  // ✅ Fetch course suggestions from DynamoDB
-  const searchCourses = async (query) => {
-
-    console.log('Searching for', query)
-    if (!query || query.length < 2) return;
-
-    try {
-      const session = await fetchAuthSession();
-      const token = session.tokens?.idToken?.toString();
-      if (!token) return;
-
-      const response = await fetch(`${courseSuggestionApi}?search_query=${encodeURIComponent(query)}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      console.log('🔍 Search results:', data);
-
-      setCourseSuggestions(data.courses || []);
-      setShowSuggestions(true);
-    } catch (error) {
-      console.error("❌ Error searching courses from DynamoDB:", error);
-    }
-  };
-
-  const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
+  
 
   // ✅ Handle File Selection
   const handleFileChange = async (event) => {
