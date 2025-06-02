@@ -11,13 +11,13 @@ const Insights = ({ user }) => {
   const insightsApiEndpoint = "https://n0l87dnv8j.execute-api.us-east-2.amazonaws.com/DEV"; // Replace with your deployed Lambda API
 
   useEffect(() => {
-    const fetchInsights  = async () => {
+    const fetchInsights = async () => {
       try {
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
 
         if (!token) {
-          console.error("Missing token or userId");
+          console.error("Missing token");
           return;
         }
 
@@ -81,13 +81,13 @@ const Insights = ({ user }) => {
       }
     };
 
-    if (user?.userId) {
+    if (user?.attributes?.sub) {
       fetchInsights();
     }
-  }, [user?.userId]);
+  }, [user?.attributes?.sub]);
 
   // Return loading state if no user
-  if (!user || !user.userId) {
+  if (!user || !user.attributes?.sub) {
     return <div>Loading user…</div>;
   }
 
