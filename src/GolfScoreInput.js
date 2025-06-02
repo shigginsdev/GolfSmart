@@ -157,7 +157,7 @@ const GolfScoreInput = ({ user }) => {
     setShowSuggestions(false);
   };
 
-  
+  const debouncedSearch = useCallback(debounce(searchCourses, 400), []);
 
   // ✅ Handle File Selection
   const handleFileChange = async (event) => {
@@ -275,9 +275,9 @@ const GolfScoreInput = ({ user }) => {
           type="file"
           accept="image/jpeg,image/png"
           onChange={handleFileChange}
-          disabled={uploading || hasReachedUploadLimit}
+          disabled={uploading}
         />
-        {hasReachedUploadLimit && <p>You have reached your upload limit.</p>}
+        {/* {hasReachedUploadLimit && <p>You have reached your upload limit.</p>} */}
         {uploading && <p>Uploading and scanning...</p>}
       </div>
 
