@@ -19,11 +19,18 @@ const getUserProfile = "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/D
 function App() {
   return (
     <Authenticator>
-      {({ signOut, user }) => (
-        <Router>
-          <AppRoutes user={user} signOut={signOut} />
-        </Router>
-      )}
+      {({ signOut, user }) => {
+        // Don't render anything until we have a valid user with attributes
+        if (!user?.attributes?.sub) {
+          return <div>Initializing...</div>;
+        }
+
+        return (
+          <Router>
+            <AppRoutes user={user} signOut={signOut} />
+          </Router>
+        );
+      }}
     </Authenticator>
   );
 }
@@ -67,7 +74,7 @@ function AppRoutes({ user, signOut }) {
             setIsNewUser(false);
 
           } else if (json.status === "error" && json.message === "User not found") {
-            // Backend explicitly told us there’s no profile yet
+            // Backend explicitly told us there's no profile yet
             setIsNewUser(true);
             setUserProfile(null);
 
@@ -90,10 +97,11 @@ function AppRoutes({ user, signOut }) {
       }
     };
 
-    if (user) {
+    // Only fetch profile if we have a valid user
+    if (user?.attributes?.sub) {
       fetchUserProfile();
     }
-  }, [user]);
+  }, [user?.attributes?.sub]);
 
   if (loading) return <div>Loading...</div>;
 
