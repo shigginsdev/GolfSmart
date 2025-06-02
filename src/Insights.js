@@ -3,6 +3,9 @@ import { fetchAuthSession } from '@aws-amplify/auth';
 import "./insights.css";
 
 const Insights = ({ user }) => {
+
+  console.log("▶ Rendering Insights, user =", user);
+  
   const [averageScores, setAverageScores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roundTotals, setRoundTotals] = useState([]);
