@@ -3,8 +3,9 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
+import { useFlags } from "../hooks/useFlags";
 import "./GolfScoreInput.css";
-// import { useUserTier } from './hooks/useUserTier';
+import { useUserTier } from './hooks/useUserTier';
 // import * as e from 'express';
 
 const GolfScoreInput = ({ user }) => {
@@ -27,6 +28,9 @@ const GolfScoreInput = ({ user }) => {
   //     </div>
   //   );
   // }
+
+  const { tier, uploadCount } = useUserTier();
+  const flags = useFlags();
 
   const initialFormState = {
     scoreId: uuidv4(),

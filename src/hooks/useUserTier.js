@@ -3,7 +3,7 @@ import { fetchAuthSession } from '@aws-amplify/auth';
 
 /**
  * Custom hook to fetch and manage the user's subscription tier and upload count.
- * Expects the user profile endpoint to return a JSON envelope:
+ * Expects the user profile endpoint to return:
  * { status: 'success' | 'error', data: { tier, uploadCount, ... }, message? }
  */
 export function useUserTier() {
@@ -15,12 +15,12 @@ export function useUserTier() {
   useEffect(() => {
     const fetchTier = async () => {
       try {
-        // Fetch Cognito session token
+        // 1) Get Cognito token
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
         if (!token) throw new Error("No auth token found");
 
-        // Call the same profile endpoint used by App.js
+        // 2) Call your profile endpoint
         const response = await fetch(
           "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV/",
           {
@@ -37,17 +37,12 @@ export function useUserTier() {
         }
 
         const body = await response.json();
-        console.log("🪵 Profile API response (envelope):", body);
-
-        // Unwrap the envelope
         if (body.status === 'success' && body.data) {
           const user = body.data;
           setTier(user.tier || 'free');
           setUploadCount(user.uploadCount ?? 0);
-        } else if (body.status === 'error') {
-          throw new Error(body.message || 'Error fetching user profile');
         } else {
-          throw new Error('Unexpected profile response format');
+          throw new Error(body.message || 'Unexpected profile response');
         }
       } catch (err) {
         console.error("Error fetching user tier:", err);
@@ -63,8 +58,6 @@ export function useUserTier() {
   return {
     tier,
     uploadCount,
-    isFreeTier: tier === 'free',
-    isUploadLimitReached: tier === 'free' && uploadCount >= 3,
     loading,
     error,
   };
