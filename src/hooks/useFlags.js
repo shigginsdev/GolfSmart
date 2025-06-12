@@ -5,15 +5,22 @@ export function useFlags(env = "dev") {
   console.log("useFlags", env);
 
   useEffect(() => {
-    // fetch(`https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}`, {
-    fetch(`https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV`, {
-      credentials: "include"
-    })
-      .then(res => res.json())
-      .then(setFlags)
-      .catch(err => {
-        console.error("Failed to load flags", err);
-      });
+
+    try {
+        const response = await fetch('https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}', {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+      setFlags
+    }
+      catch (err) {
+        console.error("Error fetching user tier:", err);
+      }
   }, [env]);
 
   return flags;
