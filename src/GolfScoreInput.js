@@ -3,7 +3,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
-import { useFlags } from "../hooks/useFlags";
+import { useFlags } from "./hooks/useFlags";
 import "./GolfScoreInput.css";
 import { useUserTier } from './hooks/useUserTier';
 // import * as e from 'express';
