@@ -7,7 +7,7 @@ export function useFlags(env = "dev") {
   useEffect(() => {
 
     try {
-        const response = await fetch('https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}', {
+        const response = fetch('https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}', {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -15,7 +15,7 @@ export function useFlags(env = "dev") {
           },
         });
 
-        const data = await response.json();
+        const data = response.json();
       setFlags
     }
       catch (err) {
