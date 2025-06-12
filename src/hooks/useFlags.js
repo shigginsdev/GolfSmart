@@ -1,26 +1,41 @@
 import { useState, useEffect } from "react";
+import { fetchAuthSession } from '@aws-amplify/auth';
 
 export function useFlags(env = "dev") {
   const [flags, setFlags] = useState(null);
-  console.log("useFlags", env);
 
   useEffect(() => {
+    // define an async fn so we can await inside
+    async function fetchFlags() {
+      try {
 
-    try {
-        const response = fetch('https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}', {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+        if (!token) return;
 
-        const data = response.json();
-      setFlags
-    }
-      catch (err) {
-        console.error("Error fetching user tier:", err);
+        const res = await fetch(
+          `https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}`,
+          {
+            method: "GET",            
+            headers: {                
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,  
+            },
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error(`Failed to load flags (${res.status})`);
+        }
+
+        const data = await res.json();
+        setFlags(data);  // ← actually set your state
+      } catch (err) {
+        console.error("Error fetching flags:", err);
       }
+    }
+
+    fetchFlags();
   }, [env]);
 
   return flags;
