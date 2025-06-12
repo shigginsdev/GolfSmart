@@ -36,7 +36,7 @@ export function useUserTier() {
           throw new Error(`Profile fetch failed: ${response.status}`);
         }
 
-        const body = await response.json();
+        const body = response.json();
         if (body.status === 'success' && body.data) {
           const user = body.data;
           setTier(user.tier || 'free');
