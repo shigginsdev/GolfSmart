@@ -11,6 +11,9 @@ export function useFlags(env = "dev") {
 
         const session = await fetchAuthSession();
         const token = session.tokens?.idToken?.toString();
+
+        console.log("token", token);
+        
         if (!token) return;
 
         const res = await fetch(
