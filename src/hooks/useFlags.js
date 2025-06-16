@@ -13,11 +13,12 @@ export function useFlags(env = "dev") {
         const token = session.tokens?.idToken?.toString();
 
         console.log("token", token);
-        
+
         if (!token) return;
 
         const res = await fetch(
-          `https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}`,
+        //   `https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}`,
+        `https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/?env=${env}`,
           {
             method: "GET",            
             headers: {                
