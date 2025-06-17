@@ -29,8 +29,7 @@ export function useFlags(env = "dev") {
           throw new Error(`Failed to load flags (${res.status})`);
         }
 
-        const data = await res.json();
-        console.log("📦 Flags:", data);
+        const data = await res.json();        
         setFlags(data);  // ← actually set your state
       } catch (err) {
         console.error("Error fetching flags:", err);

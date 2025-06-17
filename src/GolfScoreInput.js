@@ -8,29 +8,14 @@ import "./GolfScoreInput.css";
 import { useUserTier } from './hooks/useUserTier';
 // import * as e from 'express';
 
-const GolfScoreInput = ({ user }) => {
-
-  // // Custom hook to get tier/uploadCount
-  // const { tier, uploadCount, isUploadLimitReached, loading: tierLoading } = useUserTier();
-
-  // // Early guards for tier state
-  // if (tierLoading) {
-  //   return <div className="tier-loading">Loading subscription details...</div>;
-  // }
-  // if (isUploadLimitReached) {
-  //   return (
-  //     <div className="tier-limit-container">
-  //       <h2>Upload Limit Reached</h2>
-  //       <p>
-  //         You are on the free tier and have already uploaded {uploadCount} scorecards. <br />
-  //         Please upgrade to Pro to continue uploading.
-  //       </p>
-  //     </div>
-  //   );
-  // }
+const GolfScoreInput = ({ user }) => { 
 
   const { tier, uploadCount } = useUserTier();
   const flags = useFlags();
+
+  // free-tier limit comes from flags.uploadLimits.config.freeMaxUploads, fallback to 3
+  const freeLimit = flags?.uploadLimits?.config?.freeMaxUploads ?? 3;
+  const hasReachedUploadLimit = tier === 'free' && uploadCount >= freeLimit;
 
   const initialFormState = {
     scoreId: uuidv4(),
@@ -310,10 +295,20 @@ const GolfScoreInput = ({ user }) => {
           type="file"
           accept="image/jpeg,image/png"
           onChange={handleFileChange}
-          disabled={uploading}
+          disabled={uploading || hasReachedUploadLimit}
         />
         {/* {hasReachedUploadLimit && <p>You have reached your upload limit.</p>} */}
         {uploading && <p>Uploading and scanning...</p>}
+        {hasReachedUploadLimit && (
+          <div className="tier-limit-container">
+            <p>
+              You are on the Free tier and have used {uploadCount}/{freeLimit} uploads.
+            </p>
+            <p>
+              <strong>Please upgrade to Pro</strong> to continue uploading scorecards.
+            </p>
+          </div>
+        )}      
       </div>
 
       {/* ✅ Scan Button */}
