@@ -305,20 +305,14 @@ const GolfScoreInput = ({ user }) => {
               You are on the Free tier and have used {uploadCount}/{freeLimit} uploads.
             </p>
             <p>
-              <strong>Please upgrade to Pro</strong> to continue uploading scorecards.
+              <strong>Please upgrade to Pro to continue uploading scorecards.</strong>
             </p>
           </div>
         )}      
-      </div>
+      </div>     
 
-      {/* ✅ Scan Button */}
-      {/* <div className="top-button-group">
-        <button type="button" className="submit-button top-submit" onClick={handleTopSubmit} disabled={loading}>
-          {loading ? "Scanning..." : "Scan in my scorecard"}
-        </button>
-      </div> */}
-
-      <form onSubmit={handleSubmit} className="scores-form">
+      {!hasReachedUploadLimit && (
+        <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
           Date:
           <input type="date" name="Date" value={formData.Date} onChange={handleChange} required />
@@ -368,6 +362,7 @@ const GolfScoreInput = ({ user }) => {
           <button type="submit" className="submit-button">Submit</button>
         </div>
       </form>
+      )}
     </div>
   );
 };
