@@ -45,6 +45,8 @@ export function useUserTier() {
           user = body.Items[0];
         }
 
+        console.log("📦 User data:", user);
+
         if (!user) {
           throw new Error('Unexpected profile response structure');
         }
