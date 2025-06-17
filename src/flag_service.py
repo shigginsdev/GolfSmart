@@ -39,7 +39,7 @@ def _load_flags(env: str, origin):
                 "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
                 },
-                "body": _CACHE[env]
+                "body": json.dumps(_CACHE[env])
             }
 
     # Fetch all flags for this environment

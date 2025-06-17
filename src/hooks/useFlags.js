@@ -30,6 +30,7 @@ export function useFlags(env = "dev") {
         }
 
         const data = await res.json();
+        console.log("📦 Flags:", data);
         setFlags(data);  // ← actually set your state
       } catch (err) {
         console.error("Error fetching flags:", err);
