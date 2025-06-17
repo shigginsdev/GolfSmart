@@ -10,14 +10,11 @@ export function useFlags(env = "dev") {
       try {
 
         const session = await fetchAuthSession();
-        const token = session.tokens?.idToken?.toString();
-
-        console.log("token", token);
+        const token = session.tokens?.idToken?.toString();        
 
         if (!token) return;
 
-        const res = await fetch(
-        //   `https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/flags?env=${env}`,
+        const res = await fetch(        
         `https://yy8ulia107.execute-api.us-east-2.amazonaws.com/DEV/?env=${env}`,
           {
             method: "GET",            

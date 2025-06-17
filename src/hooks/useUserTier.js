@@ -36,14 +36,23 @@ export function useUserTier() {
           throw new Error(`Profile fetch failed: ${response.status}`);
         }
 
-        const body = response.json();
+        const body = await response.json();
+
+        let user = null;
         if (body.status === 'success' && body.data) {
-          const user = body.data;
-          setTier(user.tier || 'free');
-          setUploadCount(user.uploadCount ?? 0);
-        } else {
-          throw new Error(body.message || 'Unexpected profile response');
+          user = body.data;
+        } else if (Array.isArray(body.Items) && body.Items.length > 0) {
+          user = body.Items[0];
         }
+
+        if (!user) {
+          throw new Error('Unexpected profile response structure');
+        }
+
+        // 5) Pull out tier & uploadCount
+        setTier(user.tier || 'free');
+        setUploadCount(user.uploadCount ?? 0);
+      
       } catch (err) {
         console.error("Error fetching user tier:", err);
         setError(err);

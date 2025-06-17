@@ -62,7 +62,7 @@ def _load_flags(env: str, origin):
                     "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
                     },
-                    "body": flags
+                    "body": json.dumps(flags)
                 }
 
 def lambda_handler(event, context):
