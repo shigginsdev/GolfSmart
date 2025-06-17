@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import { useUserTier } from './hooks/useUserTier';
+import { useFlags } from './hooks/useFlags';
 import "./insights.css";
 
 const Insights = ({ user }) => {
+  const { tier, uploadCount, loading: tierLoading, error: tierError } = useUserTier();
+  const flags = useFlags();
+
+   // 2) Derive free-tier limit
+  const freeLimit = flags?.uploadLimits?.config?.freeMaxUploads ?? 3;
+  const hasReachedUploadLimit = tier === 'free' && uploadCount >= freeLimit;
+
   const [averageScores, setAverageScores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roundTotals, setRoundTotals] = useState([]);
@@ -83,8 +92,21 @@ const Insights = ({ user }) => {
     fetchInsights();
   }, [user]);
 
+    if (tierLoading || !flags) {
+      return <p>Loading subscription details…</p>;
+    }
+    if (tierError) {
+      return <p>Error loading subscription: {tierError.message}</p>;
+    }
+
   return (
     <div className="insights-container">
+       {hasReachedUploadLimit && (
+        <div className="tier-limit-banner">
+          You’ve used {uploadCount}/{freeLimit} free uploads this month. 
+          <strong> Upgrade to Pro</strong> to upload more scorecards!
+        </div>
+      )}      
       <div className="score-input-container">
         <h2>Average score per hole (last 10 rounds)</h2>      
 
