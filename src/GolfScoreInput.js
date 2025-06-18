@@ -301,10 +301,10 @@ const GolfScoreInput = ({ user }) => {
         {uploading && <p>Uploading and scanning...</p>}
         {hasReachedUploadLimit && (
           <div className="locked-coaching-message">
-            <p>You've reached your free limit of {maxFreeUploads} score uploads.</p>
+            <p>You've reached your free limit of free score uploads.</p>
             <div>
               <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
-              <button onClick={goToUpgrade}>Upgrade Now</button>
+              <button>Upgrade Now</button>
             </div>
             <button className="close-btn" onClick={hideAlert}>×</button>
           </div>
