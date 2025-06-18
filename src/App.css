@@ -52,3 +52,62 @@
     transform: rotate(360deg);
   }
 }
+
+/* Subscription / Trial-ending alert */
+.subscription-alert,
+.locked-coaching-message {
+  background-color: #fff4e5;           /* light warm background */
+  border: 1px solid #ffbc70;           /* slightly darker border */
+  color: #663c00;                      /* dark brownish text */
+  padding: 16px 24px;                  /* breathing room */
+  border-radius: 6px;                  /* soft corners */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 20px 0;                      /* vertical spacing from other content */
+}
+
+/* Headline / bold text */
+.subscription-alert p:first-child,
+.locked-coaching-message p:first-child {
+  font-weight: bold;
+  margin: 0 1rem 0.25rem 0;            /* little gap before the next line */
+}
+
+/* Secondary text */
+.subscription-alert p:nth-child(2),
+.locked-coaching-message p:nth-child(2) {
+  margin: 0;
+}
+
+/* Upgrade button */
+.subscription-alert button,
+.locked-coaching-message button {
+  background-color: #ed8c00;           /* bright orange */
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.subscription-alert button:hover,
+.locked-coaching-message button:hover {
+  background-color: #d97900;           /* darker on hover */
+}
+
+/* Close “×” button in corner */
+.subscription-alert .close-btn,
+.locked-coaching-message .close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+}

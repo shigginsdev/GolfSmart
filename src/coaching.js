@@ -131,11 +131,14 @@ const Coaching = () => {
       <h2>AI Coaching</h2>
 
       {freeLimitReached ? (
-              <div className="locked-coaching-message">
-                <p>You've reached your free limit of {maxFreeUploads} score uploads.</p>
-                <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
-                {/* TODO: Add upgrade button/link */}
-              </div>
+          <div className="locked-coaching-message">
+            <p>You've reached your free limit of {maxFreeUploads} score uploads.</p>
+            <div>
+              <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
+              <button onClick={goToUpgrade}>Upgrade Now</button>
+            </div>
+            <button className="close-btn" onClick={hideAlert}>×</button>
+          </div>
             ) : (
               <>       
       {loading && <p>Loading course options...</p>}

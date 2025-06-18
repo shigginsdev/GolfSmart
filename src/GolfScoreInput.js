@@ -300,13 +300,13 @@ const GolfScoreInput = ({ user }) => {
         {/* {hasReachedUploadLimit && <p>You have reached your upload limit.</p>} */}
         {uploading && <p>Uploading and scanning...</p>}
         {hasReachedUploadLimit && (
-          <div className="tier-limit-container">
-            <p>
-              You are on the Free tier and have used {uploadCount}/{freeLimit} uploads.
-            </p>
-            <p>
-              <strong>Please upgrade to Pro to continue uploading scorecards.</strong>
-            </p>
+          <div className="locked-coaching-message">
+            <p>You've reached your free limit of {maxFreeUploads} score uploads.</p>
+            <div>
+              <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
+              <button onClick={goToUpgrade}>Upgrade Now</button>
+            </div>
+            <button className="close-btn" onClick={hideAlert}>×</button>
           </div>
         )}      
       </div>     
