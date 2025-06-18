@@ -29,7 +29,7 @@ const Coaching = () => {
 
   useEffect(() => {
 
-    if (freeLimitReached) {
+    if (hasReachedUploadLimit) {
       // Skip loading courses if user is over free-tier limit
       setLoading(false);
       return;
@@ -81,7 +81,7 @@ const Coaching = () => {
     };
 
     fetchUserCourses();
-  }, [freeLimitReached]);
+  }, [hasReachedUploadLimit]);
 
   const handleCourseChange = (e) => {
     // setSelectedCourseID(e.target.value);
