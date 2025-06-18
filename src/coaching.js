@@ -142,7 +142,7 @@ const Coaching = () => {
 
       {hasReachedUploadLimit && showAlert ? (
           <div className="locked-coaching-message">
-            <p>You've reached your free limit of score uploads.</p>
+            <p>You've reached your limit of free AI coaching.</p>
             <div>
               <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
               <button onClick={() => navigate('/pricing')}>Upgrade Now</button>
