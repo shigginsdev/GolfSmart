@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
-import { useFlags, useUserTier } from '../hooks';
+import { useFlags, useUserTier } from './hooks';
 import "./coaching.css";
 
 const Coaching = () => {
