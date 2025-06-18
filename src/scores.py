@@ -22,12 +22,17 @@ def add_score(event, origin):
     """Handles POST request to add a golf score"""
     try:
         score_table = dynamodb.Table('sg_user_scores')
+        user_table = dynamodb.Table('sg_users')
+
         score_table.scan(Limit=1)  # Test the connection
         logger.info("Connected to sg_user_scores table")
 
         user_score = json.loads(event.get('body', '{}'))
         logger.debug(f"Processed input: {user_score}")
 
+        user_id = str(user_score['userId'])
+
+        # Save the user's score
         score_table.put_item(Item={
             'userID': str(user_score['userId']),
             'scoreID': str(user_score['scoreId']),
@@ -35,6 +40,16 @@ def add_score(event, origin):
             'Date': str(user_score['Date']),
             **{f'Hole{i+1}Score': int(user_score[f'Hole{i+1}Score']) for i in range(18)}
         })
+
+         # Increment uploadCount in sg_users
+        user_table.update_item(
+            Key={'userID': user_id},
+            UpdateExpression="SET uploadCount = if_not_exists(uploadCount, :start) + :inc",
+            ExpressionAttributeValues={
+                ':inc': Decimal(1),
+                ':start': Decimal(0)
+            }
+        )
 
         return {
             "statusCode": 200,

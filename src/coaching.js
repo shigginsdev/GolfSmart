@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import { useFlags, useUserTier } from '../hooks';
 import "./coaching.css";
 
 const Coaching = () => {
+
+  const flags = useFlags();
+  const { uploadCount, maxFreeUploads, isProUser } = useUserTier();
+  const freeLimitReached = !isProUser && uploadCount >= maxFreeUploads;
+
   const [courses, setCourses] = useState([]);
   const [selectedCourseID, setSelectedCourseID] = useState('');
   const [loading, setLoading] = useState(true);
@@ -17,6 +23,13 @@ const Coaching = () => {
   
 
   useEffect(() => {
+
+    if (freeLimitReached) {
+      // Skip loading courses if user is over free-tier limit
+      setLoading(false);
+      return;
+    }
+
     const fetchUserCourses = async () => {
       setLoading(true);
 
@@ -63,7 +76,7 @@ const Coaching = () => {
     };
 
     fetchUserCourses();
-  }, []);
+  }, [freeLimitReached]);
 
   const handleCourseChange = (e) => {
     // setSelectedCourseID(e.target.value);
@@ -117,6 +130,14 @@ const Coaching = () => {
     <div className="coaching-container">
       <h2>AI Coaching</h2>
 
+      {freeLimitReached ? (
+              <div className="locked-coaching-message">
+                <p>You've reached your free limit of {maxFreeUploads} score uploads.</p>
+                <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
+                {/* TODO: Add upgrade button/link */}
+              </div>
+            ) : (
+              <>       
       {loading && <p>Loading course options...</p>}
       {error && <p className="error">{error}</p>}
 
@@ -146,7 +167,8 @@ const Coaching = () => {
             <p>{coachingTips}</p>
           </div>
         )}
-
+        </>
+      )}
     </div>
   );
 };
