@@ -37,6 +37,7 @@ const GolfScoreInput = ({ user }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [firstName, setFirstName] = useState("Unknown");
   //const { tier, uploadCount, hasReachedUploadLimit, loading: tierLoading } = useUserTier();
+  const [showAlert, setShowAlert] = useState(true);
 
 
   // ✅ API Endpoints
@@ -284,6 +285,8 @@ const GolfScoreInput = ({ user }) => {
     }
   };
 
+  const hideAlert = () => setShowAlert(false);
+
   return (
     <div className="score-input-container">
       <h2>Enter Golf Scores</h2>
@@ -299,7 +302,7 @@ const GolfScoreInput = ({ user }) => {
         />
         {/* {hasReachedUploadLimit && <p>You have reached your upload limit.</p>} */}
         {uploading && <p>Uploading and scanning...</p>}
-        {hasReachedUploadLimit && (
+        {hasReachedUploadLimit && showAlert && (
           <div className="locked-coaching-message">
             <p>You've reached your free limit of free score uploads.</p>
             <div>
