@@ -304,16 +304,17 @@ const GolfScoreInput = ({ user }) => {
             <button className="close-btn" onClick={hideAlert}>×</button>
           </div>
         )}      
-      </div>     
-      <label htmlFor="file-upload">Upload Scorecard:</label>
-      <input
-        id="file-upload"
-        type="file"
-        accept="image/jpeg,image/png"
-        onChange={handleFileChange}
-        disabled={uploading || hasReachedUploadLimit}
-      />
+      </div>           
       {!hasReachedUploadLimit && (
+        <div>
+          <label htmlFor="file-upload">Upload Scorecard:</label>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/jpeg,image/png"
+              onChange={handleFileChange}
+              disabled={uploading || hasReachedUploadLimit}
+            />      
         <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
           Date:
@@ -364,6 +365,7 @@ const GolfScoreInput = ({ user }) => {
           <button type="submit" className="submit-button">Submit</button>
         </div>
       </form>
+      </div>
       )}
     </div>
   );

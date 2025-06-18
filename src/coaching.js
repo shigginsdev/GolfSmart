@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import { useFlags } from "./hooks/useFlags";
 import { useUserTier } from "./hooks/useUserTier";
+import { useNavigate } from 'react-router-dom';
 import "./coaching.css";
 
 const Coaching = () => {
@@ -12,6 +13,8 @@ const Coaching = () => {
   // free-tier limit comes from flags.uploadLimits.config.freeMaxUploads, fallback to 3
   const freeLimit = flags?.uploadLimits?.config?.freeMaxUploads ?? 3;
   const hasReachedUploadLimit = tier === 'free' && uploadCount >= freeLimit;
+  const navigate = useNavigate();
+  
 
   const [courses, setCourses] = useState([]);
   const [selectedCourseID, setSelectedCourseID] = useState('');
@@ -142,7 +145,7 @@ const Coaching = () => {
             <p>You've reached your free limit of score uploads.</p>
             <div>
               <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
-              <button>Upgrade Now</button>
+              <button onClick={() => navigate('/pricing')}>Upgrade Now</button>
             </div>
             <button className="close-btn" onClick={hideAlert}>×</button>
           </div>
