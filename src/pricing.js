@@ -1,6 +1,6 @@
 // src/components/Pricing.js
 import React from 'react';
-import './Pricing.css';
+import './pricing.css';
 
 const plans = [
   {
