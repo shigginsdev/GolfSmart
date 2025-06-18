@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
-import { useUserTier } from './hooks/useUserTier';
-import { useFlags } from './hooks/useFlags';
+import { useFlags } from "./hooks/useFlags";
+import { useUserTier } from "./hooks/useUserTier";
 import "./insights.css";
 
 const Insights = ({ user }) => {

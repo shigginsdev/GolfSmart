@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import { useFlags } from "./hooks/useFlags";
-import { useUserTier } from './hooks/useUserTier';
+import { useUserTier } from "./hooks/useUserTier";
 import "./coaching.css";
 
 const Coaching = () => {

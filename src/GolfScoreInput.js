@@ -4,8 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import { useFlags } from "./hooks/useFlags";
+import { useUserTier } from "./hooks/useUserTier";
 import "./GolfScoreInput.css";
-import { useUserTier } from './hooks/useUserTier';
 // import * as e from 'express';
 
 const GolfScoreInput = ({ user }) => { 
