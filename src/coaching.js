@@ -6,9 +6,12 @@ import "./coaching.css";
 
 const Coaching = () => {
 
+  const { tier, uploadCount } = useUserTier();
   const flags = useFlags();
-  const { uploadCount, maxFreeUploads, isProUser } = useUserTier();
-  const freeLimitReached = !isProUser && uploadCount >= maxFreeUploads;
+
+  // free-tier limit comes from flags.uploadLimits.config.freeMaxUploads, fallback to 3
+  const freeLimit = flags?.uploadLimits?.config?.freeMaxUploads ?? 3;
+  const hasReachedUploadLimit = tier === 'free' && uploadCount >= freeLimit;
 
   const [courses, setCourses] = useState([]);
   const [selectedCourseID, setSelectedCourseID] = useState('');
@@ -134,9 +137,9 @@ const Coaching = () => {
     <div className="coaching-container">
       <h2>AI Coaching</h2>
 
-      {freeLimitReached && showAlert ? (
+      {hasReachedUploadLimit && showAlert ? (
           <div className="locked-coaching-message">
-            <p>You've reached your free limit of {maxFreeUploads} score uploads.</p>
+            <p>You've reached your free limit of score uploads.</p>
             <div>
               <p><strong>Upgrade to Pro</strong> to unlock personalized coaching and unlimited uploads!</p>
               <button>Upgrade Now</button>

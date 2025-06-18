@@ -291,15 +291,7 @@ const GolfScoreInput = ({ user }) => {
     <div className="score-input-container">
       <h2>Enter Golf Scores</h2>
 
-      <div className="upload-section">
-        <label htmlFor="file-upload">Upload Scorecard:</label>
-        <input
-          id="file-upload"
-          type="file"
-          accept="image/jpeg,image/png"
-          onChange={handleFileChange}
-          disabled={uploading || hasReachedUploadLimit}
-        />
+      <div className="upload-section">        
         {/* {hasReachedUploadLimit && <p>You have reached your upload limit.</p>} */}
         {uploading && <p>Uploading and scanning...</p>}
         {hasReachedUploadLimit && showAlert && (
@@ -313,7 +305,14 @@ const GolfScoreInput = ({ user }) => {
           </div>
         )}      
       </div>     
-
+      <label htmlFor="file-upload">Upload Scorecard:</label>
+      <input
+        id="file-upload"
+        type="file"
+        accept="image/jpeg,image/png"
+        onChange={handleFileChange}
+        disabled={uploading || hasReachedUploadLimit}
+      />
       {!hasReachedUploadLimit && (
         <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
