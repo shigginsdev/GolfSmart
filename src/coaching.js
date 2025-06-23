@@ -176,7 +176,7 @@ const Coaching = () => {
         </button>
         {coachingTips && (
           <div className="coaching-tips">
-            <h3>Coaching Tips:</h3>
+            <h3>Coaching tips from analysis of your last 10 rounds:</h3>
             <p>{coachingTips}</p>
           </div>
         )}
