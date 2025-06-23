@@ -138,7 +138,13 @@ const Coaching = () => {
 
   return (
     <div className="coaching-container">
-      <h2>AI Coaching</h2>
+      <h2>AI Coaching from your last 10 rounds</h2>
+      {loading && (
+            <div className="loading-overlay">
+              <div className="spinner"></div>
+              <p>Loading coaching tips…</p>
+            </div>
+          )}
 
       {hasReachedUploadLimit && showAlert ? (
           <div className="locked-coaching-message">
