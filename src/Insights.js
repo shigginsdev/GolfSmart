@@ -49,10 +49,11 @@ const Insights = ({ user }) => {
         const totals = Array(18).fill(0);
         const counts = Array(18).fill(0);
 
+        // Aggregate all scores where the user shot above zero to create an average
         rounds.forEach(round => {
           for (let i = 0; i < 18; i++) {
             const score = parseInt(round[`Hole${i + 1}Score`], 10);
-            if (!isNaN(score)) {
+            if (!isNaN(score) && score>0) {
               totals[i] += score;
               counts[i]++;
             }
