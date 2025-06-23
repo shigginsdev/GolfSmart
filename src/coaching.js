@@ -138,13 +138,7 @@ const Coaching = () => {
 
   return (
     <div className="coaching-container">
-      <h2>AI Coaching from your last 10 rounds</h2>
-      {loading && (
-            <div className="loading-overlay">
-              <div className="spinner"></div>
-              <p>Loading coaching tips…</p>
-            </div>
-          )}
+      <h2>AI Coaching from your last 10 rounds</h2>      
 
       {hasReachedUploadLimit && showAlert ? (
           <div className="locked-coaching-message">
@@ -180,6 +174,12 @@ const Coaching = () => {
         >
         Analyze My Game
         </button>
+        {loading && (
+            <div className="loading-overlay">
+              <div className="spinner"></div>
+              <p>Loading coaching tips…</p>
+            </div>
+          )}
         {coachingTips && (
           <div className="coaching-tips">
             <h3>Coaching tips from analysis of your last 10 rounds:</h3>
