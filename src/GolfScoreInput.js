@@ -5,6 +5,7 @@ import { fetchAuthSession } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import { useFlags } from "./hooks/useFlags";
 import { useUserTier } from "./hooks/useUserTier";
+import { useNavigate } from "react-router-dom";
 import "./GolfScoreInput.css";
 // import * as e from 'express';
 
@@ -26,6 +27,7 @@ const GolfScoreInput = ({ user }) => {
   };
 
   // ✅ State Hooks
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(initialFormState);
   const [scanResult, setScanResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -280,6 +282,8 @@ const GolfScoreInput = ({ user }) => {
 
       const result = await response.json();
       alert("Data submitted successfully!");
+      navigate("/insights");
+      
     } catch (error) {
       console.error("❌ Error submitting data:", error);
     }
