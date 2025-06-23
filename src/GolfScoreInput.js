@@ -289,6 +289,13 @@ const GolfScoreInput = ({ user }) => {
 
   return (
     <div className="score-input-container">
+    
+      {loading && (
+      <div className="loading-overlay">
+        <div className="spinner"></div>
+        <p>Scanning scorecard…</p>
+      </div>
+    )}
       <h2>Enter Golf Scores</h2>
 
       <div className="upload-section">        
@@ -313,7 +320,7 @@ const GolfScoreInput = ({ user }) => {
               type="file"
               accept="image/jpeg,image/png"
               onChange={handleFileChange}
-              disabled={uploading || hasReachedUploadLimit}
+              disabled={uploading || hasReachedUploadLimit || loading}
             />      
         <form onSubmit={handleSubmit} className="scores-form">
         <label className="date-label">
@@ -362,7 +369,7 @@ const GolfScoreInput = ({ user }) => {
         </div>
 
         <div className="button-group">
-          <button type="submit" className="submit-button">Submit</button>
+          <button type="submit" className="submit-button" disabled={loading}>Submit</button>
         </div>
       </form>
       </div>
