@@ -145,12 +145,12 @@ const Coaching = () => {
 
   return (
     <>
-+     {analyzing && (
-+       <div className="loading-overlay">
-+         <div className="spinner" />
-+         <p>Analyzing your game…</p>
-+       </div>
-+     )}
+     {analyzing && (
+       <div className="loading-overlay">
+         <div className="spinner" />
+         <p>Analyzing your game…</p>
+       </div>
+     )}
 
     <div className="coaching-container">
       <h2>AI Coaching from your last 10 rounds</h2>      
