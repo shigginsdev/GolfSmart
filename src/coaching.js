@@ -23,6 +23,7 @@ const Coaching = () => {
   const [selectedCourseName, setSelectedCourseName] = useState('');
   const [coachingTips, setCoachingTips] = useState('');
   const [showAlert, setShowAlert] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);      
 
 
   // ✅ API Endpoints
@@ -94,6 +95,9 @@ const Coaching = () => {
   };
 
   const handleAnalyzeClick = async () => {
+
+    setAnalyzing(true);
+
     const session = await fetchAuthSession();
     const token = session.tokens?.idToken?.toString();
   
@@ -131,12 +135,23 @@ const Coaching = () => {
       console.error('❌ Error analyzing course:', err);
       setError('Unable to analyze course');
     }
+    finally {
+      setAnalyzing(false);
+    }
   };
 
   const hideAlert = () => setShowAlert(false);
   
 
   return (
+    <>
++     {analyzing && (
++       <div className="loading-overlay">
++         <div className="spinner" />
++         <p>Analyzing your game…</p>
++       </div>
++     )}
+
     <div className="coaching-container">
       <h2>AI Coaching from your last 10 rounds</h2>      
 
@@ -189,6 +204,7 @@ const Coaching = () => {
         </>
       )}
     </div>
+    </>
   );
 };
 
