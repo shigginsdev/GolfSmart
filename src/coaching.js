@@ -133,6 +133,12 @@ const Coaching = () => {
         
     } catch (err) {
       console.error('❌ Error analyzing course:', err);
+      // AWS RUM monitoring
+      awsRum.recordError(err, {
+      // optional: add custom context
+      feature: "analyze-course",
+      courseId: currentCourse.id,
+    });
       setError('Unable to analyze course');
     }
     finally {
