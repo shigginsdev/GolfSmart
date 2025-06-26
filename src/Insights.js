@@ -85,7 +85,7 @@ const Insights = ({ user }) => {
         setRoundTotals(roundSummaries);
 
       } catch (err) {
-        console.error("❌ Error fetching insights:", err);
+        console.error("❌ Error fetching insights:", err);        
       } finally {
         setLoading(false);
       }

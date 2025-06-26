@@ -3,6 +3,7 @@ import { fetchAuthSession } from '@aws-amplify/auth';
 import { useFlags } from "./hooks/useFlags";
 import { useUserTier } from "./hooks/useUserTier";
 import { useNavigate } from 'react-router-dom';
+import { awsRum } from './rumClient';
 import "./coaching.css";
 
 const Coaching = () => {
@@ -79,6 +80,7 @@ const Coaching = () => {
         setLoading(false);
       } catch (err) {
         console.error('❌ Error loading courses:', err);
+        awsRum.recordError(err, { feature: 'error loading courses' });
         setError('Unable to load courses');
         setLoading(false);
       }
@@ -134,11 +136,7 @@ const Coaching = () => {
     } catch (err) {
       console.error('❌ Error analyzing course:', err);
       // AWS RUM monitoring
-      awsRum.recordError(err, {
-      // optional: add custom context
-      feature: "analyze-course",
-      courseId: currentCourse.id,
-    });
+      awsRum.recordError(err, { feature: 'analyze-course' });
       setError('Unable to analyze course');
     }
     finally {
