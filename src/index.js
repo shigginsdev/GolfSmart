@@ -16,7 +16,7 @@ try {
     signing: false // If you have a public resource policy and wish to send unsigned requests please set this to false
   };
 
-  
+
 
   const APPLICATION_ID = '491787bd-e832-45b0-a85d-23d55fa84b26';
   const APPLICATION_VERSION = '1.0.0';
@@ -28,9 +28,16 @@ try {
     APPLICATION_REGION,
     config
   );
+
+  window.onerror = (msg, src, line, col, err) => {
+  awsRum.recordError(err || new Error(msg));
+};
+
 } catch (error) {
   // Ignore errors thrown during CloudWatch RUM web client initialization
 }
+
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
