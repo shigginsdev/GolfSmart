@@ -5,6 +5,9 @@ import { useUserTier } from "./hooks/useUserTier";
 import "./insights.css";
 
 const Insights = ({ user }) => {
+
+  useEffect(() => { throw new Error("Test JS exception"); }, []);
+  
   const { tier, uploadCount, loading: tierLoading, error: tierError } = useUserTier();
   const flags = useFlags();
 
