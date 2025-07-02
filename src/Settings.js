@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import { Auth } from 'aws-amplify';
 import debounce from 'lodash.debounce';
 import './Settings.css';
 
@@ -11,7 +12,7 @@ const Settings = ({ user, userProfile }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    email: user?.attributes?.email || '',
+    email: '',
     homeCourseName: '',
     homeCourseID: '',
     scoringType: 'Normal Scoring',
@@ -21,13 +22,28 @@ const Settings = ({ user, userProfile }) => {
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  // ① On mount, grab Cognito’s email
+  useEffect(() => {
+    async function loadEmailFromCognito() {
+      try {
+        const cognitoUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
+        setFormData(fd => ({ ...fd, email: cognitoUser.attributes.email }));
+      } catch (err) {
+        console.error("Couldn't load Cognito user:", err);
+      }
+    }
+    loadEmailFromCognito();
+  }, []);
+
   // ✅ Populate form from userProfile passed down from App.js
   useEffect(() => {
     if (userProfile) {
       setFormData({
         firstName: userProfile.firstName || '',
         lastName: userProfile.lastName || '',          
-        email: user?.attributes?.email || '',
+        email:          userProfile.email != null 
+                        ? userProfile.email 
+                        : fd.email,
         homeCourseName: userProfile.homeCourseName || '',
         homeCourseID: userProfile.homeCourseID || '',
         scoringType: userProfile.scoringType || 'Normal Scoring',
