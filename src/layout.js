@@ -1,56 +1,53 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './layout.css';
-import bannerImg from './assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png';
+import { NavLink } from 'react-router-dom';
+import './Layout.css';
 
+export default function Layout({ disableNav, signOut, user, children }) {
+  return (
+    <div className="app-container">
+      <header className="app-header">
+        <nav className="app-nav">
+          <NavLink to="/" className="nav-item">
+            Home
+          </NavLink>
 
+          {disableNav ? (
+            <span className="nav-item disabled-link" title="Complete your profile to unlock Insights">
+              Insights
+            </span>
+          ) : (
+            <NavLink to="/insights" className="nav-item">
+              Insights
+            </NavLink>
+          )}
 
-const Layout = ({ user, signOut, children }) => {
-  const location = useLocation();
-  const currentPath = location.pathname.slice(1);
+          {disableNav ? (
+            <span className="nav-item disabled-link" title="Complete your profile to unlock Coaching">
+              Coaching
+            </span>
+          ) : (
+            <NavLink to="/coaching" className="nav-item">
+              Coaching
+            </NavLink>
+          )}
 
-  return (    
-    <div className="layout">
+          <NavLink to="/settings" className="nav-item">
+            Settings
+          </NavLink>
 
-      {<header className="header">        
-        <div className="banner">
-          <h1>SWINGSTAT</h1>                      
-        </div>
-      </header>}
+          <NavLink to="/pricing" className="nav-item">
+            Pricing
+          </NavLink>
 
-      <div className="breadcrumb">
-        <Link to="/">Home</Link>
-        {currentPath && <> / <span>{currentPath.charAt(0).toUpperCase() + currentPath.slice(1)}</span></>}
-      </div>
-
-      <div className="main">
-        <nav className="sidebar">
-          <ul>
-            <li>
-              <Link to="/">Scores</Link>
-            </li>
-            <li>
-              <Link to="/insights">Insights</Link>
-            </li>
-            <li>
-              <Link to="/coaching">Coaching</Link>
-            </li>
-            <li>
-              <Link to="/settings">Settings</Link>
-            </li>
-            <li>
-              <button onClick={signOut}>Logout</button>
-            </li>
-          </ul>
+          <button onClick={signOut} className="nav-item signout-button">
+            Sign Out
+          </button>
         </nav>
+      </header>
 
-        <section className="content">
-          {children}
-        </section>
-      </div>
-
+      <main className="app-content">
+        {children}
+      </main>
     </div>
   );
-};
-
-export default Layout;
+}
