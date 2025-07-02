@@ -8,7 +8,7 @@ const Settings = ({ user, userProfile }) => {
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
   const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";
   const cognitoEmail = user?.attributes?.email;
-  
+  console.log(cognitoEmail, ' cognito email in settings');
 
   const [formData, setFormData] = useState({
     firstName: '',

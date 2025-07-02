@@ -38,7 +38,8 @@ function AppRoutes({ user, signOut }) {
     const fetchUserProfile = async () => {
       try {
         const session = await fetchAuthSession();
-        const token = session.tokens?.idToken?.toString();        
+        const token = session.tokens?.idToken?.toString(); 
+        console.log(cognitoEmail, ' cognito email in app');       
 
         if (!token) {
           throw new Error("No auth token found");
