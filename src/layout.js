@@ -1,13 +1,13 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+// import { Link, useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import './layout.css';
 import bannerImg from './assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png';
 
 
 // const Layout = ({ user, signOut, children }) => {
-  const location = useLocation();
-  const currentPath = location.pathname.slice(1);
+  // const location = useLocation();
+  // const currentPath = location.pathname.slice(1);
 
   export default function Layout({ disableNav, signOut, user, children }) {
 
@@ -20,10 +20,13 @@ import bannerImg from './assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png';
           </div>
         </header>}
 
-        <div className="breadcrumb">
-          <Link to="/">Home</Link>
-          {currentPath && <> / <span>{currentPath.charAt(0).toUpperCase() + currentPath.slice(1)}</span></>}
-        </div>
+        <div className="main">
+          <nav className="sidebar">
+            <NavLink to="/" className="nav-item">
+                        Home
+                      </NavLink>
+          </nav>          
+        </div>        
 
         <div className="main">
           <nav className="sidebar">
