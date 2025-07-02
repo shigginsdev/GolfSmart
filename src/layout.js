@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './layout.css';
 import bannerImg from './assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png';
 
