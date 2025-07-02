@@ -22,14 +22,16 @@ const Settings = ({ user, userProfile }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // ① On mount, grab Cognito’s email
-  useEffect(() => {
+ useEffect(() => {
   async function loadEmailFromCognito() {
     try {
       const session = await fetchAuthSession();
-      // the idToken payload is where Cognito sticks the user attributes
       const emailFromToken = session.idToken?.payload?.email;
       if (emailFromToken) {
-        setFormData(fd => ({ ...fd, email: emailFromToken }));
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          email: emailFromToken
+        }));
       }
     } catch (err) {
       console.error("Couldn't load Cognito email:", err);
