@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import './Layout.css';
+import './layout.css';
 
 export default function Layout({ disableNav, signOut, user, children }) {
   return (
