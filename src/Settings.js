@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
-import Auth from '@aws-amplify/auth';
+import Auth from '@aws-amplify';
 import debounce from 'lodash.debounce';
 import './Settings.css';
 
-Amplify.configure(awsExports);
+// Amplify.configure(awsExports);
 
 const Settings = ({ user, userProfile }) => {
   const getUserProfileApi = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
