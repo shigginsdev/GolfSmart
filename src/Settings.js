@@ -194,7 +194,7 @@ const Settings = ({ user, userProfile }) => {
 
         <div className="form-group">
           <label>Email Address:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} disabled />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
         </div>
 
         <div className="form-group" style={{ position: 'relative' }}>
@@ -206,6 +206,7 @@ const Settings = ({ user, userProfile }) => {
             onChange={handleChange}
             autoComplete="off"
             onFocus={() => setShowSuggestions(courseSuggestions.length > 0)}
+            required
           />
           {showSuggestions && courseSuggestions.length > 0 && (
             <ul className="autocomplete-dropdown">
