@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-//import { fetchAuthSession } from '@aws-amplify/auth';
-//import { Auth } from 'aws-amplify';
+import { fetchAuthSession } from '@aws-amplify/auth';
+import { fetchUserAttributes } from '@aws-amplify/auth';
 import Amplify, { Auth, API, fetchAuthSession } from 'aws-amplify'
 import debounce from 'lodash.debounce';
 import './Settings.css';
@@ -27,20 +27,20 @@ const Settings = ({ user, userProfile }) => {
 
   // ① On mount, grab Cognito’s email
  useEffect(() => {
-    async function loadCognitoUser() {
-      try {
-        const cognitoUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
-        const email       = cognitoUser.attributes.email;
-        console.log("Cognito email via Auth:", email);
-        if (email) {
-          setFormData(prev => ({ ...prev, email }));
-        }
-      } catch (err) {
-        console.error("Error loading Cognito user:", err);
+  async function loadUserAttributes() {
+    try {
+      // this returns an object like { email: "...", phone_number: "...", ... }
+      const attrs = await fetchUserAttributes();
+      console.log("Cognito attributes:", attrs);
+      if (attrs.email) {
+        setFormData(prev => ({ ...prev, email: attrs.email }));
       }
+    } catch (e) {
+      console.error("Error fetching user attributes:", e);
     }
-    loadCognitoUser();
-  }, []);
+  }
+  loadUserAttributes();
+}, []);
 
   // ✅ Populate form from userProfile passed down from App.js
   useEffect(() => {
