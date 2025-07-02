@@ -11,6 +11,8 @@ export default function Layout({ disableNav, signOut, user, children }) {
             Home
           </NavLink>
 
+          console.log("disableNav", disableNav.toString());
+
           {disableNav ? (
             <span className="nav-item disabled-link" title="Complete your profile to unlock Insights">
               Insights
