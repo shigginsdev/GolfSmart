@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import { Auth } from '@aws-amplify/auth';
+import { Amplify } from 'aws-amplify';
+import awsExports from './aws-exports';  
 import debounce from 'lodash.debounce';
 import './Settings.css';
+
+Amplify.configure(awsExports);
 
 const Settings = ({ user, userProfile }) => {
   const getUserProfileApi = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
@@ -23,31 +28,20 @@ const Settings = ({ user, userProfile }) => {
 
   // ① On mount, grab Cognito’s email
  useEffect(() => {
-  async function loadEmailFromCognito() {
-    try {
-      const session = await fetchAuthSession();
-      const emailFromToken = session.idToken?.payload?.email;
-      console.log("Cognito email: ", emailFromToken);
-
-      if (emailFromToken) {
-        setFormData(prev => ({
-          ...prev,
-          firstName:      userProfile.firstName      || prev.firstName,
-          lastName:       userProfile.lastName       || prev.lastName,
-          // only replace email if your DB returned one; otherwise keep Cognito’s
-          email:          userProfile.email          ? userProfile.email : prev.email,
-          homeCourseName: userProfile.homeCourseName || prev.homeCourseName,
-          homeCourseID:   userProfile.homeCourseID   || prev.homeCourseID,
-          scoringType:    userProfile.scoringType    || prev.scoringType,
-          teeBox:         userProfile.teeBox         || prev.teeBox,
-        }));
+    async function loadCognitoUser() {
+      try {
+        const cognitoUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
+        const email       = cognitoUser.attributes.email;
+        console.log("Cognito email via Auth:", email);
+        if (email) {
+          setFormData(prev => ({ ...prev, email }));
+        }
+      } catch (err) {
+        console.error("Error loading Cognito user:", err);
       }
-    } catch (err) {
-      console.error("Couldn't load Cognito email:", err);
     }
-  }
-  loadEmailFromCognito();
-}, []);
+    loadCognitoUser();
+  }, []);
 
   // ✅ Populate form from userProfile passed down from App.js
   useEffect(() => {
