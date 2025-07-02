@@ -4,6 +4,7 @@ import awsExports from "./aws-exports";
 import "@aws-amplify/ui-react/styles.css";
 import { Authenticator } from "@aws-amplify/ui-react";
 import { fetchAuthSession } from '@aws-amplify/auth';
+import Auth from '@aws-amplify/auth';
 import Layout from "./layout";
 import GolfScoreInput from "./GolfScoreInput";
 import Insights from "./Insights";
@@ -13,6 +14,7 @@ import Pricing from "./pricing";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 Amplify.configure(awsExports);
+Amplify.register(Auth);
 
 // ✅ API Endpoint for fetching the logged-in user's profile
 const getUserProfile = "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV/";
