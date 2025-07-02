@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchAuthSession } from '@aws-amplify/auth';
-import Auth from '@aws-amplify';
+//import { fetchAuthSession } from '@aws-amplify/auth';
+//import { Auth } from 'aws-amplify';
+import Amplify, { Auth, API, fetchAuthSession } from 'aws-amplify'
 import debounce from 'lodash.debounce';
 import './Settings.css';
 
