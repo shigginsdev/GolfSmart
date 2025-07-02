@@ -27,15 +27,15 @@ const Settings = ({ user, userProfile }) => {
     if (userProfile) {
       setFormData({
         firstName: userProfile.firstName || '',
-        lastName: userProfile.lastName || '',
-        email: userProfile.email || user?.attributes?.email || '',
+        lastName: userProfile.lastName || '',        
+        email: userProfile?.email?.trim() !== "" ? userProfile.email : (user?.attributes?.email || ''),
         homeCourseName: userProfile.homeCourseName || '',
         homeCourseID: userProfile.homeCourseID || '',
         scoringType: userProfile.scoringType || 'Normal Scoring',
         teeBox: userProfile.teeBox || 'Championship Back',
       });
     }
-  }, [userProfile]);
+  }, [userProfile, user]);
 
   const handleCourseSelect = async (course) => {
     const courseName = `${course.club_name} (${course.location.city || ''}, ${course.location.state || ''})`;
