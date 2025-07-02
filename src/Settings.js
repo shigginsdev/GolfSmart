@@ -6,9 +6,7 @@ import './Settings.css';
 const Settings = ({ user, userProfile }) => {
   const getUserProfileApi = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
-  const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";
-  
-  console.log(cognito_user?.attributes?.email, ' cognito email in settings');
+  const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";    
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -29,7 +27,7 @@ const Settings = ({ user, userProfile }) => {
       setFormData({
         firstName: userProfile.firstName || '',
         lastName: userProfile.lastName || '',          
-        email: cognitoEmail || userProfile.email || '',
+        email: user?.attributes?.email || '',
         homeCourseName: userProfile.homeCourseName || '',
         homeCourseID: userProfile.homeCourseID || '',
         scoringType: userProfile.scoringType || 'Normal Scoring',
