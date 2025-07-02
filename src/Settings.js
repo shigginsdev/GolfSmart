@@ -27,10 +27,19 @@ const Settings = ({ user, userProfile }) => {
     try {
       const session = await fetchAuthSession();
       const emailFromToken = session.idToken?.payload?.email;
+      console.log("Cognito email: ", emailFromToken);
+
       if (emailFromToken) {
-        setFormData(prevFormData => ({
-          ...prevFormData,
-          email: emailFromToken
+        setFormData(prev => ({
+          ...prev,
+          firstName:      userProfile.firstName      || prev.firstName,
+          lastName:       userProfile.lastName       || prev.lastName,
+          // only replace email if your DB returned one; otherwise keep Cognito’s
+          email:          userProfile.email          ? userProfile.email : prev.email,
+          homeCourseName: userProfile.homeCourseName || prev.homeCourseName,
+          homeCourseID:   userProfile.homeCourseID   || prev.homeCourseID,
+          scoringType:    userProfile.scoringType    || prev.scoringType,
+          teeBox:         userProfile.teeBox         || prev.teeBox,
         }));
       }
     } catch (err) {
