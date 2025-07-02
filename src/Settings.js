@@ -46,7 +46,7 @@ const Settings = ({ user, userProfile }) => {
       setFormData({
         firstName: userProfile.firstName || '',
         lastName: userProfile.lastName || '',          
-        email:  userProfile.email != null || emailFromToken ,
+        email:  userProfile.email != null || '' ,
         homeCourseName: userProfile.homeCourseName || '',
         homeCourseID: userProfile.homeCourseID || '',
         scoringType: userProfile.scoringType || 'Normal Scoring',
