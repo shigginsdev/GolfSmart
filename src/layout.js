@@ -10,10 +10,9 @@ const Layout = ({ user, signOut, children, disableNav }) => {
   return (
     <div className="layout">
 
-      <header className="header">
+      <header className="header">        
         <div className="banner">
-          <img src={bannerImg} alt="Banner" />
-          <h1>SWINGSTAT</h1>
+          <h1>SWINGSTAT</h1>                      
         </div>
       </header>
 
@@ -28,7 +27,13 @@ const Layout = ({ user, signOut, children, disableNav }) => {
         <nav className="sidebar">
           <ul>
             <li>
+              {disableNav ? (
+                <span className="disabled" title="Complete your profile to unlock Scores">
+                  Scores
+                </span>
+              ) : (
               <Link to="/">Scores</Link>
+              )}
             </li>
             <li>
               {disableNav ? (
