@@ -7,6 +7,7 @@ const Settings = ({ user, userProfile }) => {
   const getUserProfileApi = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
   const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";
+  const cognitoEmail = user?.attributes?.email;
   
 
   const [formData, setFormData] = useState({
@@ -27,8 +28,8 @@ const Settings = ({ user, userProfile }) => {
     if (userProfile) {
       setFormData({
         firstName: userProfile.firstName || '',
-        lastName: userProfile.lastName || '',        
-        email: userProfile?.email?.trim() !== "" ? userProfile.email : (user?.attributes?.email || ''),
+        lastName: userProfile.lastName || '',          
+        email: cognitoEmail || userProfile.email || '',
         homeCourseName: userProfile.homeCourseName || '',
         homeCourseID: userProfile.homeCourseID || '',
         scoringType: userProfile.scoringType || 'Normal Scoring',
