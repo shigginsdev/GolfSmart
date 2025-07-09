@@ -63,12 +63,13 @@ const GolfScoreInput = ({ user }) => {
         ...prev,
         courseName: value,
         courseID: '', // Clear this when typing
-      }));            
+      }));
+      debouncedSearch(value);            
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
 
-    debouncedSearch(value);
+    // debouncedSearch(value);
 
   };
 

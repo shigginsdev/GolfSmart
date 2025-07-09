@@ -106,17 +106,36 @@ def save_user_profile(event, origin):
         
         user_profile = json.loads(event.get('body', '{}'))
         logger.debug(f"Processed user profile: {user_profile}")
+             
+        update_expr = """
+            SET firstName      = :fn,
+                lastName       = :ln,
+                email          = :em,
+                homeCourseName = :hcn,
+                homeCourseID   = :hci,
+                scoringType    = :st,
+                teeBox         = :tb,
+                tier           = if_not_exists(tier, :free),
+                uploadCount    = if_not_exists(uploadCount, :zero)
+            """
 
-        users_table.put_item(Item={
-            'userID': str(user_profile['userID']),  # Primary Key
-            'firstName': str(user_profile['firstName']),
-            'lastName': str(user_profile['lastName']),
-            'email': str(user_profile['email']),
-            'homeCourseName': str(user_profile.get('homeCourseName', '')),
-            'homeCourseID': str(user_profile.get('homeCourseID', '')),
-            'scoringType': str(user_profile.get('scoringType', 'Normal Scoring')),
-            'teeBox': str(user_profile.get('teeBox', 'Championship Back'))            
-        })
+        expr_values = {
+            ':fn':   str(user_profile['firstName']),
+            ':ln':   str(user_profile['lastName']),
+            ':em':   str(user_profile['email']),
+            ':hcn':  str(user_profile.get('homeCourseName','')),
+            ':hci':  str(user_profile.get('homeCourseID','')),
+            ':st':   str(user_profile.get('scoringType','Normal Scoring')),
+            ':tb':   str(user_profile.get('teeBox','Championship Back')),
+            ':free': 'free',
+            ':zero': '0'
+            }
+
+        users_table.update_item(
+            Key={'userID': str(user_profile['userID'])},
+            UpdateExpression=update_expr,
+            ExpressionAttributeValues=expr_values
+            )
 
         return {
             "statusCode": 200,

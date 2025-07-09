@@ -84,13 +84,15 @@ def searchCourseByName(event, origin):
             raw_data = response.read()
             data = json.loads(raw_data)
 
+        logger.info(data)
+
         trimmed_courses = [
             {
                 "id": course["id"],
                 "club_name": course["club_name"],
                 "location": {
-                    "city": course["location"]["city"],
-                    "state": course["location"]["state"]
+                    "city":  course.get("location", {}).get("city",  "Unknown"),
+                    "state": course.get("location", {}).get("state", "Unknown"),
                 }
             }
             for course in data.get("courses", [])

@@ -1,4 +1,5 @@
 import json
+import urllib.error
 import uuid
 import boto3
 import logging
@@ -31,7 +32,7 @@ def fetch_course_data_from_external_api(external_course_id):
     client = session.client(
         service_name='secretsmanager',
         region_name=region_name
-    )
+    )    
 
     try:
         get_secret_value_response = client.get_secret_value(
@@ -42,18 +43,26 @@ def fetch_course_data_from_external_api(external_course_id):
         # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
         raise e
 
-    secret = get_secret_value_response['SecretString']
-
+    # secret = get_secret_value_response['SecretString']
+    secret = json.loads(get_secret_value_response['SecretString'])
+    api_key = secret.get("Authorization")   
+      
             
-    url = f"https://api.golfcourseapi.com/v1/courses/{external_course_id}"   
+    url = f"https://api.golfcourseapi.com/v1/courses/{external_course_id}"    
+
     req = urllib.request.Request(
         url,
-        headers={"Authorization": secret}
-    )
+        headers={"Authorization": api_key}
+    )       
 
-    with urllib.request.urlopen(req) as response:
-        raw_data = response.read()
-        return json.loads(raw_data, parse_float=Decimal)    
+    try:
+        with urllib.request.urlopen(req) as response:
+            raw_data = response.read()
+            return json.loads(raw_data, parse_float=Decimal)
+    except urllib.error.HTTPError as he:
+        body = he.read().decode(errors='replace')
+        logger.error(f"External API HTTPError {he.code}: {he.reason} — body: {body!r}")
+        raise    
 
 def check_create_course(event):
     try:
@@ -90,6 +99,8 @@ def check_create_course(event):
 
         # Fetch full course data
         full_course_data = fetch_course_data_from_external_api(external_course_id)
+        logger.info(f"📦 Fetched full course data: {full_course_data}")
+
         if not full_course_data:
             return {
                 "statusCode": 502,
@@ -98,6 +109,7 @@ def check_create_course(event):
             }
 
         # Save to DynamoDB
+        logger.info("saving new course to DB")
         new_course_item = {
             "courseID": str(uuid.uuid4()),
             "externalCourseID": external_course_id,
