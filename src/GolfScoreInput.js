@@ -55,7 +55,7 @@ const GolfScoreInput = ({ user }) => {
 
    // ✅ Handle Input Changes
    const handleChange = (e) => {
-    console.log("Handle change called")
+    
     const { name, value } = e.target;    
 
     if (name === 'courseName') {

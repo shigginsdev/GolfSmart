@@ -178,7 +178,7 @@ const Settings = ({ user, userProfile }) => {
         homeCourseID: formData.homeCourseID,
         scoringType: formData.scoringType,
         teeBox: formData.teeBox,
-      };
+      };      
 
       const response = await fetch(getUserProfileApi, {
         method: "POST",
@@ -191,6 +191,10 @@ const Settings = ({ user, userProfile }) => {
 
       const result = await response.json();
       alert("Profile updated successfully!");
+
+      // Update the state to reflect new settings
+      setFormData(formData);
+      
     } catch (error) {
       console.error("❌ Error updating profile:", error);
       alert("Failed to update profile.");
