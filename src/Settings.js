@@ -6,7 +6,7 @@ import './Settings.css';
 
 // Amplify.configure(awsExports);
 
-const Settings = ({ user, userProfile }) => {
+const Settings = ({ user, userProfile, onProfileUpdate  }) => {
   const getUserProfileApi = "https://exn14bxwk0.execute-api.us-east-2.amazonaws.com/DEV/";
   const courseSearchApi = "https://c8h20trzmh.execute-api.us-east-2.amazonaws.com/DEV";
   const checkCreateCourseAPI = "https://8ryxv7ybo4.execute-api.us-east-2.amazonaws.com/DEV";    
