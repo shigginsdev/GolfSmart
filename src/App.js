@@ -109,7 +109,22 @@ function AppRoutes({ user, signOut }) {
         <Route path="/" element={<GolfScoreInput user={user} userProfile={userProfile} />} />
         <Route path="/insights" element={<Insights user={user} userProfile={userProfile} />} />
         <Route path="/coaching" element={<Coaching user={user} userProfile={userProfile} />} />
-        <Route path="/settings" element={<Settings user={user} userProfile={userProfile} isNewUser={isNewUser} />} />
+        {/* <Route path="/settings" element={<Settings user={user} userProfile={userProfile} isNewUser={isNewUser} />} /> */}
+        <Route
+          path="/settings"
+          element={
+            <Settings
+              user={user}
+              userProfile={userProfile}
+              isNewUser={isNewUser}
+              // pass down the setter so Settings can update the parent
+              onProfileUpdate={(updatedProfile) => {
+                setUserProfile(updatedProfile);
+                setIsNewUser(false);
+              }}
+            />
+          }
+        />
         <Route path="/pricing" element={<Pricing user={user} userProfile={userProfile} />} />
       </Routes>
     </Layout>

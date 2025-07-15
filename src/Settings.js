@@ -193,8 +193,16 @@ const Settings = ({ user, userProfile }) => {
       alert("Profile updated successfully!");
 
       // Update the state to reflect new settings
-      setFormData(formData);
-      
+      if (json.status === "success" && json.data) {
+        // 1) Update the parent’s profile state
+        onProfileUpdate(json.data);
+        // 2) Update your local form so it matches exactly
+        setFormData(json.data);
+        alert("Profile updated successfully!");
+      } else {
+        console.error("❌ Unexpected response format:", json);
+      }
+
     } catch (error) {
       console.error("❌ Error updating profile:", error);
       alert("Failed to update profile.");
