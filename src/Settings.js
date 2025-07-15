@@ -190,15 +190,14 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       });
 
       const result = await response.json();
-      alert("Profile updated successfully!");
-      console.info("✅ Profile updated:", result);
-      
+      alert("Profile updated successfully!");      
+
       // Update the state to reflect new settings
       
         // 1) Update the parent’s profile state
-        onProfileUpdate(result.data);         
+        onProfileUpdate(payload.data);         
         // 2) Update your local form so it matches exactly
-        setFormData(result.data);        
+        setFormData(payload.data);        
 
     } catch (error) {
       console.error("❌ Error updating profile:", error);
