@@ -193,11 +193,11 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       alert("Profile updated successfully!");      
 
       // Update the state to reflect new settings
-      console.info(payload);
-        // 1) Update the parent’s profile state
-        onProfileUpdate(payload.data);         
-        // 2) Update your local form so it matches exactly
-        setFormData(payload);        
+      // console.info(payload);
+      //   // 1) Update the parent’s profile state
+      //   onProfileUpdate(payload.data);         
+      //   // 2) Update your local form so it matches exactly
+      //   setFormData(payload);        
 
     } catch (error) {
       console.error("❌ Error updating profile:", error);
