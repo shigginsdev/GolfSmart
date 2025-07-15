@@ -120,7 +120,7 @@ function AppRoutes({ user, signOut }) {
               // pass down the setter so Settings can update the parent
               onProfileUpdate={(updatedProfile) => {
                 setUserProfile(updatedProfile);
-                setIsNewUser(false);
+                setIsNewUser(isNewUser);
               }}
             />
           }
