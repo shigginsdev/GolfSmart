@@ -193,7 +193,7 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       alert("Profile updated successfully!");      
 
       // Update the state to reflect new settings
-      
+      console.info(payload.data);
         // 1) Update the parent’s profile state
         onProfileUpdate(payload.data);         
         // 2) Update your local form so it matches exactly
