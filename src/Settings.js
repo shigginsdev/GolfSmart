@@ -195,7 +195,7 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       // Update the state to reflect new settings
        console.info(payload);
       //   // 1) Update the parent’s profile state
-         onProfileUpdate(payload.data);         
+         onProfileUpdate(payload);         
       //   // 2) Update your local form so it matches exactly
          setFormData(payload);        
 
