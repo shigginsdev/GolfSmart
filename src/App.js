@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 Amplify.configure(awsExports);
 
+// testing checkins
 // ✅ API Endpoint for fetching the logged-in user's profile
 const getUserProfile = "https://s3crwhjhf4.execute-api.us-east-2.amazonaws.com/DEV/";
 
