@@ -23,67 +23,59 @@ ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
 
+# ---- Config ----
+BUCKET = "golf-scorecards-bucket"
+REGION = "us-east-2"
+# For 24-hour deletes, STANDARD is typically cheapest. GLACIER_IR/IA tiers have early-deletion minimums.
+STORAGE_CLASS = "STANDARD"           # If you insist: "GLACIER_IR"
+PRESIGN_TTL_SECONDS = 120            # Pre-signed URL lifetime
 
-# preprocessing of scorecard image
 def preprocess_image(image_url, first_name):
     # Download the image
-    response = requests.get(image_url)
-    if response.status_code != 200:
+    resp = requests.get(image_url, timeout=30)
+    if resp.status_code != 200:
         raise Exception("Failed to download image.")
+    image = Image.open(BytesIO(resp.content))
 
-    image = Image.open(BytesIO(response.content))
-
-     # Step 1: Convert to grayscale
+    # 1) Grayscale
     image = image.convert("L")
 
-    # Step 2: Ensure landscape orientation (rotate if portrait)
+    # 2) Rotate portrait to landscape
     if image.height > image.width:
         image = image.rotate(90, expand=True)
 
-    # Step 3: Check if image is upside down (name column on right)
-    # try:
-    #     left_half = image.crop((0, 0, image.width // 2, image.height))
-    #     right_half = image.crop((image.width // 2, 0, image.width, image.height))
+    # 3) Enhance contrast & sharpness
+    image = ImageEnhance.Contrast(image).enhance(2.0)
+    image = ImageEnhance.Sharpness(image).enhance(2.0)
 
-    #     left_density = sum(left_half.getdata())
-    #     right_density = sum(right_half.getdata())
+    # Save to in-memory buffer (PNG)
+    buf = BytesIO()
+    image.save(buf, format="PNG")
+    buf.seek(0)
 
-    #     if right_density < left_density:
-    #         image = image.rotate(180, expand=True)
-    #         logger.info("Rotated image 180° to correct upside-down orientation.")
-    # except Exception as e:
-    #     logger.warning(f"Could not determine orientation by density: {e}")
+    # Single PUT of the preprocessed image (PRIVATE), with storage class set
+    s3 = boto3.client("s3", region_name=REGION)
+    timestamp = int(time.time())
+    object_key = f"preprocessed/preprocessed-{first_name}-{timestamp}.png"
 
-    # Enhance contrast and sharpness
-    enhancer_contrast = ImageEnhance.Contrast(image)
-    image = enhancer_contrast.enhance(2.0)
+    s3.upload_fileobj(
+        buf,
+        BUCKET,
+        object_key,
+        ExtraArgs={
+            "ContentType": "image/png",
+            "StorageClass": STORAGE_CLASS  # Keep STANDARD for 24h lifecycle
+        }
+    )
+    logger.info(f"Uploaded to s3://{BUCKET}/{object_key} with StorageClass={STORAGE_CLASS}")
 
-    enhancer_sharpness = ImageEnhance.Sharpness(image)
-    image = enhancer_sharpness.enhance(2.0)
-
-    # Save to BytesIO buffer for both upload and base64
-    image_bytes = BytesIO()
-    image.save(image_bytes, format="PNG")
-
-    # Upload a copy to S3
-    try:
-        s3 = boto3.client("s3")        
-
-        timestamp = int(time.time())
-        object_key = f"preprocessed/preprocessed-{first_name}-{timestamp}.png"
-
-        s3_upload_buffer = BytesIO(image_bytes.getvalue())
-        s3.upload_fileobj(s3_upload_buffer, "golf-scorecards-bucket", object_key, ExtraArgs={"ContentType": "image/png"})
-        logger.info(f"Preprocessed image uploaded to S3: {object_key}")
-    except Exception as e:
-        logger.error(f"Failed to upload preprocessed image to S3: {e}")
-
-    # Now read the base64 from the original buffer
-    image_bytes.seek(0)
-    base64_image = base64.b64encode(image_bytes.read()).decode("utf-8")
-
-    public_url = f"https://golf-scorecards-bucket.s3.us-east-2.amazonaws.com/{object_key}"
-    return public_url
+    # Pre-signed URL so OpenAI can fetch without public access
+    presigned_url = s3.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": BUCKET, "Key": object_key},
+        ExpiresIn=PRESIGN_TTL_SECONDS
+    )
+    return presigned_url, object_key
 
 
 def get_secret(event, origin):
@@ -102,7 +94,7 @@ def get_secret(event, origin):
     # Preprocess the image
     try:
         # base64_image = preprocess_image(imageURL, first_name)
-        preprocessed_image_url = preprocess_image(imageURL, first_name)
+        preprocessed_image_url, object_key = preprocess_image(imageURL, first_name)
     except Exception as e:
         logger.error(f"Image preprocessing failed: {e}")
         return {
