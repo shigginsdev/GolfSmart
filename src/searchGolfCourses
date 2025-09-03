@@ -66,11 +66,13 @@ def searchCourseByName(event, origin):
         # logger.info(f"Secrets Manager: {secret}")
         
         # Build the external API call
-        search_query = event.get("queryStringParameters", {}).get("search_query", "")
+        # search_query = event.get("queryStringParameters", {}).get("search_query", "")
+        search_query = (event.get("queryStringParameters") or {}).get("search_query", "").strip()
         if not search_query:
             return { ... }  # handle missing query
         
-        url = f"https://api.golfcourseapi.com/v1/search?search_query={search_query}"
+        encoded = quote_plus(search_query)
+        url = f"https://api.golfcourseapi.com/v1/search?search_query={encoded}"
         
         secret_dict = json.loads(get_secret_value_response['SecretString'])
         api_key = secret_dict.get("Authorization")  # Extract just the string, not the whole object
