@@ -3,6 +3,7 @@ import { fetchAuthSession } from '@aws-amplify/auth';
 import { fetchUserAttributes } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import './Settings.css';
+import Swal from 'sweetalert2';
 
 // Amplify.configure(awsExports);
 
@@ -61,7 +62,12 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
     const uuid = await checkOrCreateCourse(course);
 
     if (!uuid) {
-      alert("Unable to set course—please try again.");
+      // alert("Unable to set course—please try again.");
+      Swal.fire({
+        title: "Error",
+        text: "Unable to set course—please try again.",
+        icon: "error"
+      });
     }
 
     setFormData(prev => ({
@@ -169,7 +175,12 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString();
       if (!token) {
-        alert("User not authenticated.");
+        // alert("User not authenticated.");
+        Swal.fire({
+          title: "Error",
+          text: "User not authenticated.",
+          icon: "error"
+        });
         return;
       }
 
@@ -194,7 +205,12 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       });
 
       const result = await response.json();
-      alert("Profile updated successfully!");      
+      // alert("Profile updated successfully!");      
+      Swal.fire({
+          title: "Success",
+          text: "Profile updated successfully!",
+          icon: "success"
+        });
 
       // Update the state to reflect new settings
        console.info(payload);
@@ -205,7 +221,12 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
 
     } catch (error) {
       console.error("❌ Error updating profile:", error);
-      alert("Failed to update profile.");
+      // alert("Failed to update profile.");
+      Swal.fire({
+          title: "Success",
+          text: "Profile updated successfully!",
+          icon: "success"
+        });
     }
   };
 
