@@ -1,0 +1,101 @@
+/* alerts.css — Swingstat modal look & feel (overrides SweetAlert2) */
+
+/* ---- Global variables (SweetAlert2 v11 supports CSS vars) ---- */
+:root {
+  --swal2-font: 'Montserrat', sans-serif;
+
+  /* text colors */
+  --swal2-title-color: #55595e;
+  --swal2-text-color: #55595e;
+
+  /* buttons */
+  --swal2-confirm-button-background: #2b2c2f;
+  --swal2-confirm-button-color: #ffffff;
+  --swal2-confirm-button-hover-background: #55595e;
+  --swal2-deny-button-background: #e5e7eb;   /* optional secondary */
+  --swal2-deny-button-color: #2b2c2f;
+
+  /* timer/progress (if used) */
+  --swal2-timer-progress-bar-background: #2b2c2f;
+}
+
+/* ---- Container/backdrop ---- */
+.swal2-container {
+  /* slightly dim backdrop with soft blur */
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(1px);
+}
+
+/* ---- Popup card ---- */
+.swal2-popup {
+  background: #ffffff !important;
+  color: #55595e !important;
+  border-radius: 8px !important;              /* match .settings-container */
+  padding: 24px 24px 18px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+  width: min(92vw, 480px);                    /* responsive max width */
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Title + body copy */
+.swal2-title {
+  font-weight: 700 !important;
+  font-size: 22px !important;
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+.swal2-html-container {
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+  margin: 6px 0 0 0 !important;
+  color: #55595e !important;
+  opacity: 0.95;
+  text-align: center !important;
+}
+
+/* ---- Icon ring + sizing (success/info/error) ---- */
+.swal2-icon {
+  margin: 6px auto 10px auto !important;
+  /* subtle ring like your app’s soft shadows */
+  box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.04);
+  border-width: 2px !important;
+}
+
+/* Optional: soften the default icon colors slightly */
+.swal2-icon.swal2-success { border-color: #34d399 !important; color: #10b981 !important; }
+.swal2-icon.swal2-info    { border-color: #93c5fd !important; color: #3b82f6 !important; }
+.swal2-icon.swal2-error   { border-color: #fca5a5 !important; color: #ef4444 !important; }
+
+/* ---- Buttons ---- */
+.swal2-actions {
+  margin-top: 16px !important;
+}
+
+.swal2-styled {
+  border-radius: 4px !important;              /* match form buttons */
+  padding: 10px 20px !important;
+  font-size: 14px !important;
+  box-shadow: none !important;
+}
+
+/* Confirm button uses your dark/hover grays via vars above */
+.swal2-styled:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(43, 44, 47, 0.15) !important; /* subtle focus ring */
+}
+
+/* Secondary/Cancel button (if you use it) */
+.swal2-styled.swal2-cancel {
+  background: #e5e7eb !important;
+  color: #2b2c2f !important;
+}
+.swal2-styled.swal2-cancel:hover {
+  background: #d1d5db !important;
+}
+
+/* ---- Small screens ---- */
+@media (max-width: 480px) {
+  .swal2-popup { padding: 20px 18px 14px !important; }
+  .swal2-title { font-size: 20px !important; }
+}
