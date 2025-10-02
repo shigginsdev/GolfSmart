@@ -77,7 +77,8 @@
   padding: 10px 20px !important;
   font-size: 14px !important;
   box-shadow: none !important;
-}
+  color: #2b2c2f !important;
+}.swal2-styled
 
 /* Confirm button uses your dark/hover grays via vars above */
 .swal2-styled:focus {
