@@ -7,6 +7,9 @@ import { useFlags } from "./hooks/useFlags";
 import { useUserTier } from "./hooks/useUserTier";
 import { useNavigate } from "react-router-dom";
 import "./GolfScoreInput.css";
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css'; // base styles
+import './alerts.css';   
 // import * as e from 'express';
 
 const GolfScoreInput = ({ user }) => { 
@@ -190,7 +193,12 @@ const GolfScoreInput = ({ user }) => {
     setSelectedFile(file); // Save to state if needed elsewhere
   
     if (!file || !credentials) {
-      alert("❌ No file selected or credentials missing.");
+      // alert("❌ No file selected or credentials missing.");
+      Swal.fire({
+              title: "Error",
+              text: "No file selected or credentials missing.",
+              icon: "error"
+            });
       return;
     }
   
@@ -219,7 +227,12 @@ const GolfScoreInput = ({ user }) => {
       await s3Client.send(new PutObjectCommand(params));
       uploadedImageUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
       setImageUrl(uploadedImageUrl);
-      alert("✅ Upload Successful!");
+      // alert("✅ Upload Successful!");
+       Swal.fire({
+              title: "Success",
+              text: "Upload Successful!",
+              icon: "success"
+            });
     } catch (error) {
       console.error("❌ Error uploading file:", error);
     } finally {
@@ -282,7 +295,12 @@ const GolfScoreInput = ({ user }) => {
       });
 
       const result = await response.json();
-      alert("Data submitted successfully!");
+      // alert("Data submitted successfully!");
+      Swal.fire({
+          title: "Success",
+          text: "Data submitted successfully!",
+          icon: "success"
+        });
       navigate("/insights");
       
     } catch (error) {
