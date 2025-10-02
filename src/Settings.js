@@ -4,7 +4,7 @@ import { fetchUserAttributes } from '@aws-amplify/auth';
 import debounce from 'lodash.debounce';
 import './Settings.css';
 import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css'; // base styles
+//import 'sweetalert2/dist/sweetalert2.min.css'; // base styles
 import './alerts.css';                      
 
 // Amplify.configure(awsExports);
