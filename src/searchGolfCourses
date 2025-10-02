@@ -4,8 +4,11 @@ import logging
 from decimal import Decimal
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr   # for contains/begins_with filters
+import os
 import http.client
 import urllib.request
+from urllib.parse import quote_plus
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -20,7 +23,139 @@ ALLOWED_ORIGINS = [
 
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
-users_table = dynamodb.Table('sg_user_scores')
+COURSES_TABLE = os.environ.get("SG_COURSES_TABLE", "sg_courses")
+courses_table = dynamodb.Table(COURSES_TABLE)
+
+def normalize_external(item: dict) -> dict:
+    return {
+        "id": f"ext-{item['id']}",
+        "source": "external",
+        "club_name": item.get("club_name", ""),
+        "location": {
+            "city": item.get("location", {}).get("city", "") or "",
+            "state": item.get("location", {}).get("state", "") or "",
+        },
+        "externalCourseID": str(item["id"]),
+        "uuid": None,
+    }
+
+def merge_dedup_rank(local_arr, external_arr, query, cap=20):
+    q = (query or "").strip().lower()
+
+    def key_of(r):
+        return f"{(r.get('club_name') or '').lower()}|{(r.get('location',{}).get('city') or '').lower()}|{(r.get('location',{}).get('state') or '').lower()}"
+
+    m = {}               # primary storage keyed only by name/city/state
+    seen_keys = set()    # name/city/state keys we've added
+    seen_extids = set()  # external IDs we've seen on anything we've added
+
+    # 1) Add locals once; just register aliases in sets (don't add a 2nd value!)
+    for r in local_arr:
+        k = key_of(r)
+        m[k] = r
+        seen_keys.add(k)
+        extid = r.get("externalCourseID")
+        if extid:
+            seen_extids.add(str(extid))
+
+    # 2) Add externals only if they don't collide with a local (by namekey or extid)
+    for r in external_arr:
+        k = key_of(r)
+        extid = r.get("externalCourseID")
+        if k in seen_keys:
+            continue
+        if extid and str(extid) in seen_extids:
+            continue
+        m[k] = r
+        seen_keys.add(k)
+        if extid:
+            seen_extids.add(str(extid))
+
+    def score(r):
+        name = (r.get('club_name') or '').lower()
+        city = (r.get('location', {}).get('city') or '').lower()
+        hay = f"{name} {city} {(r.get('location', {}).get('state') or '').lower()}"
+        if q and (name.startswith(q) or city.startswith(q)):
+            return 3
+        if q and q in hay:
+            return 2
+        return 1
+
+    merged = list(m.values())
+    merged.sort(key=lambda r: (-score(r), 0 if r.get('source') == 'local' else 1, r.get('club_name') or ''))
+    return merged[:cap]
+
+
+
+def _unwrap_attrval(v):
+    """Safely unwrap DynamoDB AttributeValue format into plain Python."""
+    if not isinstance(v, dict) or any(k in v for k in ("club_name", "course", "location")):
+        return v
+    if "S" in v: return v["S"]
+    if "N" in v: return v["N"]
+    if "BOOL" in v: return v["BOOL"]
+    if "M" in v: return {k: _unwrap_attrval(x) for k, x in v["M"].items()}
+    if "L" in v: return [_unwrap_attrval(x) for x in v["L"]]
+    return v
+
+def _extract_display_fields(item):
+    """Pull out club_name, city, state from course_data JSON or AttributeValue."""
+    courseName = item.get("courseName")
+    course_data = _unwrap_attrval(item.get("course_data") or {})
+    course_obj = (course_data.get("course") if isinstance(course_data, dict) else {}) or {}
+    club_name = course_obj.get("club_name") or course_obj.get("course_name") or courseName or ""
+    location = course_obj.get("location") or {}
+    city = location.get("city") or ""
+    state = location.get("state") or ""
+    return club_name, city, state
+
+def search_local_courses_python_filter(q: str, limit: int = 25):
+    """Scan table and filter courses by substring match in Python."""
+    logger.info("called search local courses")
+
+    ql = (q or "").strip().lower()
+    logger.info(f"ql{ql}")
+    if not ql: return []
+    resp = courses_table.scan(
+        ProjectionExpression="#cid, #cname, #cdata, externalCourseID",
+        ExpressionAttributeNames={
+            "#cid": "courseID",
+            "#cname": "courseName",
+            "#cdata": "course_data",
+        }
+    )
+    items = resp.get("Items", [])
+    logger.info(f"Items {items}")
+
+    results = []
+    for it in items:
+        logger.info("there are items to return")
+        club_name, city, state = _extract_display_fields(it)
+        hay = f"{club_name} {city} {state}".lower()
+        if ql in hay:
+            results.append({
+                "uuid": it.get("courseID") or it.get("uuid"),
+                "club_name": club_name,
+                "location": {"city": city, "state": state},
+                "externalCourseID": it.get("externalCourseID")
+            })
+            if len(results) >= limit:
+                break
+    return results
+
+def normalize_local(item: dict) -> dict:
+    return {
+        "id": f"local-{item.get('uuid')}",
+        "source": "local",
+        "club_name": item.get("club_name", ""),
+        "location": {
+            "city": (item.get("location") or {}).get("city", ""),
+            "state": (item.get("location") or {}).get("state", "")
+        },
+        "externalCourseID": str(item["externalCourseID"]) if item.get("externalCourseID") else None,
+        "uuid": item.get("uuid")
+    }
+
 
 
 def searchCourseByName(event, origin):
@@ -61,15 +196,18 @@ def searchCourseByName(event, origin):
             # For a list of exceptions thrown, see
             # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
             raise e
-
-        # secret = get_secret_value_response['SecretString']
-        # logger.info(f"Secrets Manager: {secret}")
-        
-        # Build the external API call
-        # search_query = event.get("queryStringParameters", {}).get("search_query", "")
+    
+        # Build the external API call        
         search_query = (event.get("queryStringParameters") or {}).get("search_query", "").strip()
         if not search_query:
-            return { ... }  # handle missing query
+            return {
+                "statusCode": 400,
+                "headers": {
+                    "Access-Control-Allow-Origin": origin,
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+                },
+                "body": json.dumps({"status": "error", "message": "Missing search_query"}) }  # handle missing query
         
         encoded = quote_plus(search_query)
         url = f"https://api.golfcourseapi.com/v1/search?search_query={encoded}"
@@ -101,15 +239,28 @@ def searchCourseByName(event, origin):
         ]                            
 
         
+        # Normalize external
+        normalized_external = [normalize_external(c) for c in trimmed_courses]
+
+        logger.info("Calling search_local")
+        # Query + normalize local
+        local_items = search_local_courses_python_filter(search_query, limit=25)
+        normalized_local = [normalize_local(c) for c in local_items]
+
+        # Merge, dedupe, rank (helper already provided)
+        merged = merge_dedup_rank(normalized_local, normalized_external, search_query)
+
+        logger.info(f"Unified search for userID={user_id}, query='{search_query}'")
+
+        # Return unified response
         return {
             "statusCode": 200,
             "headers": {
-                "Access-Control-Allow-Origin": origin,
-                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
-                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
-            },
-             "body": json.dumps({ "courses": trimmed_courses })
-
+                    "Access-Control-Allow-Origin": origin,
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+                },
+            "body": json.dumps({"courses": merged})
         }
 
     except Exception as e:

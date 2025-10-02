@@ -83,8 +83,9 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       }
 
       const payload = {
-        externalCourseID: courseData.id.toString(),
-        courseName: courseData.club_name
+        // externalCourseID: courseData.id.toString(),        
+        externalCourseID: (courseData.id ?? "").toString().replace(/^local-/, "").replace(/^ext-/, ""),
+        courseName: courseData.club_name,
       };
 
       const response = await fetch(checkCreateCourseAPI, {
@@ -106,6 +107,9 @@ const Settings = ({ user, userProfile, onProfileUpdate  }) => {
       console.error("❌ Error calling checkCreateCourse:", error);
     }
   };
+
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
