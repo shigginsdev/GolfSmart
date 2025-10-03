@@ -27,10 +27,7 @@ const Layout = ({ user, signOut, children, disableNav }) => {
         <div className="breadcrumb-right">
           <Link to="/release_notes">Release Notes</Link>
         </div>
-      </div>
-      <div style={{ marginLeft: 'auto' }}>
-        <Link to="/release_notes">Release Notes</Link>
-      </div>
+      </div>      
       <div className="main">
         <nav className="sidebar">
           <ul>
