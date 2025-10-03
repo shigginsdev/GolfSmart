@@ -22,7 +22,9 @@ const Layout = ({ user, signOut, children, disableNav }) => {
           <> / <span>{currentPath.charAt(0).toUpperCase() + currentPath.slice(1)}</span></>
         )}
       </div>
-
+      <div style={{ marginLeft: 'auto' }}>
+        <Link to="/release_notes">Release Notes</Link>
+      </div>
       <div className="main">
         <nav className="sidebar">
           <ul>

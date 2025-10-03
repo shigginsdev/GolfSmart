@@ -12,7 +12,6 @@ import Coaching from "./coaching";
 import Pricing from "./pricing";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-//Amplify.configure(awsExports);
 Amplify.configure({
   ...awsExports,
   Auth: {
@@ -119,8 +118,7 @@ function AppRoutes({ user, signOut }) {
       <Routes>
         <Route path="/" element={<GolfScoreInput user={user} userProfile={userProfile} />} />
         <Route path="/insights" element={<Insights user={user} userProfile={userProfile} />} />
-        <Route path="/coaching" element={<Coaching user={user} userProfile={userProfile} />} />
-        {/* <Route path="/settings" element={<Settings user={user} userProfile={userProfile} isNewUser={isNewUser} />} /> */}
+        <Route path="/coaching" element={<Coaching user={user} userProfile={userProfile} />} />        
         <Route
           path="/settings"
           element={
@@ -136,6 +134,7 @@ function AppRoutes({ user, signOut }) {
             />
           }
         />
+        <Route path="/release_notes" element={<ReleaseNotes user={user} userProfile={userProfile} />} />
         <Route path="/pricing" element={<Pricing user={user} userProfile={userProfile} />} />
       </Routes>
     </Layout>
