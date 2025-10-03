@@ -12,7 +12,16 @@ import Coaching from "./coaching";
 import Pricing from "./pricing";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-Amplify.configure(awsExports);
+//Amplify.configure(awsExports);
+Amplify.configure({
+  ...awsExports,
+  Auth: {
+    Cognito: {
+      // 👇 Clears tokens when the browser is closed
+      storage: typeof window !== 'undefined' ? window.sessionStorage : undefined,
+    },
+  },
+});
 
 // testing checkins
 // ✅ API Endpoint for fetching the logged-in user's profile
