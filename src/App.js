@@ -10,6 +10,7 @@ import Insights from "./Insights";
 import Settings from "./Settings";
 import Coaching from "./coaching";
 import Pricing from "./pricing";
+import ReleaseNotes from "./release_notes";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 Amplify.configure({
