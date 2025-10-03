@@ -17,11 +17,13 @@ Amplify.configure({
   ...awsExports,
   Auth: {
     Cognito: {
-      // 👇 Clears tokens when the browser is closed
+      // Clears tokens when the browser is closed
       storage: typeof window !== 'undefined' ? window.sessionStorage : undefined,
-    },
+     },
   },
 });
+
+console.log("storage type", storage);
 
 // testing checkins
 // ✅ API Endpoint for fetching the logged-in user's profile
