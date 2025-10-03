@@ -23,7 +23,6 @@ Amplify.configure({
   },
 });
 
-console.log("storage type", storage);
 
 // testing checkins
 // ✅ API Endpoint for fetching the logged-in user's profile
