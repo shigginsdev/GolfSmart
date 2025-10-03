@@ -1,4 +1,5 @@
 import React from 'react';
+import './layout.css';
 
 const RELEASES = [
   {
@@ -6,35 +7,25 @@ const RELEASES = [
     date: '2025-10-03',
     items: [
       'New: Release Notes page (this page).',
-      'Fix: Cognito session clears on browser close (sessionStorage config).',
-      'UI: SweetAlert confirm button color now matches Swingstat theme.',
+      'Fix: Cognito session clears on browser close.',
+      'UI: SweetAlert confirm button styled to match Swingstat theme.',
     ],
   },
   {
     version: 'v0.6.2',
     date: '2025-10-01',
     items: [
-      'Insights: groundwork for “Average score per hole (last 10 rounds)”.',
-      'Settings: course search debounce and better empty-state messaging.',
-      'Infra: logs include preprocessed scorecard S3 key for traceability.',
-    ],
-  },
-  {
-    version: 'v0.6.1',
-    date: '2025-09-24',
-    items: [
-      'Bugfix: handled spaces in external course API queries.',
-      'Security: tightened CORS rules for the course suggestion endpoint.',
-      'UX: breadcrumb capitalization polish.',
+      'Insights groundwork for “Average score per hole (last 10 rounds)”.',
+      'Settings course search debounce improvements.',
+      'Infra: logs include preprocessed scorecard S3 key.',
     ],
   },
 ];
 
 export default function ReleaseNotes() {
   return (
-    <div className="release-notes">
+    <div className="release-notes-box">
       <h2>Release Notes</h2>
-
       {RELEASES.map(({ version, date, items }) => (
         <section key={version} style={{ marginBottom: '1.25rem' }}>
           <h3 style={{ margin: 0 }}>
@@ -47,10 +38,6 @@ export default function ReleaseNotes() {
           </ul>
         </section>
       ))}
-
-      <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#6b7280' }}>
-        Tip: Edit <code>release_notes.js</code> and update the <code>RELEASES</code> array to add new entries.
-      </p>
     </div>
   );
 }

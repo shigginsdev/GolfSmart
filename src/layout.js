@@ -14,13 +14,19 @@ const Layout = ({ user, signOut, children, disableNav }) => {
         <div className="banner">
           <h1>SWINGSTAT</h1>                      
         </div>
-      </header>
-
-      <div className="breadcrumb">
-        <Link to="/">Home</Link>
-        {currentPath && (
-          <> / <span>{currentPath.charAt(0).toUpperCase() + currentPath.slice(1)}</span></>
-        )}
+      </header>      
+      <div className="breadcrumb breadcrumb-row">
+        <div>
+          <Link to="/">Home</Link>
+          {currentPath && (
+            <>
+              {' '} / <span>{currentPath.charAt(0).toUpperCase() + currentPath.slice(1)}</span>
+            </>
+          )}
+        </div>
+        <div className="breadcrumb-right">
+          <Link to="/release_notes">Release Notes</Link>
+        </div>
       </div>
       <div style={{ marginLeft: 'auto' }}>
         <Link to="/release_notes">Release Notes</Link>

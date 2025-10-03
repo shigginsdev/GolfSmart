@@ -137,6 +137,23 @@ a {
   margin-right: 5px;
 }
 
+/* Breadcrumb row flex alignment */
+.breadcrumb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* White rounded box for release notes */
+.release-notes-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 800px;
+}
+
 .main {
   display: flex;
   flex: 1 0 auto;
