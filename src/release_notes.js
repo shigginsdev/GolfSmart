@@ -7,17 +7,15 @@ const RELEASES = [
     date: '2025-10-03',
     items: [
       'New: Release Notes page (this page).',
-      'Fix: Cognito session clears on browser close.',
-      'UI: SweetAlert confirm button styled to match Swingstat theme.',
+      'Fix: Searching local courses bug.',      
     ],
   },
   {
     version: 'v0.6.2',
     date: '2025-10-01',
     items: [
-      'Insights groundwork for “Average score per hole (last 10 rounds)”.',
-      'Settings course search debounce improvements.',
-      'Infra: logs include preprocessed scorecard S3 key.',
+      'New: Subscription tiers and billing management.',
+      'Fix: Disabling menu items until a new user completes their profile.',      
     ],
   },
 ];
