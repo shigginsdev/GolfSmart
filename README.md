@@ -1,4 +1,4 @@
-![Swingstat]([image-url](https://play-lh.googleusercontent.com/AnMDCgSSftsm8tiJCUNxyqkCxlBQv-GnusYVqdZDsyjaYdfmDjvaM2gKPgqY2Z6Ibg))
+![Swingstat](https://play-lh.googleusercontent.com/AnMDCgSSftsm8tiJCUNxyqkCxlBQv-GnusYVqdZDsyjaYdfmDjvaM2gKPgqY2Z6Ibg)
 
 # Getting Started with Create React App
 
