@@ -1,3 +1,5 @@
+![Swingstat]([image-url](https://play-lh.googleusercontent.com/AnMDCgSSftsm8tiJCUNxyqkCxlBQv-GnusYVqdZDsyjaYdfmDjvaM2gKPgqY2Z6Ibg))
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
