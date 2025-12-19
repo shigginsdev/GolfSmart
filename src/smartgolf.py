@@ -32,24 +32,48 @@ def add_score(event, origin):
 
         user_id = str(user_score['userId'])
 
-        # Save the user's score
-        score_table.put_item(Item={
+         # Always-required score fields
+        score_attrs = {
+            f'Hole{i+1}Score': int(user_score[f'Hole{i+1}Score'])
+            for i in range(18)
+        }
+
+        # Optional putts fields: Hole1Putts ... Hole18Putts
+        putt_attrs = {}
+        for i in range(18):
+            putt_key = f'Hole{i+1}Putts'
+            putt_value = user_score.get(putt_key)
+
+            # Only save if the client actually sent something (including "0")
+            if putt_value is not None and putt_value != '':
+                try:
+                    putt_attrs[putt_key] = int(putt_value)
+                except (TypeError, ValueError):
+                    logger.warning(f"Invalid putt value for {putt_key}: {putt_value}")
+
+        item = {
             'userID': str(user_score['userId']),
             'scoreID': str(user_score['scoreId']),
             'courseID': str(user_score.get('courseID', '')),
             'Date': str(user_score['Date']),
-            **{f'Hole{i+1}Score': int(user_score[f'Hole{i+1}Score']) for i in range(18)}
-        })
+            **score_attrs,
+            **putt_attrs,
+        }
 
-         # Increment uploadCount in sg_users
-        user_table.update_item(
-            Key={'userID': user_id},
-            UpdateExpression="SET uploadCount = if_not_exists(uploadCount, :start) + :inc",
-            ExpressionAttributeValues={
-                ':inc': Decimal(1),
-                ':start': Decimal(0)
-            }
-        )
+        logger.debug(f"Putting item into sg_user_scores: {item}")
+
+        # Save the user's score + optional putts
+        score_table.put_item(Item=item)
+
+        # Increment uploadCount in sg_users
+        # user_table.update_item(
+        #     Key={'userID': user_id},
+        #     UpdateExpression="SET uploadCount = if_not_exists(uploadCount, :start) + :inc",
+        #     ExpressionAttributeValues={
+        #         ':inc': Decimal(1),
+        #         ':start': Decimal(0)
+        #     }            
+        # )        
 
         return {
             "statusCode": 200,

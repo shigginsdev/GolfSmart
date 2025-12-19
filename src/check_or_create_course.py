@@ -65,6 +65,24 @@ def fetch_course_data_from_external_api(external_course_id):
         raise    
 
 def check_create_course(event):
+    """
+    Handles the creation or retrieval of a golf course record based on incoming event data.
+    This function checks if a course with the provided externalCourseID already exists in the DynamoDB table.
+    If it exists, returns the course's UUID. If not, fetches full course data from an external API, saves it to the database,
+    and returns the new course's UUID.
+    Args:
+        event (dict): The event payload containing course data, typically from an API Gateway request.
+            Expected keys in event["body"]:
+                - externalCourseID (str): The external identifier for the course.
+                - courseName (str): The name of the course.
+    Returns:
+        dict: A response object with statusCode, headers, and body (JSON string) containing either the course UUID,
+              an error message, or a status indicator.
+    Raises:
+        Returns a 400 status code if required fields are missing.
+        Returns a 502 status code if external course data cannot be fetched.
+        Returns a 500 status code for unexpected errors.
+    """
     try:
         body = json.loads(event.get("body", "{}"))
         logger.info(f"📥 Incoming course data: {body}")

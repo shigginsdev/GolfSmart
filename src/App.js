@@ -11,6 +11,7 @@ import Settings from "./Settings";
 import Coaching from "./coaching";
 import Pricing from "./pricing";
 import ReleaseNotes from "./release_notes";
+import GPS from "./gps";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 Amplify.configure({
@@ -118,6 +119,7 @@ function AppRoutes({ user, signOut }) {
     <Layout signOut={signOut} user={user} disableNav={isNewUser}>
       <Routes>
         <Route path="/" element={<GolfScoreInput user={user} userProfile={userProfile} />} />
+        <Route path="/gps" element={<GPS user={user} userProfile={userProfile} />} />
         <Route path="/insights" element={<Insights user={user} userProfile={userProfile} />} />
         <Route path="/coaching" element={<Coaching user={user} userProfile={userProfile} />} />        
         <Route
