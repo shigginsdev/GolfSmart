@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './layout.css';
-import bannerImg from './assets/img/edwin-compton-Z8XlmAj65iM-unsplash.png';
+
 
 const Layout = ({ user, signOut, children, disableNav }) => {
   const location = useLocation();
@@ -30,7 +30,7 @@ const Layout = ({ user, signOut, children, disableNav }) => {
       </div>      
       <div className="main">
         <nav className="sidebar">
-          <ul>
+          <ul>            
             <li>
               {disableNav ? (
                 <span className="disabled" title="Complete your profile to unlock Scores">
@@ -48,6 +48,16 @@ const Layout = ({ user, signOut, children, disableNav }) => {
               ) : (
                 <Link to="/insights">Insights</Link>
               )}
+            </li>
+            <li>
+              {/* {disableNav ? (
+                <span className="disabled" title="Complete your profile to unlock Scores">
+                  GPS
+                </span>
+              ) : (
+              <Link to="/gps">GPS</Link>
+              )} */}
+              <Link to="/gps">GPS</Link>
             </li>
             <li>
               {disableNav ? (
