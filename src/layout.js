@@ -50,14 +50,13 @@ const Layout = ({ user, signOut, children, disableNav }) => {
               )}
             </li>
             <li>
-              {/* {disableNav ? (
+              {disableNav ? (
                 <span className="disabled" title="Complete your profile to unlock Scores">
                   GPS
                 </span>
               ) : (
               <Link to="/gps">GPS</Link>
-              )} */}
-              <Link to="/gps">GPS</Link>
+              )}              
             </li>
             <li>
               {disableNav ? (
